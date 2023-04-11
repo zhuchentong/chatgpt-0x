@@ -4,6 +4,8 @@
   "scripts": {
     "build": "lerna run build",
     "test": "lerna run test",
+    "dev:web": "lerna run dev --scope chatgpt-web",
+    "dev:server": "lerna run dev --scope chatgpt-server",
     "dev": "lerna run dev",
     "exec": "node scripts/exec.js",
     "lint": "lerna run lint",

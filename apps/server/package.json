@@ -1,5 +1,5 @@
 {
-  "name": "mall-service",
+  "name": "chatgpt-server",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -7,7 +7,6 @@
   "license": "UNLICENSED",
   "packageManager": "pnpm@7.5.2",
   "scripts": {
-    "prepare": "npx husky install",
     "commit": "git-cz",
     "prebuild": "rimraf dist",
     "build": "NODE_ENV=production nest build",

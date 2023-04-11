@@ -4,11 +4,9 @@ import * as qiniu from 'qiniu'
 import { TokenService } from './token.service'
 import { nanoid } from 'nanoid'
 import { RequestContext } from 'src/middlewaves/request-context.middlewave'
-import { Material } from 'src/entities/material.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { minitypeToFileType } from 'src/shared/common'
-import { MaterialGroup } from 'src/entities/material-group.entity'
 import { Logger } from 'src/logger/services/logger.service'
 
 @Injectable()
@@ -17,10 +15,6 @@ export class FileService {
     private readonly config: ConfigService,
     private readonly tokenService: TokenService,
     private readonly requestContext: RequestContext,
-    @InjectRepository(Material)
-    private materialRepository: Repository<Material>,
-    @InjectRepository(MaterialGroup)
-    private materialGroupRepository: Repository<MaterialGroup>,
     private logger: Logger,
   ) {}
 
@@ -94,19 +88,19 @@ export class FileService {
 
     await this.copyFile(tempBucket, mainBucket, key)
 
-    const material = await this.materialRepository.create({
-      key,
-      origin: this.requestContext.origin,
-      type: minitypeToFileType(tempFile.mimeType),
-    })
+    // const material = await this.materialRepository.create({
+    //   key,
+    //   origin: this.requestContext.origin,
+    //   type: minitypeToFileType(tempFile.mimeType),
+    // })
 
-    if (group) {
-      material.group = await this.materialGroupRepository.preload({
-        id: group,
-      })
-    }
+    // if (group) {
+    //   material.group = await this.materialGroupRepository.preload({
+    //     id: group,
+    //   })
+    // }
 
-    return material.save()
+    // return material.save()
   }
 
   /**
