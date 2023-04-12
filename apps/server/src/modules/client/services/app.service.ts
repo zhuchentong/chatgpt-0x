@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable } from '@nestjs/common'
+import { nanoid } from 'nanoid'
 
 const WEAPP_API = {
   token: 'https://api.weixin.qq.com/cgi-bin/token',

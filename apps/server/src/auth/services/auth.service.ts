@@ -80,6 +80,67 @@ export class AuthService {
     return admin
   }
 
+  async userLogin(email: string, password: string) {
+    const user = await this.userRepository.findOne({
+      where: {
+        email,
+      },
+    })
+
+    if (!user) {
+      throw new UnauthorizedException('用户不存在')
+    }
+
+    if (!this.comparePassword(password, user.password)) {
+      throw new UnauthorizedException('用户名或密码错误')
+    }
+
+    return user
+  }
+
+  /**
+   * 小程序登录
+   * @param username
+   * @param password
+   */
+  async weappLogin(code: string) {
+    // 获取openid
+
+    const {
+      data: { errcode, errmsg, openid },
+    } = await lastValueFrom(
+      this.httpService.get(WEAPP_API.code2session, {
+        params: {
+          js_code: code,
+          grant_type: 'authorization_code',
+          appid: this.config.get('weapp.appid'),
+          secret: this.config.get('weapp.secret'),
+        },
+      }),
+    )
+
+    if (errcode) {
+      throw new Error(errmsg)
+    }
+
+    const user = await this.userRepository.findOneBy({
+      openid,
+    })
+
+    if (user) {
+      return user
+    }
+
+    // 创建用户
+    return this.userRepository.save(
+      {
+        openid,
+        nickname: `用户${nanoid(8)}`,
+      },
+      { reload: true },
+    )
+  }
+
   /**
    * 管理端用户登录
    * @param admin
@@ -136,50 +197,6 @@ export class AuthService {
       token_origin: jwtOrigin,
     }
   }
-
-  /**
-   * 管理员登录
-   * @param username
-   * @param password
-   */
-  async weappLogin(code: string) {
-    // 获取openid
-
-    const {
-      data: { errcode, errmsg, openid },
-    } = await lastValueFrom(
-      this.httpService.get(WEAPP_API.code2session, {
-        params: {
-          js_code: code,
-          grant_type: 'authorization_code',
-          appid: this.config.get('weapp.appid'),
-          secret: this.config.get('weapp.secret'),
-        },
-      }),
-    )
-
-    if (errcode) {
-      throw new Error(errmsg)
-    }
-
-    const user = await this.userRepository.findOneBy({
-      openid,
-    })
-
-    if (user) {
-      return user
-    }
-
-    // 创建用户
-    return this.userRepository.save(
-      {
-        openid,
-        nickname: `用户${nanoid(8)}`,
-      },
-      { reload: true },
-    )
-  }
-
   /**
    * 小程序用户登录
    * @param user
@@ -197,7 +214,7 @@ export class AuthService {
    * @param admin
    * @returns
    */
-  async weappSign(user: User) {
+  async userSign(user: User) {
     const jwtOrigin = AppOrigin.Weapp
 
     const payload = {

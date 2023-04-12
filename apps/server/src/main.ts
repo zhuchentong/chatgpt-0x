@@ -34,9 +34,6 @@ function setupSwagger(app: NestFastifyApplication) {
       .addTag('app', '系统')
       .addTag('administrator', '管理员')
       .addTag('user', '用户')
-      .addTag('banner', 'Banner')
-      .addTag('material', '素材')
-      .addTag('order', '订单')
       .addTag('qiniu', '七牛')
 
       .build()
@@ -73,10 +70,8 @@ function setupSwagger(app: NestFastifyApplication) {
       )
       .addTag('app', '系统')
       .addTag('user', '用户')
-      .addTag('category', '商品分类')
-      .addTag('product', '商品')
-      .addTag('home', '首页')
       .addTag('qiniu', '七牛')
+      .addTag('openai', 'OpenAI')
       .build()
 
     const clientDocument = SwaggerModule.createDocument(

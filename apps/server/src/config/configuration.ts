@@ -39,4 +39,13 @@ export default () => ({
     appid: process.env.WEAPP_APPID,
     secret: process.env.WEAPP_SECRET,
   },
+  email: {
+    service: process.env.EMAIL_SERVICE,
+    username: process.env.EMAIL_USERNAME,
+    password: process.env.EMAIL_PASSWORD,
+  },
+  openai: {
+    apiurl: process.env.OPENAI_APIURL,
+    apikey: process.env.OPENAI_APIKEY,
+  },
 })

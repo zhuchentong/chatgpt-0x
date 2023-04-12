@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
 import { JwtModule } from '@nestjs/jwt'
-import { PasswordStrategy } from './strategy/password.strategy'
+import { AdminPasswordStrategy } from './strategy/admin-password.strategy'
+import { UserPasswordStrategy } from './strategy/user-password.strategy'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Administrator } from 'src/entities/administrator.entity'
 import { User } from 'src/entities/user.entity'
@@ -21,7 +22,8 @@ import { HttpModule } from '@nestjs/axios'
     TypeOrmModule.forFeature([Administrator, User]),
   ],
   providers: [
-    PasswordStrategy,
+    AdminPasswordStrategy,
+    UserPasswordStrategy,
     WeappCodeStrategy,
     AccessTokenStrategy,
     RefreshTokenStrategy,

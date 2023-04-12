@@ -29,9 +29,21 @@ const formModel = $ref({
  *
  */
 function onLogin() {
-  store.user.updateToken('USER_TOKEN')
+  const event = new EventSource(
+    'http://localhost:4000/api/client/openai/message',
+  )
 
-  // 进入默认应用
-  router.push('/dashboard')
+  event.addEventListener('message', ({ data }) => {
+    if (data === '[DONE]') {
+      return event.close()
+    }
+
+    const value = JSON.parse(data)
+    console.log(value.text)
+  })
+
+  // store.user.updateToken('USER_TOKEN')
+  // // 进入默认应用
+  // router.push('/dashboard')
 }
 </script>

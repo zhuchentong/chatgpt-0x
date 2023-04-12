@@ -14,12 +14,19 @@ export class User extends pipe(
   EntityWithEnable,
   EntityWithTime,
 )(EntityClass) {
-  @ApiProperty({ description: '用户昵称' })
+  @ApiProperty({ description: '用户邮箱' })
   @Column()
+  email: string
+
+  @Column()
+  password: string
+
+  @ApiProperty({ description: '用户昵称' })
+  @Column({ nullable: true })
   nickname: string
 
   @ApiProperty({ description: 'OPENID' })
-  @Column()
+  @Column({ nullable: true })
   openid: string
 
   @ApiProperty({ description: 'UNIONID' })

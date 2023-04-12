@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { AsyncLocalStorage } from 'node:async_hooks'
 import { Request, Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
-import { IncomingMessage } from 'node:http'
+import { IncomingMessage, OutgoingMessage } from 'node:http'
 import { AppOrigin } from 'src/config/enum.config'
 import { User } from 'src/entities/user.entity'
 

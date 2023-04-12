@@ -14,7 +14,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { omit } from 'ramda'
-import { PasswordAuthGuard } from 'src/auth/guards/password.guard'
+import { AdminPasswordAuthGuard } from 'src/auth/guards/admin-password.guard'
 import { RefreshTokenGuard } from 'src/auth/guards/refresh-token.guard'
 import { AuthService } from 'src/auth/services/auth.service'
 import { Public } from 'src/decorators/public.decorator'
@@ -87,7 +87,7 @@ export class AppController {
 
   @Public()
   @Post('login')
-  @UseGuards(PasswordAuthGuard)
+  @UseGuards(AdminPasswordAuthGuard)
   @ApiOperation({ operationId: 'login', summary: '管理员登录' })
   @ApiOkResponse({ type: TokenResponse })
   login(
