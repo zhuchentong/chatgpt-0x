@@ -8,6 +8,7 @@
     "dev:server": "lerna run dev --scope chatgpt-server",
     "dev": "lerna run dev",
     "exec": "node scripts/exec.js",
+    "prod:start":"lerna run start:prod --scope chatgpt-server",
     "lint": "lerna run lint",
     "publish:patch": "lerna publish patch --no-private --yes",
     "publish:minor": "lerna publish minor --no-private --yes",
