@@ -30,7 +30,7 @@
     </div>
 
     <div class="flex items-center space-x-2">
-      <n-popover trigger="hover">
+      <!-- <n-popover trigger="hover">
         <template #trigger>
           <n-button
             text
@@ -39,7 +39,7 @@
           </n-button>
         </template>
         <span>已消耗Token: {{ chat.usage }}</span>
-      </n-popover>
+      </n-popover> -->
 
       <n-button
         text

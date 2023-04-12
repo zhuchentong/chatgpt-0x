@@ -23,6 +23,7 @@ module.exports = {
         ignorePseudoElements: ['v-deep', ':deep'],
       },
     ],
+    'selector-pseudo-element-no-unknown': null,
     'scss/at-rule-no-unknown': null,
     'number-leading-zero': 'always',
     'no-descending-specificity': null,

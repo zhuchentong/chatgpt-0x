@@ -31,8 +31,9 @@
     <div
       v-else
       @click="onRecordCopy"
-      class="record-content"
-      v-html="marked.parse(record.content)"></div>
+      class="record-content">
+      <ChatMessage :content="record.content"></ChatMessage>
+    </div>
     <div class="m-0! delete hidden">
       <n-button
         v-if="!inputing"
@@ -130,6 +131,7 @@ import { marked } from 'marked'
 import hljs from 'highlight.js'
 import { useMessage } from 'naive-ui'
 import isToday from 'dayjs/plugin/isToday'
+import ChatMessage from './chat-message.vue'
 
 dayjs.extend(isToday)
 
