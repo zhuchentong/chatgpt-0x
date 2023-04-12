@@ -1,5 +1,5 @@
-import { AssistantOptions } from '~~/interfaces'
-import { assistants } from '~/config/assistants.config'
+import type { AssistantOptions } from '@/interfaces'
+import { assistants } from '@/config/assistants.config'
 
 export function useAssistants(): AssistantOptions[] {
   assistants.forEach(
