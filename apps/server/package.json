@@ -75,6 +75,7 @@
     "@types/jest": "29.0.3",
     "@types/jsonwebtoken": "8.5.9",
     "@types/node": "18.7.18",
+    "@types/nodemailer": "^6.4.7",
     "@types/passport-jwt": "3.0.6",
     "@types/passport-local": "1.0.34",
     "@types/ramda": "0.28.15",

@@ -214,8 +214,8 @@ export class AuthService {
    * @param admin
    * @returns
    */
-  async userSign(user: User) {
-    const jwtOrigin = AppOrigin.Weapp
+  async userSign(user: User, origin: AppOrigin) {
+    const jwtOrigin = origin
 
     const payload = {
       id: user.id,
@@ -251,13 +251,7 @@ export class AuthService {
     }
   }
 
-  public async getWeappUser(id: string) {
-    return await this.userRepository.findOneBy({
-      id,
-    })
-  }
-
-  public async getAppUser(id: string) {
+  public async getClientUser(id: string) {
     return await this.userRepository.findOneBy({
       id,
     })

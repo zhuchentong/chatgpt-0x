@@ -1,8 +1,9 @@
-import { Controller, Sse } from '@nestjs/common'
+import { Controller, Query, Sse } from '@nestjs/common'
 import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger'
 import { OpenAIService } from '../services/openai.service'
 import { Public } from 'src/decorators/public.decorator'
 import { Observable } from 'rxjs'
+import { ChatMessageInput } from '../dtos/openai.dto'
 
 @Controller('openai')
 @ApiTags('openai')
@@ -13,10 +14,14 @@ export class OpenaiController {
   @Public()
   @ApiOperation({ operationId: 'message', summary: '发送消息' })
   @Sse('message')
-  message(): Observable<MessageEvent> {
+  message(
+    @Query() { message, parentMessageId, prompt }: ChatMessageInput,
+  ): Observable<MessageEvent> {
     return new Observable((subscriber) => {
       this.openai
-        .sendMessage('nice to meet your', {
+        .sendMessage(message, {
+          parentMessageId,
+          systemMessage: prompt,
           onProgress: (chat) => {
             subscriber.next({ data: chat } as MessageEvent)
           },

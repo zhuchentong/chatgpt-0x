@@ -5,7 +5,7 @@ import icons from './unplugin-icons'
 import components from './unplugin-vue-components'
 import pages from './vite-plugin-pages'
 import layouts from './vite-plugin-vue-layouts'
-
+import request from './request'
 /**
  * DefineVitePlugins
  * @param plugins
@@ -22,6 +22,7 @@ export function defineVitePlugins(
       components,
       icons,
       unocss,
+      request,
       ...plugins,
     ],
   }

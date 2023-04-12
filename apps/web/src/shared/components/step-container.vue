@@ -1,24 +1,19 @@
-<template lang="pug">
-.step-container.space-y-4
-  .step-header
-    a-steps(:current='stepIndex')
-      a-step(
-        v-for='(step, index) in steps'
-        :key='index'
-        :title='step.title'
-        :description='step.description')
-  .step-content
-    StepContent
-  .step-actions.space-x-4.text-center
-    a-button(v-if='stepIndex > 1' type='primary' @click='onPrevStep') 上一步
-    a-button(
-      v-if='stepIndex < steps.length'
-      type='primary'
-      @click='onNextStep') 下一步
-    a-button(
-      v-if='stepIndex === steps.length'
-      type='primary'
-      @click='onNextStep') 提交
+<template>  
+  <div class="step-container space-y-4">
+    <div class="step-header">
+      <a-steps :current="stepIndex">
+        <a-step v-for="(step, index) in steps" :key="index" :title="step.title" :description="step.description"></a-step>
+      </a-steps>
+    </div>
+    <div class="step-content">
+      <StepContent></StepContent>
+    </div>
+    <div class="step-actions space-x-4 text-center">
+      <a-button v-if="stepIndex > 1" type="primary" @click="onPrevStep">上一步</a-button>
+      <a-button v-if="stepIndex < steps.length" type="primary" @click="onNextStep">下一步</a-button>
+      <a-button v-if="stepIndex === steps.length" type="primary" @click="onNextStep">提交</a-button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="tsx">

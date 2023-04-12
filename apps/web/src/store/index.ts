@@ -1,13 +1,11 @@
 import { defineStore } from 'pinia'
 import { useAppStore } from './app.store'
-import { useMenuStore } from './menu.store'
 import { useUserStore } from './user.store'
-import { useTabStore } from './tab.store'
+import { useChatStore } from './chat.store'
 
 const stores = {
   app: () => useAppStore(),
-  menu: () => useMenuStore(),
-  tab: () => useTabStore(),
+  chat: () => useChatStore(),
   user: () => useUserStore(),
 }
 

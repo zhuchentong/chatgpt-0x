@@ -1,6 +1,7 @@
-<template lang="pug">
-PageContainer(absolute title='仪表盘' layout='flex-center')
-  .text-3xl Welcome To Use The QuickStart Project Template
+<template>  
+  <PageContainer absolute title="仪表盘" layout="flex-center">
+    <div class="text-3xl">Welcome To Use The QuickStart Project Template</div>
+  </PageContainer>
 </template>
 
 <script setup lang="ts"></script>
@@ -8,7 +9,6 @@ PageContainer(absolute title='仪表盘' layout='flex-center')
 <route lang="yaml">
 name: dashboard
 meta:
-  layout: workspace
   requireAuth: true
   menu:
     key: dashboard

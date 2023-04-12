@@ -2,9 +2,10 @@
 import { appConfig } from './config/app.config'
 import { ModalProvider } from '@gopowerteam/vue-modal'
 import { useStore } from '@/store'
+import { darkTheme, lightTheme } from 'naive-ui'
 
 const store = useStore()
-const isDark = useDark()
+const isDarkTheme = useDark()
 // const toggleDark = useToggle(isDark)
 const preferredDark = usePreferredDark()
 
@@ -21,27 +22,37 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: 'Opinionated Vite Starter Template',
-    },
-    {
-      name: 'theme-color',
-      content: computed(() => (isDark.value ? '#00aba9' : '#ffffff')),
-    },
-  ],
-  link: [
-    {
-      rel: 'icon',
-      type: 'image/svg+xml',
-      href: computed(() =>
-        preferredDark.value ? '/favicon.ico' : '/favicon.ico',
-      ),
+      content: 'chatGPT',
     },
   ],
 })
+
+const lightThemeOverrides = {
+  common: {
+    bodyColor: '#f3f3f3',
+  },
+  // ...
+}
+
+const darkThemeOverrides = {
+  common: {
+    bodyColor: '#101010',
+  },
+  // ...
+}
 </script>
 
 <template>
   <modal-provider>
-    <RouterView />
+    <n-config-provider
+      :theme="isDarkTheme ? darkTheme : lightTheme"
+      :theme-overrides="isDarkTheme ? darkThemeOverrides : lightThemeOverrides">
+      <n-dialog-provider>
+        <n-message-provider>
+          <RouterView />
+        </n-message-provider>
+      </n-dialog-provider>
+      <n-global-style />
+    </n-config-provider>
   </modal-provider>
 </template>

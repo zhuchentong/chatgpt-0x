@@ -1,39 +1,63 @@
-import { useStore } from '@/store'
 import type { Router } from 'vue-router'
+import { appConfig } from '@/config/app.config'
+import menus from '@/config/menu.config'
+import type { Menu } from '@/types/workspace'
+import { useRequest } from 'virtual:request'
+import { useStore } from '@/store'
 
-async function getUserDataByToken() {
-  const store = useStore()
-
-  store.user.updateUser({ id: '1', name: 'test user' })
+/**
+ * 更新用户数据
+ */
+function updateCurrentToken() {
+  // const store = useStore()
+  // const _appService = useRequest((service) => service.AppService)
+  // const accessToken = userQuery.safeAccessToken
+  // const refreshToken = userQuery.select((state) => state.refreshToken)
+  // if (!accessToken && refreshToken) {
+  //   return
+  // }
 }
+
+/**
+ * 更新用户数据
+ */
+function updateCurrentUser() {
+  const store = useStore()
+  const appService = useRequest((service) => service.AppService)
+
+  if (store.user.accessToken) {
+    return appService.getCurrentUser().then((data) => {
+      store.user.updateUser(data)
+    })
+  }
+}
+
 /**
  * 系统启动列表
  * @returns
  */
 export default function userLaunch(router: Router) {
-  const store = useStore()
-
   router.beforeEach(async (to, from, next) => {
-    if (to.meta.requireAuth === false) {
+    const store = useStore()
+    const meta = to.meta
+    // 非必要授权页面直接进入
+    if (meta?.requireAuth === false) {
       return next()
     }
 
-    if (!store.user.token) {
-      return next('/login')
-    }
-    // 使用Token更新用户信息
+    // 未登录用户处理
     if (!store.user.current) {
-      await getUserDataByToken()
-        .then(() => store.menu.generateMenus(router))
-        .catch(() => {
-          return next('/login')
-        })
+      // 更新用户Token
+      await updateCurrentToken()
+
+      // 更新用户信息
+      await updateCurrentUser()
     }
 
-    // 验证用户角色
-    // if (to.meta.requireRoles && false) {
-    //   return next('403')
-    // }
+    // 未登录用户进行登录
+    if (!store.user.current) {
+      return next('/login')
+    }
 
     next()
   })

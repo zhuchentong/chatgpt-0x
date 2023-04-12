@@ -1,23 +1,21 @@
+import type { User } from '@/http/models/User'
 import { defineStore } from 'pinia'
 
-type User = {
-  id: string
-  name: string
-}
-
 type State = {
-  token: string
+  accessToken: string
+  refreshToken: string
   current?: User
 }
 
 const initialState: State = {
-  token: '',
+  accessToken: '',
+  refreshToken: '',
 }
 
 export const useUserStore = defineStore('user', {
   state: () => initialState,
   getters: {
-    isLogin: (state) => !!state.token,
+    isLogin: (state) => !!state.current?.id,
   },
   actions: {
     updateUser(user: User) {
@@ -27,11 +25,17 @@ export const useUserStore = defineStore('user', {
      * 更新用户
      * @param user
      */
-    updateToken(token: string) {
-      this.token = token
+    updateToken(token: { assessToken: string; refreshToken: string }) {
+      this.accessToken = token.assessToken
+      this.refreshToken = token.refreshToken
+    },
+    logout() {
+      this.accessToken = ''
+      this.refreshToken = ''
+      this.current = undefined
     },
   },
   persist: {
-    paths: ['token'],
+    paths: ['accessToken', 'refreshToken'],
   },
 })

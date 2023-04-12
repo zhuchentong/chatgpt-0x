@@ -5,7 +5,6 @@ import type { RouteRecordRaw } from 'vue-router'
 // 自定义路由
 const routes: RouteRecordRaw[] = [
   // 根目录跳转
-  { path: '/', redirect: '/dashboard' },
 ]
 
 export default {

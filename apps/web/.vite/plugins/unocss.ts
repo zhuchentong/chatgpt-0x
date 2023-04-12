@@ -9,12 +9,8 @@ export default unocss({
     presetUno(),
     presetAttributify({
       prefix: 'css:',
-      prefixedOnly: true,
-      nonValuedAttribute: true,
     }),
   ],
-  transformers: [transformerDirective()],
-  extractors: [extractorPug(), extractorSplit],
   theme: {
     colors: {
       primary: '#1f6ae3',

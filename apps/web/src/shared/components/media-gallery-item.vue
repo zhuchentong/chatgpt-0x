@@ -1,12 +1,25 @@
-<template lang="pug">
-.media-gallery-item
-  upload-progress(:task='task')
-    .media-wrapper.flex-center
-      .image-gallery-item(v-if='type === FileType.Image')
-        image-preview(:width='width' :height='height' :src='task?.url || src')
-  .action.flex.justify-end.space-x-2.p-1
-    .remove(@click='emits("delete", src || task?.key || "")')
-      icon-park-outline:delete.text-xs
+<template>
+  <div class="media-gallery-item">
+    <upload-progress :task="task">
+      <div class="media-wrapper flex-center">
+        <div
+          class="image-gallery-item"
+          v-if="type === FileType.Image">
+          <image-preview
+            :width="width"
+            :height="height"
+            :src="task?.url || src"></image-preview>
+        </div>
+      </div>
+    </upload-progress>
+    <div class="action flex justify-end space-x-2 p-1">
+      <div
+        class="remove"
+        @click="emits('delete', src || task?.key || '')">
+        <icon-park-outline:delete class="text-xs"></icon-park-outline:delete>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -22,3 +22,9 @@ export enum FileType {
 }
 
 //#endregion
+
+export enum ChatRole {
+  Assistant = 'assistant',
+  User = 'user',
+  System = 'system',
+}

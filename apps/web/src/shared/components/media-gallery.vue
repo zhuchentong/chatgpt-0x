@@ -1,26 +1,19 @@
-<template lang="pug">
-.media-gallery
-  a-image-preview-group(infinite)
-    .flex.flex-wrap
-      media-gallery-item.m-5px(
-        v-for='media in medias'
-        :key='media'
-        :type='type'
-        :src='media'
-        @delete='onDeleteMedia')
-      media-gallery-item.m-5px(
-        v-for='task in tasks'
-        :key='task.key'
-        :task='task'
-        :type='type'
-        @delete='onDeleteTask')
-      .upload-button(v-if='uploadButton')
-        upload-container.m-5px(
-          :multiple='multiple'
-          :filetype='type'
-          @upload='onAddMedia')
-          .upload-button-wrapper.flex-center
-            icon-park:plus.text-2xl
+<template>
+  <div class="media-gallery">
+    <a-image-preview-group infinite>
+      <div class="flex flex-wrap">
+        <media-gallery-item class="m-5px" v-for="media in medias" :key="media" :type="type" :src="media" @delete="onDeleteMedia"></media-gallery-item>
+        <media-gallery-item class="m-5px" v-for="task in tasks" :key="task.key" :task="task" :type="type" @delete="onDeleteTask"></media-gallery-item>
+        <div class="upload-button" v-if="uploadButton">
+          <upload-container class="m-5px" :multiple="multiple" :filetype="type" @upload="onAddMedia">
+            <div class="upload-button-wrapper flex-center">
+              <icon-park:plus class="text-2xl"></icon-park:plus>
+            </div>
+          </upload-container>
+        </div>
+      </div>
+    </a-image-preview-group>
+  </div>
 </template>
 
 <script setup lang="ts">

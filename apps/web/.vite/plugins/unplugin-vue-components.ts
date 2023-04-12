@@ -1,6 +1,9 @@
 import components from 'unplugin-vue-components/vite'
 import iconsResolver from 'unplugin-icons/resolver'
-import { ArcoResolver } from 'unplugin-vue-components/resolvers'
+import {
+  ArcoResolver,
+  NaiveUiResolver,
+} from 'unplugin-vue-components/resolvers'
 import { DynamicTableResolver } from '@gopowerteam/vue-dynamic-table/resolver'
 export default components({
   dts: 'src/types/components.d.ts',
@@ -10,6 +13,7 @@ export default components({
       sideEffect: true,
       importStyle: 'less',
     }),
+    NaiveUiResolver(),
     iconsResolver({
       prefix: 'icon',
       alias: {

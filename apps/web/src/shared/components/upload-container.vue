@@ -1,14 +1,12 @@
-<template lang="pug">
-.upload-container.inline-block.relative
-  .upload-wrapper.absolute.inset-0
-    input.upload-input.h-full.w-full(
-      :accept='accept'
-      :multiple='multiple'
-      type='file'
-      @change='onFileChange')
-
-  .upload-content
-    slot
+<template>  
+  <div class="upload-container inline-block relative">
+    <div class="upload-wrapper absolute inset-0">
+      <input class="upload-input h-full w-full" :accept="accept" :multiple="multiple" type="file" @change="onFileChange">
+    </div>
+    <div class="upload-content">
+      <slot></slot>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

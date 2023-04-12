@@ -1,10 +1,20 @@
-<template lang="pug">
-.page-container(:style='styles')
-  .page-header.flex.justify-end
-    .page-actions.mb-2
-      slot(name='action')
-  .page-body(:class='pageBodyClass')
-    slot
+<template>
+  <div
+    class="page-container"
+    :style="containerStyle">
+    <div
+      class="page-header flex justify-end"
+      v-if="$slots.action">
+      <div class="page-actions mb-2">
+        <slot name="action"></slot>
+      </div>
+    </div>
+    <div
+      class="page-body"
+      :style="bodyStyle">
+      <slot></slot>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -36,27 +46,56 @@ const props = withDefaults(
 /**
  * 生成外层样式
  */
-const styles = computed<CSSProperties>(() => {
-  return Object.assign(
-    // absolute
-    props.absolute
-      ? ({ position: 'absolute', inset: 0, display: 'flex' } as CSSProperties)
-      : {},
-    //  tab
-    props.absolute && !appConfig.workspace.tabsFixed
-      ? { marginTop: '50px' }
-      : {},
-    // padding
-    props.padding === false ? {} : { padding: '10px' },
-    // background
-    props.backgroundColor ? { backgroundColor: props.backgroundColor } : {},
-  )
+const containerStyle = computed<CSSProperties>(() => {
+  const styles: CSSProperties = {}
+
+  if (props.padding === false) {
+    styles.padding = '10px'
+  }
+
+  if (props.backgroundColor) {
+    styles.backgroundColor = props.backgroundColor
+  }
+
+  return styles
+})
+
+/**
+ * 生成外层样式
+ */
+const bodyStyle = computed<CSSProperties>(() => {
+  const styles: CSSProperties = {}
+
+  if (props.absolute) {
+    styles.position = 'absolute'
+    styles.inset = '0'
+  }
+
+  if (props.layout) {
+    switch (true) {
+      case props.layout === 'flex-row':
+        styles.display = 'flex'
+        styles.flexDirection = 'row'
+        break
+      case props.layout === 'flex-column':
+        styles.display = 'flex'
+        styles.flexDirection = 'column'
+        break
+      case props.layout === 'flex-center':
+        styles.display = 'flex'
+        styles.alignItems = 'center'
+        styles.justifyContent = 'center'
+        break
+    }
+  }
+
+  return styles
 })
 
 /**
  * 生成bodyClass
  */
-const pageBodyClass = computed<ClassName>(() => {
+const bodyClass = computed<ClassName>(() => {
   const space_direction =
     props.layout === 'block' || props.layout === 'flex-column' ? 'y' : 'x'
 
@@ -86,17 +125,6 @@ function updatePageTitle() {
   }
 }
 
-/**
- * 更新Tab标题
- */
-function updateTabTitle() {
-  const tab = store.tab.tabs.find((x) => x.key === route.fullPath)
-  const title = props.title || route.meta.title
-  if (tab && title) {
-    tab.title = title as string
-  }
-}
-
 onActivated(() => {
   updatePageTitle()
 })
@@ -104,7 +132,6 @@ onActivated(() => {
 onBeforeMount(() => {
   if (props.title) {
     updatePageTitle()
-    updateTabTitle()
   }
 })
 </script>

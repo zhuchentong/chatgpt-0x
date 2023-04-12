@@ -16,10 +16,6 @@ export interface AppConfig {
    */
   http: HttpConfig
   /**
-   * 布局配置
-   */
-  workspace: WorkspaceConfig
-  /**
    * 主题配置
    */
   theme: ThemeConfig

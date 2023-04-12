@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsString, Length } from 'class-validator'
+import { IsEmail, IsString, Length } from 'class-validator'
 
 /**
  * 登录
@@ -36,6 +36,6 @@ export class EmailRegisterInput {
 
 export class SendRegisterCodeInput {
   @ApiProperty({ description: '用户邮箱' })
-  @Length(5, 20)
+  @IsEmail()
   email: string
 }

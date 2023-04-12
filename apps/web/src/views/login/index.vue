@@ -1,49 +1,39 @@
-<template lang="pug">
-.login-container.absolute.inset-0.flex.overflow-hidden
-  .flex-auto.flex-center.bg-gray-500.bg-opacity-20(class='lt-xl:hidden')
-    transition-group(appear tag='div' name='left')
-      img.w-350px(key='1' :src='loginIcon')
-      .space-y-4(key='2')
-        .welcome.text-3xl 欢迎使用本系统
-        .description.text-14px 后台管理
-  .flex-auto.flex-center
-    transition-group(appear tag='div' name='right')
-      LoginFrom(key='1')
+<template>
+  <page-container
+    absolute
+    layout="flex-center">
+    <n-card class="form-container desktop:w-40%! mobile:w-90%!">
+      <n-tabs
+        class="card-tabs"
+        default-value="login"
+        justify-content="center"
+        size="large"
+        animated
+        style="margin: 0 -4px"
+        pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;">
+        <n-tab-pane
+          name="login"
+          tab="登录">
+          <login-form></login-form>
+        </n-tab-pane>
+        <n-tab-pane
+          name="register"
+          tab="注册">
+          <register-form></register-form>
+        </n-tab-pane>
+      </n-tabs>
+    </n-card>
+  </page-container>
 </template>
 
 <script lang="ts" setup>
-import loginIcon from '@/assets/svg/login-icon.svg?url'
-import LoginFrom from './components/login-form.vue'
+import LoginForm from './components/login-form.vue'
+import RegisterForm from './components/register-form.vue'
 </script>
-
-<style lang="less" scoped>
-.login-container {
-  color: #ffffff;
-  background-color: #293146;
-}
-.left-enter-active,
-.left-leave-active {
-  transition: all 0.5s ease;
-}
-.left-enter-from,
-.left-leave-to {
-  opacity: 0;
-  transform: translateX(-300px);
-}
-.right-enter-active,
-.right-leave-active {
-  transition: all 0.5s ease;
-}
-.right-enter-from,
-.right-leave-to {
-  opacity: 0;
-  transform: translateX(+300px);
-}
-</style>
 
 <route lang="yaml">
 name: login
 meta:
-  layout: blank
+  layout: default
   requireAuth: false
 </route>

@@ -5,11 +5,14 @@ type State = {
   ready: boolean
   // 页面标题
   title: string
+  //
+  darkMode: boolean
 }
 
 const initialState: State = {
   ready: false,
   title: '',
+  darkMode: false,
 }
 
 export const useAppStore = defineStore('app', {
@@ -26,6 +29,10 @@ export const useAppStore = defineStore('app', {
      */
     updateTitle(title: string) {
       this.title = title
+    },
+
+    updateDarkModel(value: boolean) {
+      this.darkMode = value
     },
   },
 })

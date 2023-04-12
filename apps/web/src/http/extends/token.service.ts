@@ -1,17 +1,14 @@
-import type { RequestPlugin, RequestSendOptions } from '@gopowerteam/request'
 import { useStore } from '@/store'
+import type { RequestPlugin, RequestSendOptions } from '@gopowerteam/request'
 
 export class TokenService implements RequestPlugin {
-  /**
-   * 前置Token
-   * @param options
-   */
   public before(options: RequestSendOptions) {
     const store = useStore()
-    if (store.user.token) {
+
+    if (store.user.accessToken) {
       options.headers = {
         ...options.headers,
-        ['Authorization']: `${store.user.token}`,
+        ['Authorization']: `Bearer ${store.user.accessToken}`,
       }
     }
   }

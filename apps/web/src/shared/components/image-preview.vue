@@ -1,6 +1,10 @@
-<template lang="pug">
-.image-preview
-  a-image(:preview='preview' :src='url' show-loader)
+<template>
+  <div class="image-preview">
+    <a-image
+      :preview="preview"
+      :src="url"
+      show-loader></a-image>
+  </div>
 </template>
 
 <script setup lang="ts">

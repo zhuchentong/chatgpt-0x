@@ -44,8 +44,8 @@ export class RefreshTokenStrategy extends PassportStrategy(
       switch (payload.origin) {
         case AppOrigin.Admin:
           return this.authService.getAdminUser(payload.id, payload.username)
-        case AppOrigin.Weapp:
-          return this.authService.getWeappUser(payload.id)
+        default:
+          return this.authService.getClientUser(payload.id)
       }
     }
 

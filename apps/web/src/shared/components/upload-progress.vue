@@ -1,9 +1,10 @@
-<template lang="pug">
-.upload-progress.relative
-  Transition
-    .progress.flex.flex-center(v-if='task && !task?.completed') {{ task?.progress }}%
-
-  slot
+<template>  
+  <div class="upload-progress relative">
+    <Transition>
+      <div class="progress flex flex-center" v-if="task && !task?.completed">{{ task?.progress }}%</div>
+    </Transition>
+    <slot></slot>
+  </div>
 </template>
 
 <script setup lang="ts">

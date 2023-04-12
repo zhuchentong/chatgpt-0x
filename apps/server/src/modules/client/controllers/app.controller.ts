@@ -4,7 +4,7 @@ import {
   Controller,
   Get,
   Inject,
-  Query,
+  Post,
   UseGuards,
 } from '@nestjs/common'
 import {
@@ -32,6 +32,7 @@ import { nanoid } from 'nanoid'
 import { EmailService } from '../services/email.service'
 import { Cache } from 'cache-manager'
 import { UserService } from '../services/user.service'
+import { AppOrigin } from 'src/config/enum.config'
 @Controller('app')
 @ApiTags('app')
 @ApiSecurity('access-token')
@@ -59,22 +60,22 @@ export class AppController {
   }
 
   @Public()
-  @Get('weapp-login')
+  @Post('weapp-login')
   @ApiOperation({ operationId: 'weappLogin', summary: '用户登录' })
   @ApiOkResponse({ type: TokenResponse })
   @UseGuards(WeappCodeGuard)
   weappLogin(
     @RequestUser() user: User,
     // eslint-disable-next-line
-    @Query() input: WeappLoginInput,
+    @Body() input: WeappLoginInput,
   ) {
     if (user) {
-      return this.authService.userSign(user)
+      return this.authService.userSign(user, AppOrigin.Weapp)
     }
   }
 
   @Public()
-  @Get('login')
+  @Post('login')
   @ApiOperation({ operationId: 'login', summary: '用户登录' })
   @ApiOkResponse({ type: TokenResponse })
   @UseGuards(UserPasswordAuthGuard)
@@ -84,12 +85,12 @@ export class AppController {
     @Body() loginInput: EmailLoginInput,
   ) {
     if (user) {
-      return this.authService.userSign(user)
+      return this.authService.userSign(user, AppOrigin.Web)
     }
   }
 
   @Public()
-  @Get('register')
+  @Post('register')
   @ApiOperation({ operationId: 'register', summary: '用户注册' })
   @ApiOkResponse({ type: TokenResponse })
   async register(@Body() registerInput: EmailRegisterInput) {
@@ -105,11 +106,11 @@ export class AppController {
       registerInput.password,
     )
 
-    return this.authService.userSign(user)
+    return this.authService.userSign(user, AppOrigin.Web)
   }
 
   @Public()
-  @Get('send-register-code')
+  @Post('send-register-code')
   @ApiOperation({ operationId: 'sendRegisterCode', summary: '发送注册验证码' })
   async sendRegisterCode(@Body() registerInput: SendRegisterCodeInput) {
     const isExistUser = await this.userService.findOneBy({
@@ -132,6 +133,8 @@ export class AppController {
       '注册验证码',
       `您正在申请注册,注册验证码是: ${code}`,
     )
+
+    return { a: 2 }
   }
 
   @Get('current')
@@ -148,7 +151,7 @@ export class AppController {
   @UseGuards(RefreshTokenGuard)
   token(@RequestUser() user: User) {
     if (user) {
-      return this.authService.userSign(user)
+      return this.authService.userSign(user, AppOrigin.Web)
     }
   }
 }

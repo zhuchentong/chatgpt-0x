@@ -1,7 +1,8 @@
-import { Strategy } from 'passport-local'
 import { PassportStrategy } from '@nestjs/passport'
 import { Injectable } from '@nestjs/common'
 import { AuthService } from '../services/auth.service'
+import { Strategy } from 'passport-custom'
+import { IncomingMessage } from 'http'
 
 @Injectable()
 export class UserPasswordStrategy extends PassportStrategy(
@@ -12,8 +13,10 @@ export class UserPasswordStrategy extends PassportStrategy(
     super()
   }
 
-  async validate(email: string, password: string): Promise<any> {
-    const user = await this.authService.userLogin(email, password)
+  async validate(req: any): Promise<any> {
+    const { email, password } = req.body
+    // 用户登录
+    const user = this.authService.userLogin(email, password)
 
     if (user) {
       return user

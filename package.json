@@ -16,7 +16,8 @@
     "commit": "git-cz",
     "lint:eslint": "eslint \"src/**/*.{vue,ts,tsx}\" --fix",
     "precommit": "chmod +x .husky/*",
-    "clean": "lerna clean"
+    "clean": "lerna clean",
+    "update:request": "lerna run update:request --scope chatgpt-web"
   },
   "devDependencies": {
     "@commitlint/cli": "17.4.2",
