@@ -1,7 +1,7 @@
 import { ViteSSG, type ViteSSGContext } from 'vite-ssg'
 import router from '~/router'
 
-import '@unocss/reset/tailwind.css'
+// import '@unocss/reset/tailwind.css'
 import 'uno.css'
 import '~/styles/index.less'
 
