@@ -10,6 +10,7 @@ import { AdminModule } from './modules/admin/admin.module'
 import configuration from './config/configuration'
 import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core'
 import { QiniuModule } from './shared/qiniu/qiniu.module'
+import { WechatModule } from './shared/wechat/wechat.module'
 import { ErrorInterceptor } from './interceptors/error.interceptor'
 import { join } from 'node:path'
 
@@ -31,6 +32,7 @@ const environment = process.env.NODE_ENV || 'development'
     ClientModule,
     AdminModule,
     QiniuModule,
+    WechatModule,
     RouterModule.register([
       {
         path: 'admin',
@@ -39,6 +41,14 @@ const environment = process.env.NODE_ENV || 'development'
       {
         path: 'client',
         module: ClientModule,
+      },
+      {
+        path: 'qiniu',
+        module: QiniuModule,
+      },
+      {
+        path: 'wechat',
+        module: WechatModule,
       },
     ]),
   ],

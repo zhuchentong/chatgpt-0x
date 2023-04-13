@@ -9,8 +9,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
 import { AdminModule } from './modules/admin/admin.module'
 import { ClientModule } from './modules/client/client.module'
-import { join } from 'path'
 import { QiniuModule } from './shared/qiniu/qiniu.module'
+import { WechatModule } from './shared/wechat/wechat.module'
 import { RequestContextMiddleware } from './middlewaves/request-context.middlewave'
 /**
  * 配置Swagger
@@ -33,16 +33,15 @@ function setupSwagger(app: NestFastifyApplication) {
       )
       .addTag('app', '系统')
       .addTag('administrator', '管理员')
-      .addTag('user', '用户')
       .addTag('qiniu', '七牛')
-
+      .addTag('wechat', '微信')
       .build()
 
     const adminDocument = SwaggerModule.createDocument(
       app,
       adminDocumentConfig,
       {
-        include: [AdminModule, QiniuModule],
+        include: [AdminModule, QiniuModule, WechatModule],
       },
     )
 
@@ -72,13 +71,14 @@ function setupSwagger(app: NestFastifyApplication) {
       .addTag('user', '用户')
       .addTag('qiniu', '七牛')
       .addTag('openai', 'OpenAI')
+      .addTag('wechat', '微信')
       .build()
 
     const clientDocument = SwaggerModule.createDocument(
       app,
       clientDocumentConfig,
       {
-        include: [ClientModule, QiniuModule],
+        include: [ClientModule, QiniuModule, WechatModule],
       },
     )
 

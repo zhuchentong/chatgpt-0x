@@ -4,9 +4,6 @@ import * as qiniu from 'qiniu'
 import { TokenService } from './token.service'
 import { nanoid } from 'nanoid'
 import { RequestContext } from 'src/middlewaves/request-context.middlewave'
-import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
-import { minitypeToFileType } from 'src/common/utils'
 import { Logger } from 'src/core/logger/services/logger.service'
 
 @Injectable()
@@ -69,7 +66,7 @@ export class FileService {
    * 保存文件
    * @param key
    */
-  public async save(key: string, group?: string) {
+  public async save(key: string) {
     const tempBucket = this.config.get('qiniu.storage.temp.bucket')
     const mainBucket = this.config.get('qiniu.storage.main.bucket')
 
@@ -87,20 +84,6 @@ export class FileService {
     }
 
     await this.copyFile(tempBucket, mainBucket, key)
-
-    // const material = await this.materialRepository.create({
-    //   key,
-    //   origin: this.requestContext.origin,
-    //   type: minitypeToFileType(tempFile.mimeType),
-    // })
-
-    // if (group) {
-    //   material.group = await this.materialGroupRepository.preload({
-    //     id: group,
-    //   })
-    // }
-
-    // return material.save()
   }
 
   /**
