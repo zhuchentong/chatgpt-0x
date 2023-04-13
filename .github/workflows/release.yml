@@ -1,0 +1,25 @@
+name: publish
+on:
+  push:
+    branches:
+      - master
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.event.head_commit.message, 'release') }}
+    steps:
+        - uses: actions/checkout@v2
+        - name: setup ssh
+          run: |
+            mkdir -p ~/.ssh/
+            echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+            echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+            sudo chmod 600 ~/.ssh/id_rsa
+          shell: bash
+          env:
+            SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+            SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+        - name: install pm2
+          run: npm install pm2 -g
+        - name: deploy
+          run: npm run deploy:pm2
