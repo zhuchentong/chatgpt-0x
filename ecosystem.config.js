@@ -9,7 +9,7 @@ module.exports = {
       'ssh_options': 'StrictHostKeyChecking=no',
       'pre-deploy': 'git fetch --all',
       'post-deploy':
-        'docker build -t chatgpt-0x . && docker rm -f chatgpt-0x && docker run -d -p 4000:4000 --name chatgpt-0x -v /data/chatgpt/.env.production:/app/apps/server/.env.production chatgpt-0x', // 部署后的动作
+        'docker build -t chatgpt-0x . && docker rm -f chatgpt-0x && docker run -d -p 8040:4000 --name chatgpt-0x -v /data/chatgpt/.env.production:/app/apps/server/.env.production chatgpt-0x', // 部署后的动作
     },
   },
 }
