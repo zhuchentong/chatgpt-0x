@@ -132,10 +132,6 @@ async function bootstrap() {
   // 安装中间件
   app.use(RequestContextMiddleware)
 
-  app.useStaticAssets({
-    root: join(__dirname, '..', 'public'),
-  })
-
   // 安装Swagger
   setupSwagger(app)
 

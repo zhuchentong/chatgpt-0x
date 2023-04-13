@@ -60,10 +60,14 @@
     border-radius: 10px;
     background-color: #5966f2;
     margin: 10px 15px;
-    padding: 10px;
+    padding: 0 10px;
     color: #fff;
     display: inline-block;
     line-height: 1.5;
+
+    &.inputing {
+      padding: 10px;
+    }
   }
 
   &:hover {

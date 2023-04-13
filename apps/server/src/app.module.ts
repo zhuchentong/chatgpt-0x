@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { ServeStaticModule } from '@nestjs/serve-static'
 import { DatabaseModule } from './database/database.module'
 import { RedisModule } from './redis/redis.module'
 import { AuthModule } from './auth/auth.module'
@@ -10,10 +11,14 @@ import configuration from './config/configuration'
 import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core'
 import { QiniuModule } from './modules/qiniu/qiniu.module'
 import { ErrorInterceptor } from './interceptors/error.interceptor'
+import { join } from 'node:path'
 
 const environment = process.env.NODE_ENV || 'development'
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.env.${environment}.local`],
