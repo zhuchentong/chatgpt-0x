@@ -6,8 +6,8 @@ import { nanoid } from 'nanoid'
 import { RequestContext } from 'src/middlewaves/request-context.middlewave'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { minitypeToFileType } from 'src/shared/common'
-import { Logger } from 'src/logger/services/logger.service'
+import { minitypeToFileType } from 'src/common/utils'
+import { Logger } from 'src/core/logger/services/logger.service'
 
 @Injectable()
 export class FileService {

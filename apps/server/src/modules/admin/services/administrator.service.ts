@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
-import { AuthService } from 'src/auth/services/auth.service'
+import { AuthService } from 'src/core/auth/services/auth.service'
 import { PaginatorMode } from 'src/config/enum.config'
 import { Administrator } from 'src/entities/administrator.entity'
-import { QueryInputParam } from 'src/shared/typeorm/interfaces'
-import { buildPaginator } from 'src/shared/typeorm/query/paginator'
+import { QueryInputParam } from 'src/common/typeorm/interfaces'
+import { buildPaginator } from 'src/common/typeorm/query/paginator'
 import { Repository } from 'typeorm'
 
 @Injectable()

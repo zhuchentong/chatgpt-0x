@@ -10,7 +10,7 @@ import { AppModule } from './app.module'
 import { AdminModule } from './modules/admin/admin.module'
 import { ClientModule } from './modules/client/client.module'
 import { join } from 'path'
-import { QiniuModule } from './modules/qiniu/qiniu.module'
+import { QiniuModule } from './shared/qiniu/qiniu.module'
 import { RequestContextMiddleware } from './middlewaves/request-context.middlewave'
 /**
  * 配置Swagger

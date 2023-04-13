@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 // import { ChatGPTAPI, SendMessageOptions } from 'chatgpt'
-import { Logger } from 'src/logger/services/logger.service'
+import { Logger } from 'src/core/logger/services/logger.service'
 
 export const importDynamic = new Function(
   'modulePath',

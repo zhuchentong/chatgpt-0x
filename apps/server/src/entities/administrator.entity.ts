@@ -5,7 +5,7 @@ import {
   EntityWithTime,
   EntityClass,
   EntityWithUUID,
-} from '../shared/typeorm/entity'
+} from '../common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
 
 @Entity('administrator')

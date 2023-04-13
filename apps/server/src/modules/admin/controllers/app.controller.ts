@@ -14,9 +14,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { omit } from 'ramda'
-import { AdminPasswordAuthGuard } from 'src/auth/guards/admin-password.guard'
-import { RefreshTokenGuard } from 'src/auth/guards/refresh-token.guard'
-import { AuthService } from 'src/auth/services/auth.service'
+import { AdminPasswordAuthGuard } from 'src/core/auth/guards/admin-password.guard'
+import { RefreshTokenGuard } from 'src/core/auth/guards/refresh-token.guard'
+import { AuthService } from 'src/core/auth/services/auth.service'
 import { Public } from 'src/decorators/public.decorator'
 import { RequestUser } from 'src/decorators/request-user.decorator'
 import { Administrator } from 'src/entities/administrator.entity'

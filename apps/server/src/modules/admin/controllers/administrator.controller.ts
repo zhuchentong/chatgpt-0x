@@ -18,12 +18,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { omit } from 'ramda'
-import { AuthService } from 'src/auth/services/auth.service'
+import { AuthService } from 'src/core/auth/services/auth.service'
 import { Public } from 'src/decorators/public.decorator'
 import { RequestUser } from 'src/decorators/request-user.decorator'
 import { Administrator } from 'src/entities/administrator.entity'
-import { IdInput } from 'src/shared/typeorm/dto/id.input'
-import { toPageResponse } from 'src/shared/typeorm/responses/page.response'
+import { IdInput } from 'src/common/typeorm/dto/id.input'
+import { toPageResponse } from 'src/common/typeorm/responses/page.response'
 import {
   CreateAdministratorInput,
   UpdatePasswordInput,

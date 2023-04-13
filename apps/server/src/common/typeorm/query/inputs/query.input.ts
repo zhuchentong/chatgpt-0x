@@ -8,7 +8,7 @@ import {
 import { PageParams } from '../params/page-params'
 import { QueryInputParam } from '../../interfaces'
 import { WhereOperator } from 'src/config/enum.config'
-import { toUnderscore } from 'src/shared/common'
+import { toUnderscore } from 'src/common/utils'
 import { CursorParams } from '../params/cursor-params'
 
 export class QueryInput<T = any> {

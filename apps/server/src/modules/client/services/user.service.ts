@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { AuthService } from 'src/auth/services/auth.service'
+import { AuthService } from 'src/core/auth/services/auth.service'
 import { User } from 'src/entities/user.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
 

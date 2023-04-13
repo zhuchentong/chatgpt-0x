@@ -3,10 +3,10 @@ import { IsOptional, IsString, Length } from 'class-validator'
 import { pipe } from 'ramda'
 import { WhereOperator } from 'src/config/enum.config'
 import { Administrator } from 'src/entities/administrator.entity'
-import { WhereOption } from 'src/shared/typeorm/decorators'
-import { PageInput } from 'src/shared/typeorm/query/inputs/page.input'
-import { QueryInput } from 'src/shared/typeorm/query/inputs/query.input'
-import { OrderInput } from 'src/shared/typeorm/query/inputs/order.input'
+import { WhereOption } from 'src/common/typeorm/decorators'
+import { PageInput } from 'src/common/typeorm/query/inputs/page.input'
+import { QueryInput } from 'src/common/typeorm/query/inputs/query.input'
+import { OrderInput } from 'src/common/typeorm/query/inputs/order.input'
 
 /**
  * 添加管理员

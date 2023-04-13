@@ -13,21 +13,21 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'
-import { RefreshTokenGuard } from 'src/auth/guards/refresh-token.guard'
-import { AuthService } from 'src/auth/services/auth.service'
+import { RefreshTokenGuard } from 'src/core/auth/guards/refresh-token.guard'
+import { AuthService } from 'src/core/auth/services/auth.service'
 import { Public } from 'src/decorators/public.decorator'
 import { RequestUser } from 'src/decorators/request-user.decorator'
 import { ConfigService } from '@nestjs/config'
 import { AppBaseResponse, TokenResponse } from '../responses/app.response'
 import { User } from 'src/entities/user.entity'
-import { WeappCodeGuard } from 'src/auth/guards/weapp-code.guard'
+import { WeappCodeGuard } from 'src/core/auth/guards/weapp-code.guard'
 import {
   EmailLoginInput,
   EmailRegisterInput,
   SendRegisterCodeInput,
   WeappLoginInput,
 } from '../dtos/app.dto'
-import { UserPasswordAuthGuard } from 'src/auth/guards/user-password.guard'
+import { UserPasswordAuthGuard } from 'src/core/auth/guards/user-password.guard'
 import { nanoid } from 'nanoid'
 import { EmailService } from '../services/email.service'
 import { Cache } from 'cache-manager'

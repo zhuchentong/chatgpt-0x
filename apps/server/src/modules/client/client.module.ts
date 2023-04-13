@@ -1,6 +1,6 @@
 import { HttpModule } from '@nestjs/axios'
 import { Module } from '@nestjs/common'
-import { AuthModule } from 'src/auth/auth.module'
+import { AuthModule } from 'src/core/auth/auth.module'
 import { AppController } from './controllers/app.controller'
 import { AppService } from './services/app.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
