@@ -31,6 +31,7 @@ COPY --from=installer /${APP_PATH}/apps/web/node_modules ./apps/web/node_modules
 COPY --from=installer /${APP_PATH}/apps/server/node_modules ./apps/server/node_modules
 
 RUN pnpm build
+RUN rm -rf ./apps/web
 
 EXPOSE 4000
 
