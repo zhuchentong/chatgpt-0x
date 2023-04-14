@@ -95,7 +95,7 @@ async function requestLoginQrcodeStatus() {
           router.push('/')
         })
     }
-  }, 1000)
+  }, 2000)
 }
 
 onUnmounted(() => {

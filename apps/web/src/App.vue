@@ -40,6 +40,8 @@ const darkThemeOverrides = {
   },
   // ...
 }
+
+document.documentElement.classList.add('dark')
 </script>
 
 <template>

@@ -20,20 +20,14 @@
     </div>
 
     <div
-      class="record-content inputing"
-      v-if="inputing">
-      <div class="loading">
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    </div>
-    <div
-      v-else
       @click="onRecordCopy"
       class="record-content">
-      <ChatMessage :content="record.content"></ChatMessage>
+      <ChatMessage
+        :role="record.role"
+        :content="record.content"
+        loading="inputing"></ChatMessage>
     </div>
+
     <div class="m-0! delete hidden">
       <n-button
         v-if="!inputing"
@@ -56,11 +50,9 @@
 .chat-record {
   padding: 0 10px;
   .record-content {
-    max-width: 75%;
+    max-width: 85%;
     border-radius: 10px;
-    background-color: #5966f2;
-    margin: 10px 15px;
-    padding: 0 10px;
+    margin: 10px;
     color: #fff;
     display: inline-block;
     line-height: 1.5;
