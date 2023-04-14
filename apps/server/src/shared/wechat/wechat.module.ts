@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common'
+import { Module, OnModuleInit, forwardRef } from '@nestjs/common'
 import { RequestContext } from 'src/middlewaves/request-context.middlewave'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ApiConfig, ApiConfigKit } from 'tnwx'
@@ -7,9 +7,14 @@ import { WXMPController } from './controllers/wxmp.controller'
 import { WXMPService } from './services/wxmp.service'
 import { WXMPMessageService } from './services/wxmp-message.service'
 import { HttpModule } from '@nestjs/axios'
+import { ClientModule } from 'src/modules/client/client.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([]), HttpModule],
+  imports: [
+    TypeOrmModule.forFeature([]),
+    HttpModule,
+    forwardRef(() => ClientModule),
+  ],
   controllers: [WXMPController],
   providers: [RequestContext, WXMPService, WXMPMessageService],
   exports: [WXMPService],

@@ -20,5 +20,6 @@ import { WechatModule } from 'src/shared/wechat/wechat.module'
   ],
   controllers: [AppController, OpenaiController],
   providers: [AppService, EmailService, UserService, OpenAIService],
+  exports: [OpenAIService],
 })
 export class ClientModule {}

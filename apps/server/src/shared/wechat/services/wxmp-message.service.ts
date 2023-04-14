@@ -41,12 +41,14 @@ import {
   OutVideoMsg,
   OutVoiceMsg,
 } from 'tnwx'
+import { OpenAIService } from 'src/modules/client/services/openai.service'
 
 @Injectable()
 export class WXMPMessageService implements MsgAdapter {
   constructor(
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+    private readonly openAIService: OpenAIService,
   ) {}
 
   async processInTextMsg(inTextMsg: InTextMsg): Promise<OutMsg> {
@@ -55,7 +57,10 @@ export class WXMPMessageService implements MsgAdapter {
     switch (true) {
       case !!content:
         const outTextMsg = new OutTextMsg(inTextMsg)
-        outTextMsg.setContent('ok')
+        const { text } = await this.openAIService.sendMessage(content, {
+          stream: false,
+        })
+        outTextMsg.setContent(text)
         return outTextMsg
     }
     // let content = 'IJPay 让支付触手可及 \n\nhttps://gitee.com/javen205/IJPay'
