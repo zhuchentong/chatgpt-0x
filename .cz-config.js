@@ -48,9 +48,6 @@ module.exports = {
     confirmCommit: '请确认以上内容',
   },
   allowBreakingChanges: ['feat', 'fix', 'refactor', 'perf', 'build', 'revert', 'ci', 'release'],
-  scopeOverrides: {
-    release: [{ name: 'patch' }, { name: 'minor' }, { name: 'major' }],
-  },
   skipEmptyScopes: true,
   skipQuestions: ['body', 'breaking', 'footer'],
 }
