@@ -1,23 +1,29 @@
 import { Module, OnModuleInit } from '@nestjs/common'
-import { WechatController } from './controllers/wechat.controller'
 import { RequestContext } from 'src/middlewaves/request-context.middlewave'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ApiConfig, ApiConfigKit } from 'tnwx'
+import { ConfigService } from '@nestjs/config'
+import { WXMPController } from './controllers/wxmp.controller'
+import { WXMPService } from './services/wxmp.service'
+import { WXMPMessageService } from './services/wxmp-message.service'
+import { HttpModule } from '@nestjs/axios'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([])],
-  controllers: [WechatController],
-  providers: [RequestContext],
-  exports: [],
+  imports: [TypeOrmModule.forFeature([]), HttpModule],
+  controllers: [WXMPController],
+  providers: [RequestContext, WXMPService, WXMPMessageService],
+  exports: [WXMPService],
 })
 export class WechatModule implements OnModuleInit {
+  constructor(private readonly config: ConfigService) {}
   onModuleInit() {
+    const { appid, secret, token, aeskey } = this.config.get('wxmp')
     const wechatAPIConfig = new ApiConfig(
-      'wx4579a458bdaa0d94',
-      'fc834bfddbf849125206a20a1b933880',
-      'chatgpt',
-      true,
-      'n2Iv5DXzPGrl9WMaAPBAceUsHhp7AaGOYi7LxCoueKJ',
+      appid,
+      secret,
+      token,
+      !!aeskey,
+      aeskey,
     )
     // 微信公众号、微信小程序、微信小游戏 支持多应用
     ApiConfigKit.putApiConfig(wechatAPIConfig)

@@ -1,15 +1,16 @@
 import {
   Body,
-  CACHE_MANAGER,
   Controller,
   Get,
   Inject,
+  Param,
   Post,
   UseGuards,
 } from '@nestjs/common'
 import {
   ApiOkResponse,
   ApiOperation,
+  ApiResponse,
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'
@@ -18,12 +19,18 @@ import { AuthService } from 'src/core/auth/services/auth.service'
 import { Public } from 'src/decorators/public.decorator'
 import { RequestUser } from 'src/decorators/request-user.decorator'
 import { ConfigService } from '@nestjs/config'
-import { AppBaseResponse, TokenResponse } from '../responses/app.response'
+import {
+  AppBaseResponse,
+  QrcodeLoginResponse,
+  QrcodeLoginStatusResponse,
+  TokenResponse,
+} from '../responses/app.response'
 import { User } from 'src/entities/user.entity'
 import { WeappCodeGuard } from 'src/core/auth/guards/weapp-code.guard'
 import {
   EmailLoginInput,
   EmailRegisterInput,
+  QrcodeLoginStatusInput,
   SendRegisterCodeInput,
   WeappLoginInput,
 } from '../dtos/app.dto'
@@ -33,6 +40,8 @@ import { EmailService } from '../services/email.service'
 import { Cache } from 'cache-manager'
 import { UserService } from '../services/user.service'
 import { AppOrigin } from 'src/config/enum.config'
+import { WXMPService } from 'src/shared/wechat/services/wxmp.service'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
 @Controller('app')
 @ApiTags('app')
 @ApiSecurity('access-token')
@@ -43,6 +52,8 @@ export class AppController {
     private readonly emailService: EmailService,
     private readonly userService: UserService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+
+    private readonly wxmpService: WXMPService,
   ) {}
 
   @Public()
@@ -75,14 +86,14 @@ export class AppController {
   }
 
   @Public()
-  @Post('login')
-  @ApiOperation({ operationId: 'login', summary: '用户登录' })
+  @Post('email-login')
+  @ApiOperation({ operationId: 'emailLogin', summary: '用户登录' })
   @ApiOkResponse({ type: TokenResponse })
   @UseGuards(UserPasswordAuthGuard)
-  login(
+  emailLogin(
     @RequestUser() user: User,
     // eslint-disable-next-line
-    @Body() loginInput: EmailLoginInput,
+    @Body() _: EmailLoginInput,
   ) {
     if (user) {
       return this.authService.userSign(user, AppOrigin.Web)
@@ -90,10 +101,60 @@ export class AppController {
   }
 
   @Public()
+  @Get('qrcode-login')
+  @ApiOperation({ operationId: 'qrcodeLogin', summary: '二维码登录' })
+  @ApiOkResponse({ type: QrcodeLoginResponse })
+  async qrcodeLogin() {
+    const code = nanoid(10)
+    const qrcode = await this.wxmpService.getQRCode({
+      scene: `QRCODE_LOGIN:${code}`,
+    })
+
+    return {
+      qrcode,
+      code,
+    }
+  }
+
+  @Public()
+  @Post('qrcode-login-status/:code')
+  @ApiOkResponse({ type: QrcodeLoginStatusResponse })
+  @ApiOperation({
+    operationId: 'qrcodeLoginStatus',
+    summary: '二维码登录状态查询',
+  })
+  async qrcodeLoginStatus(@Param() { code }: QrcodeLoginStatusInput) {
+    const openid = await this.cacheManager.get<string>(`QRCODE_LOGIN:${code}`)
+
+    // 登录成功进行注册
+    if (!openid) {
+      return {
+        status: false,
+      }
+    }
+
+    await this.cacheManager.del(`QRCODE_LOGIN:${code}`)
+    const user = await this.userService.findOneBy({ openid }).then((user) => {
+      if (user) {
+        return user
+      } else {
+        return this.userService.createByOpenID(openid)
+      }
+    })
+
+    const token = await this.authService.userSign(user, AppOrigin.Web)
+
+    return {
+      status: true,
+      ...token,
+    }
+  }
+
+  @Public()
   @Post('register')
   @ApiOperation({ operationId: 'register', summary: '用户注册' })
   @ApiOkResponse({ type: TokenResponse })
-  async register(@Body() registerInput: EmailRegisterInput) {
+  async emailRegister(@Body() registerInput: EmailRegisterInput) {
     // 缓存Code
     const email = await this.cacheManager.get(registerInput.code)
 
@@ -101,7 +162,7 @@ export class AppController {
       throw Error('验证码错误')
     }
 
-    const user = await this.userService.create(
+    const user = await this.userService.createByEmailPassword(
       registerInput.email,
       registerInput.password,
     )
@@ -124,9 +185,7 @@ export class AppController {
     const code = nanoid(6).toUpperCase()
 
     // 缓存Code
-    await this.cacheManager.set(code, registerInput.email, {
-      ttl: 60 * 10,
-    })
+    await this.cacheManager.set(code, registerInput.email, 60 * 10)
 
     await this.emailService.sendEmail(
       registerInput.email,

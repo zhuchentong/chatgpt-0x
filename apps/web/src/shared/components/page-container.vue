@@ -119,7 +119,6 @@ const bodyClass = computed<ClassName>(() => {
  */
 function updatePageTitle() {
   const title = props.title || route.meta.title
-  console.log(title)
   if (title) {
     store.app.updateTitle(title as string)
   }

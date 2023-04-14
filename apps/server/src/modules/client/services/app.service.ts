@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable } from '@nestjs/common'
 import { nanoid } from 'nanoid'
+import { WXMPService } from 'src/shared/wechat/services/wxmp.service'
 
 const WEAPP_API = {
   token: 'https://api.weixin.qq.com/cgi-bin/token',
@@ -11,7 +12,10 @@ const WEAPP_API = {
 
 @Injectable()
 export class AppService {
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly wxmpService: WXMPService,
+  ) {}
 
   /**
    * 获取AccessToken

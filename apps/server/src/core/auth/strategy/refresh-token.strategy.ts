@@ -1,17 +1,13 @@
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
-import {
-  CACHE_MANAGER,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AppOrigin } from 'src/config/enum.config'
 import { AuthService } from '../services/auth.service'
 import type { Cache } from 'cache-manager'
 import { Administrator } from 'src/entities/administrator.entity'
 import { User } from 'src/entities/user.entity'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
 
 type JwtPayload = {
   id: string

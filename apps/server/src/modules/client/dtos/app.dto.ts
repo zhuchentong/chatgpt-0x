@@ -39,3 +39,9 @@ export class SendRegisterCodeInput {
   @IsEmail()
   email: string
 }
+
+export class QrcodeLoginStatusInput {
+  @ApiProperty({ description: '用户登录码' })
+  @IsString()
+  code: string
+}

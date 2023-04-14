@@ -5,6 +5,8 @@ import type { AppBaseResponse } from '../models/AppBaseResponse'
 import type { WeappLoginInput } from '../models/WeappLoginInput'
 import type { TokenResponse } from '../models/TokenResponse'
 import type { EmailLoginInput } from '../models/EmailLoginInput'
+import type { QrcodeLoginResponse } from '../models/QrcodeLoginResponse'
+import type { QrcodeLoginStatusResponse } from '../models/QrcodeLoginStatusResponse'
 import type { EmailRegisterInput } from '../models/EmailRegisterInput'
 import type { SendRegisterCodeInput } from '../models/SendRegisterCodeInput'
 import type { User } from '../models/User'
@@ -127,6 +129,72 @@ export class AppService {
       path: '/api/client/app/login',
       method: 'post',
       paramsBody: requestBody,
+    }
+
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions,
+    )
+  }
+
+  /**
+   * 二维码登录
+   */
+  public qrcodeLogin(
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & {
+      type: RequestGenerateType.URL
+    },
+  ): string
+  public qrcodeLogin(
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions,
+  ): Promise<QrcodeLoginResponse>
+  public qrcodeLogin(
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions,
+  ): Promise<QrcodeLoginResponse> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/client/app/qrcode-login',
+      method: 'get',
+    }
+
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions,
+    )
+  }
+
+  /**
+   * 二维码登录状态查询
+   */
+  public qrcodeLoginStatus(
+    code: string,
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & {
+      type: RequestGenerateType.URL
+    },
+  ): string
+  public qrcodeLoginStatus(
+    code: string,
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions,
+  ): Promise<QrcodeLoginStatusResponse>
+  public qrcodeLoginStatus(
+    code: string,
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions,
+  ): Promise<QrcodeLoginStatusResponse> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/client/app/qrcode-login-status/{code}',
+      method: 'post',
+      paramsPath: {
+        code,
+      },
     }
 
     return this.generateRequest(

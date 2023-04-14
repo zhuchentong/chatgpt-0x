@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { WechatController } from './wechat.controller'
+import { WXMPController } from './wxmp.controller'
 
-describe('WechatController', () => {
-  let controller: WechatController
+describe('WXMPController', () => {
+  let controller: WXMPController
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [WechatController],
+      controllers: [WXMPController],
     }).compile()
 
-    controller = module.get<WechatController>(WechatController)
+    controller = module.get<WXMPController>(WXMPController)
   })
 
   it('should be defined', () => {

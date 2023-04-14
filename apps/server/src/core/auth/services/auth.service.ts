@@ -185,9 +185,11 @@ export class AuthService {
     })
 
     // 缓存AccessToken
-    await this.cacheManager.set(administrator.id, refreshToken, {
-      ttl: refreshTokenExpiresIn,
-    })
+    await this.cacheManager.set(
+      administrator.id,
+      refreshToken,
+      refreshTokenExpiresIn,
+    )
 
     // 返回认证信息
     return {
@@ -238,9 +240,7 @@ export class AuthService {
     })
 
     // 缓存AccessToken
-    await this.cacheManager.set(user.id, refreshToken, {
-      ttl: refreshTokenExpiresIn,
-    })
+    await this.cacheManager.set(user.id, refreshToken, refreshTokenExpiresIn)
 
     // 返回认证信息
     return {

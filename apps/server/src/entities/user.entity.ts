@@ -15,11 +15,11 @@ export class User extends pipe(
   EntityWithTime,
 )(EntityClass) {
   @ApiProperty({ description: '用户邮箱' })
-  @Column()
-  email: string
+  @Column({ nullable: true })
+  email?: string
 
-  @Column()
-  password: string
+  @Column({ nullable: true })
+  password?: string
 
   @ApiProperty({ description: '用户昵称' })
   @Column({ nullable: true })

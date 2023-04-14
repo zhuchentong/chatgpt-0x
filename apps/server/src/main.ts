@@ -106,8 +106,11 @@ async function bootstrap() {
     new FastifyAdapter(),
     {
       cors: true,
+      rawBody: true,
     },
   )
+
+  app.useBodyParser('text/xml')
 
   // 安装全局前缀
   app.setGlobalPrefix('api', {
@@ -131,7 +134,6 @@ async function bootstrap() {
 
   // 安装中间件
   app.use(RequestContextMiddleware)
-
   // 安装Swagger
   setupSwagger(app)
 

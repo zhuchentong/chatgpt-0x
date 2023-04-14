@@ -9,9 +9,15 @@ import { UserService } from './services/user.service'
 import { User } from 'src/entities/user.entity'
 import { OpenAIService } from './services/openai.service'
 import { OpenaiController } from './controllers/openai.controller'
+import { WechatModule } from 'src/shared/wechat/wechat.module'
 
 @Module({
-  imports: [HttpModule, AuthModule, TypeOrmModule.forFeature([User])],
+  imports: [
+    HttpModule,
+    AuthModule,
+    WechatModule,
+    TypeOrmModule.forFeature([User]),
+  ],
   controllers: [AppController, OpenaiController],
   providers: [AppService, EmailService, UserService, OpenAIService],
 })

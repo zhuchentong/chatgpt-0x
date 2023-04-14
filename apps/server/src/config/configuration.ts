@@ -39,6 +39,12 @@ export default () => ({
     appid: process.env.WEAPP_APPID,
     secret: process.env.WEAPP_SECRET,
   },
+  wxmp: {
+    appid: process.env.WXMP_APPID,
+    secret: process.env.WXMP_SECRET,
+    token: process.env.WXMP_TOKEN,
+    aeskey: process.env.WXMP_AESKEY,
+  },
   email: {
     service: process.env.EMAIL_SERVICE,
     username: process.env.EMAIL_USERNAME,

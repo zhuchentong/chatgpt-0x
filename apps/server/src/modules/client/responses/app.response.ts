@@ -29,3 +29,16 @@ export class AppBaseResponse {
   })
   qiniu: QiniuConfig
 }
+
+export class QrcodeLoginResponse {
+  @ApiProperty({ description: '登录二维码' })
+  qrcode: string
+
+  @ApiProperty({ description: '登录码' })
+  code: string
+}
+
+export class QrcodeLoginStatusResponse extends TokenResponse {
+  @ApiProperty({ description: '登录状态' })
+  status: boolean
+}
