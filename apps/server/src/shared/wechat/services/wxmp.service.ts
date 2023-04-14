@@ -25,9 +25,7 @@ export class WXMPService {
     const accessToken = await AccessTokenApi.getAccessToken()
 
     try {
-      const {
-        data: { ticket },
-      } = await lastValueFrom(
+      const { data } = await lastValueFrom(
         this.httpService.request<{ ticket: string }>({
           url: 'https://api.weixin.qq.com/cgi-bin/qrcode/create',
           method: 'POST',
@@ -44,8 +42,10 @@ export class WXMPService {
         }),
       )
 
+      this.logger.info(JSON.stringify(data))
+
       return `https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=${encodeURIComponent(
-        ticket,
+        data.ticket,
       )}`
     } catch (ex) {
       this.logger.error(ex)
