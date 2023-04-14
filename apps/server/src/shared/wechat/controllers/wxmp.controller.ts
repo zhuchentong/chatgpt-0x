@@ -62,13 +62,4 @@ export class WXMPController {
       nonce,
     )
   }
-
-  // @Public()
-  // @Get('test')
-  // @ApiOperation({ operationId: 'checkSignature', description: '开发者验证' })
-  // async test() {
-  //   console.log('aa')
-  //   await this.aa.getImage()
-  //   return ''
-  // }
 }
