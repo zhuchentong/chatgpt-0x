@@ -15,6 +15,7 @@ import { ApiConfigKit } from 'tnwx'
 import { FastifyRequest } from 'fastify'
 import { WXMPMessageService } from '../services/wxmp-message.service'
 import { WXMPService } from '../services/wxmp.service'
+import { Logger } from 'src/core/logger/services/logger.service'
 
 @ApiTags('wechat')
 @Controller()
@@ -22,7 +23,7 @@ import { WXMPService } from '../services/wxmp.service'
 export class WXMPController {
   constructor(
     private readonly wxmpMessageService: WXMPMessageService,
-    private readonly aa: WXMPService,
+    private readonly logger: Logger,
   ) {}
 
   @Public()
@@ -54,12 +55,17 @@ export class WXMPController {
     }
     const xml = req.rawBody.toString('utf-8')
 
-    return await WeChat.handleMsg(
-      this.wxmpMessageService,
-      xml,
-      signature,
-      timestamp,
-      nonce,
-    )
+    try {
+      return await WeChat.handleMsg(
+        this.wxmpMessageService,
+        xml,
+        signature,
+        timestamp,
+        nonce,
+      )
+    } catch (ex) {
+      this.logger.error(ex)
+      return 'success'
+    }
   }
 }

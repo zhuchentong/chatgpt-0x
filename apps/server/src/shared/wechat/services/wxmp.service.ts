@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable } from '@nestjs/common'
-import { lastValueFrom, switchMap } from 'rxjs'
+import { lastValueFrom } from 'rxjs'
 import { Logger } from 'src/core/logger/services/logger.service'
 import { AccessTokenApi } from 'tnwx'
 
