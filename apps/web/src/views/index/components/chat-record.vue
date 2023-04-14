@@ -22,15 +22,19 @@
     <div
       @click="onRecordCopy"
       class="record-content">
-      <ChatMessage
+      <ChatLoading
+        v-if="loading"
         :role="record.role"
-        :content="record.content"
-        loading="inputing"></ChatMessage>
+        :content="record.content"></ChatLoading>
+      <ChatMessage
+        v-else
+        :role="record.role"
+        :content="record.content"></ChatMessage>
     </div>
 
     <div class="m-0! delete hidden">
       <n-button
-        v-if="!inputing"
+        v-if="!loading"
         text
         size="small"
         class="w-14px h-14px"
@@ -56,10 +60,6 @@
     color: #fff;
     display: inline-block;
     line-height: 1.5;
-
-    &.inputing {
-      padding: 10px;
-    }
   }
 
   &:hover {
@@ -78,46 +78,6 @@
     }
   }
 }
-
-.loading,
-.loading > div {
-  position: relative;
-  box-sizing: border-box;
-}
-
-.loading {
-  display: block;
-  font-size: 0;
-  color: #000;
-
-  div {
-    width: 10px;
-    height: 10px;
-    margin: 4px;
-    border-radius: 100%;
-    animation: ball-beat 0.7s -0.15s infinite linear;
-
-    display: inline-block;
-    float: none;
-    background-color: currentColor;
-    border: 0 solid currentColor;
-  }
-}
-.loading > div:nth-child(2n-1) {
-  animation-delay: -0.5s;
-}
-
-@keyframes ball-beat {
-  50% {
-    opacity: 0.2;
-    transform: scale(0.75);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
 </style>
 <script setup lang="ts">
 import type { ChatRecord } from '@/interfaces'
@@ -128,13 +88,14 @@ import hljs from 'highlight.js'
 import { useMessage } from 'naive-ui'
 import isToday from 'dayjs/plugin/isToday'
 import ChatMessage from './chat-message.vue'
+import ChatLoading from './chat-loading.vue'
 
 dayjs.extend(isToday)
 
 const props = defineProps<{
   index?: number
   record: ChatRecord
-  inputing?: boolean
+  loading?: boolean
 }>()
 
 const store = useStore()

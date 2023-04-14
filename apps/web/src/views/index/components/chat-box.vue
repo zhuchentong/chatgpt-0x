@@ -16,7 +16,7 @@
             <ChatRecord
               v-if="chat.inputing"
               :record="{ role: ChatRole.Assistant, content: '' }"
-              inputing></ChatRecord>
+              loading></ChatRecord>
           </div>
         </ClientOnly>
       </div>
