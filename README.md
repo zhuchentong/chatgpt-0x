@@ -1,4 +1,3 @@
 # Lerna Monorepo
 
-CHATGPT
-
+CHATGPT-0X
