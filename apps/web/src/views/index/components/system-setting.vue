@@ -22,12 +22,14 @@
       </n-input-number>
     </n-form-item> -->
     <n-form-item label="主题">
-      <!-- <n-switch
-        :value="store.darkTheme"
-        :on-update:value="store.toggleDarkTheme">
-        <template #checked>深色</template>
-        <template #unchecked>浅色</template>
-      </n-switch> -->
+      <n-select
+        :options="[
+          { value: 'dark', label: '深色' },
+          { value: 'light', label: '浅色' },
+          { value: 'auto', label: '自动' },
+        ]"
+        v-model:value="colorMode"
+        :on-update:value="changeColorMode"></n-select>
     </n-form-item>
   </n-form>
 </template>
@@ -38,6 +40,7 @@ import { useStore } from '@/store'
 
 const store = useStore()
 const form = $(templateRef<FormInst>('form'))
+const colorMode = useColorMode()
 
 const models = [
   'gpt-3.5-turbo',
@@ -59,4 +62,7 @@ const models = [
 //     store.chat.updateTokenLimit(value as number)
 //   }
 // }
+function changeColorMode(value: 'dark' | 'light' | 'auto') {
+  colorMode.value = value
+}
 </script>

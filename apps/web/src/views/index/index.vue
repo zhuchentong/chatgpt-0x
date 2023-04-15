@@ -9,8 +9,8 @@
       <AssistantList></AssistantList>
     </div>
   </PageContainer>
-  <!-- <n-drawer
-    v-model:show="store.assistantSettingShow"
+  <n-drawer
+    v-model:show="store.app.assistantSettingShow"
     :width="400"
     placement="right">
     <n-drawer-content title="助手设置">
@@ -18,7 +18,7 @@
     </n-drawer-content>
   </n-drawer>
   <n-drawer
-    v-model:show="store.systemSettingShow"
+    v-model:show="store.app.systemSettingShow"
     :width="400"
     placement="right">
     <n-drawer-content>
@@ -29,7 +29,7 @@
         </n-tab-pane>
       </n-tabs>
     </n-drawer-content>
-  </n-drawer> -->
+  </n-drawer>
 </template>
 <style lang="less" scoped>
 .chat-container {

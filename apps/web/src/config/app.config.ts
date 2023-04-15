@@ -8,7 +8,4 @@ export const appConfig: AppConfig = {
     gateway: import.meta.env.VITE_HTTP_GATEWAY,
     timeout: 3000,
   },
-  theme: {
-    style: 'auto',
-  },
 }

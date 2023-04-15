@@ -1,9 +1,11 @@
 <template>
-  <div class="chat-list flex flex-col" v-if="assistant">
+  <div
+    class="chat-list flex flex-col"
+    v-if="assistant">
     <div class="actions flex justify-between items-center">
       <div
         class="flex items-center space-x-2 cursor-pointer"
-        @click="store.chat.toggleAssistantSettingShow()">
+        @click="store.app.toggleAssistantSettingShow()">
         <n-avatar
           round
           bordered
@@ -16,7 +18,7 @@
         <n-button
           text
           class="w-20px h-20px"
-          @click="store.chat.toggleSystemSettingShow()">
+          @click="store.app.toggleSystemSettingShow()">
           <icon-park-outline:more-one
             class="w-20px h-20px"></icon-park-outline:more-one>
         </n-button>

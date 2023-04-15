@@ -15,10 +15,6 @@ export interface AppConfig {
    * 网络相关配置
    */
   http: HttpConfig
-  /**
-   * 主题配置
-   */
-  theme: ThemeConfig
 }
 
 interface HttpConfig {
@@ -67,14 +63,4 @@ export interface WorkspaceConfig {
    * 是否开启标签页显示
    */
   tabs: boolean
-}
-
-interface themeConfig {
-  /**
-   * 主题风格
-   * dark - 深色
-   * light - 浅色
-   * auto - 自动
-   */
-  style: 'dark' | 'light' | 'auto`'
 }

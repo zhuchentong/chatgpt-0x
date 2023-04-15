@@ -78,13 +78,12 @@ function onSubmit() {
     }
 
     assistant.value.name = formModel.name
-
-    // store.toggleAssistantSettingShow()
+    store.app.toggleAssistantSettingShow()
   })
 }
 
 function onDelete() {
-  // store.deleteAssistant(assistant.value.id)
-  // store.toggleAssistantSettingShow()
+  store.chat.deleteAssistant(assistant.value.id)
+  store.app.toggleAssistantSettingShow()
 }
 </script>

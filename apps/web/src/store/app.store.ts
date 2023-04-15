@@ -5,14 +5,17 @@ type State = {
   ready: boolean
   // 页面标题
   title: string
-  //
-  darkMode: boolean
+  // 助手设置
+  assistantSettingShow: boolean
+  // 系统设置
+  systemSettingShow: boolean
 }
 
 const initialState: State = {
   ready: false,
   title: '',
-  darkMode: false,
+  assistantSettingShow: false,
+  systemSettingShow: false,
 }
 
 export const useAppStore = defineStore('app', {
@@ -30,9 +33,11 @@ export const useAppStore = defineStore('app', {
     updateTitle(title: string) {
       this.title = title
     },
-
-    updateDarkModel(value: boolean) {
-      this.darkMode = value
+    toggleAssistantSettingShow() {
+      this.assistantSettingShow = !this.assistantSettingShow
+    },
+    toggleSystemSettingShow() {
+      this.systemSettingShow = !this.systemSettingShow
     },
   },
 })

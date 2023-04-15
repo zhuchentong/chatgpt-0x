@@ -1,18 +1,22 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import MarkdownIt from 'markdown-it'
 import mdKatex from '@traptitech/markdown-it-katex'
 import mila from 'markdown-it-link-attributes'
 import hljs from 'highlight.js'
 import { ChatRole } from '@/config/enum.config'
+import { useMessage } from 'naive-ui'
 
+const el = useCurrentElement()
+const message = useMessage()
+const theme = useColorMode()
 const props = defineProps<{
   content: string
   role: ChatRole
 }>()
 
 function highlightBlock(str: string, lang?: string) {
-  return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang"></span><span class="code-block-header__copy"></span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
+  return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
 }
 
 const mdi = new MarkdownIt({
@@ -36,13 +40,60 @@ mdi.use(mdKatex, {
   errorColor: '#cc0000',
 })
 
+watch(
+  () => props.content,
+  () => {
+    debouncedFn()
+  },
+)
+
+const debouncedFn = useDebounceFn(() => {
+  copyCodeBlock()
+}, 1000)
+
+onMounted(() => {
+  copyCodeBlock()
+})
+
+function copyText(text: string) {
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text)
+    message.info('已复制到粘贴板')
+  }
+}
+
+function copyCodeBlock() {
+  const codeBlockWrapper = el.value.querySelectorAll('.code-block-wrapper')
+  codeBlockWrapper.forEach((wrapper) => {
+    const copyBtn = wrapper.querySelector('.code-block-header__copy')
+    const codeBlock = wrapper.querySelector('.code-block-body')
+    if (copyBtn && codeBlock) {
+      copyBtn.addEventListener('click', () => {
+        copyText(codeBlock.textContent ?? '')
+      })
+    }
+  })
+}
+
 const text = computed(() => {
   const value = props.content ?? ''
   return mdi.render(value)
 })
 
-const wrapClass = computed(() => {
-  return [props.role === ChatRole.User ? 'bg-red' : 'bg-[#f4f6f8]']
+const colorSchemes = computed(() => {
+  switch (theme.value) {
+    case 'light':
+      return {
+        backgroundColor: '#f4f6f8',
+        preBackgroundColor: '#fff',
+      }
+    case 'dark':
+    default:
+      return {
+        backgroundColor: '#1e1e20',
+        preBackgroundColor: '#282c34',
+      }
+  }
 })
 </script>
 
@@ -55,15 +106,12 @@ const wrapClass = computed(() => {
     color: #000;
   }
   &.assistant {
-    color: #000;
-    background-color: #f4f6f8;
+    background-color: v-bind('colorSchemes.backgroundColor');
   }
 }
-</style>
 
-<style lang="less">
-.markdown-body {
-  background-color: transparent!important;
+:deep(.markdown-body) {
+  background-color: transparent !important;
   font-size: 14px;
 
   p {
@@ -85,7 +133,7 @@ const wrapClass = computed(() => {
 
   .highlight pre,
   pre {
-    background-color: #fff!important;
+    background-color: v-bind('colorSchemes.preBackgroundColor');
   }
 
   code.hljs {
@@ -107,7 +155,11 @@ const wrapClass = computed(() => {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      color: #b3b3b3!important;
+      color: #b3b3b3;
+
+      span {
+        user-select: none;
+      }
 
       &__copy {
         cursor: pointer;
@@ -115,24 +167,10 @@ const wrapClass = computed(() => {
         user-select: none;
 
         &:hover {
-          color: #65a665!important;
+          color: #65a665;
         }
       }
     }
-  }
-}
-
-html.dark {
-  .message-reply {
-    .whitespace-pre-wrap {
-      white-space: pre-wrap;
-      color: var(--n-text-color);
-    }
-  }
-
-  .highlight pre,
-  pre {
-    background-color: #282c34;
   }
 }
 </style>

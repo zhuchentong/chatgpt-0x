@@ -19,9 +19,7 @@
       </n-avatar>
     </div>
 
-    <div
-      @click="onRecordCopy"
-      class="record-content">
+    <div class="record-content">
       <ChatLoading
         v-if="loading"
         :role="record.role"
@@ -108,20 +106,6 @@ marked.setOptions({
     return hljs.highlightAuto(code).value
   },
 })
-
-function onRecordCopy({ target }: MouseEvent) {
-  const element = target as HTMLElement
-  if (element.tagName !== 'PRE') {
-    return
-  }
-
-  const code = element.querySelector('code')
-
-  if (code?.innerText) {
-    navigator.clipboard.writeText(code.innerText)
-    message.info('已复制到粘贴板')
-  }
-}
 
 const messageDate = computed(() => {
   if (props.index === undefined || !props.record.datetime) {

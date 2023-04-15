@@ -116,12 +116,6 @@ export const useChatStore = defineStore('chat', {
       this.activeAssistant = id
       this.activeChat = chat.id
     },
-    toggleAssistantSettingShow() {
-      //
-    },
-    toggleSystemSettingShow() {
-      //
-    },
   },
   persist: true,
 })
