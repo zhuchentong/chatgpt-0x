@@ -19,6 +19,7 @@ export interface ChatRecord {
 
 export interface Chat {
   id: string
+  assistantId: string
   title: string
   inputing: boolean
   usage: number
@@ -28,7 +29,6 @@ export interface Chat {
 
 export interface Assistant extends AssistantOptions {
   id: string
-  chats: Chat[]
   default?: boolean
 }
 

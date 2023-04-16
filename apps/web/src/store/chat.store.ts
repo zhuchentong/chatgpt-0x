@@ -5,6 +5,8 @@ import { defineStore } from 'pinia'
 type State = {
   // 助手列表
   assistants: Assistant[]
+  // 对话列表
+  chats: Chat[]
   // 激活助手ID
   activeAssistant: string
   // 激活会话ID
@@ -19,15 +21,16 @@ const initialState: State = {
       name: '智能助手',
       prompt: '',
       auto: true,
-      chats: [
-        {
-          id: 'default-chat',
-          title: 'New Chat',
-          usage: 0,
-          inputing: false,
-          records: [],
-        },
-      ],
+    },
+  ],
+  chats: [
+    {
+      id: 'default-chat',
+      assistantId: 'default-assistant',
+      title: 'New Chat',
+      usage: 0,
+      inputing: false,
+      records: [],
     },
   ],
   activeAssistant: 'default-assistant',
@@ -39,7 +42,7 @@ export const useChatStore = defineStore('chat', {
 
   getters: {
     currentChat(): Chat {
-      return this.currentAssistant.chats.find((x) => x.id === this.activeChat)!
+      return this.chats.find((x) => x.id === this.activeChat)!
     },
     currentAssistant(): Assistant {
       return this.assistants.find((x) => x.id === this.activeAssistant)!
@@ -54,7 +57,6 @@ export const useChatStore = defineStore('chat', {
 
       const assistant: Assistant = {
         id,
-        chats: [],
         default: isDefault,
         ...options,
       }
@@ -81,13 +83,14 @@ export const useChatStore = defineStore('chat', {
 
       const chat: Chat = {
         id,
+        assistantId: assistant.id,
         title: 'New Chat',
         usage: 0,
         inputing: false,
         records: [],
       }
 
-      assistant.chats.push(chat)
+      this.chats.push(chat)
       this.activeChat = id
     },
     deleteChat(chat: Chat) {
@@ -112,9 +115,12 @@ export const useChatStore = defineStore('chat', {
     },
     changeAssistant(id: string) {
       const assistant = this.assistants.find((x) => x.id === id)
-      const [chat] = assistant?.chats || []
-      this.activeAssistant = id
-      this.activeChat = chat.id
+      const chat = this.chats.find((chat) => chat.assistantId === assistant?.id)
+
+      if (chat) {
+        this.activeAssistant = id
+        this.activeChat = chat.id
+      }
     },
   },
   persist: true,

@@ -70,11 +70,13 @@ import type { Chat } from '@/interfaces'
 import { useStore } from '@/store'
 
 const store = useStore()
-const dialog = useDialog()
 const assistant = computed(() => store.chat.currentAssistant)
 const chats = computed(() =>
-  store.chat.currentAssistant.chats.filter((chat) => !chat.deleted),
+  store.chat.chats.filter(
+    (chat) => !chat.deleted && chat.assistantId === assistant.value.id,
+  ),
 )
+
 function onCreateChat() {
   store.chat.createChat()
 }
