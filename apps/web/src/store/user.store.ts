@@ -25,8 +25,8 @@ export const useUserStore = defineStore('user', {
      * 更新用户
      * @param user
      */
-    updateToken(token: { assessToken: string; refreshToken: string }) {
-      this.accessToken = token.assessToken
+    updateToken(token: { accessToken: string; refreshToken: string }) {
+      this.accessToken = token.accessToken
       this.refreshToken = token.refreshToken
     },
     logout() {

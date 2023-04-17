@@ -1,21 +1,34 @@
 import type { Router } from 'vue-router'
-import { appConfig } from '@/config/app.config'
-import menus from '@/config/menu.config'
-import type { Menu } from '@/types/workspace'
 import { useRequest } from 'virtual:request'
 import { useStore } from '@/store'
+import { HeaderService } from '@/http/extends/header.service'
 
 /**
  * 更新用户数据
  */
 function updateCurrentToken() {
-  // const store = useStore()
-  // const _appService = useRequest((service) => service.AppService)
-  // const accessToken = userQuery.safeAccessToken
-  // const refreshToken = userQuery.select((state) => state.refreshToken)
-  // if (!accessToken && refreshToken) {
-  //   return
-  // }
+  const store = useStore()
+
+  if (store.user.refreshToken) {
+    const appService = useRequest((service) => service.AppService)
+
+    appService
+      .token([
+        new HeaderService({
+          ['Authorization']: `Bearer ${store.user.refreshToken}`,
+        }),
+      ])
+      .then(({ access_token, refresh_token }) => {
+        store.user.updateToken({
+          accessToken: access_token,
+          refreshToken: refresh_token,
+        })
+      })
+      .catch(() => {
+        // ResfreshToken验证失败
+        store.user.logout()
+      })
+  }
 }
 
 /**

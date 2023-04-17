@@ -55,8 +55,6 @@
 
 <script lang="ts" setup>
 import { useRequest } from 'virtual:request'
-import LoginForm from './components/login-form.vue'
-import RegisterForm from './components/register-form.vue'
 import { useMessage } from 'naive-ui'
 import { useStore } from '@/store'
 
@@ -67,44 +65,56 @@ const store = useStore()
 const router = useRouter()
 let qrcode = $ref('')
 let code: string
-let interval: number
-function requestLoginQrcode() {
-  appService.qrcodeLogin().then((data) => {
-    qrcode = data.qrcode
-    code = data.code
-  })
-}
 
-async function requestLoginQrcodeStatus() {
-  interval = setInterval(() => {
-    if (code && qrcode) {
-      appService
-        .qrcodeLoginStatus(code)
-        .then(({ status, access_token, refresh_token }) => {
-          if (!status) {
-            return
-          }
+/**
+ * 请求登录二维码
+ */
+const { pause: pauseRequestLoginQrcode } = useIntervalFn(
+  () => {
+    appService.qrcodeLogin().then((data) => {
+      qrcode = data.qrcode
+      code = data.code
+    })
+  },
+  1000 * 60 * 5,
+  { immediateCallback: true },
+)
 
-          clearInterval(interval)
-          store.user.updateToken({
-            assessToken: access_token,
-            refreshToken: refresh_token,
-          })
-
-          message.success('登录成功')
-          router.push('/')
-        })
+/**
+ * 请求登录二维码状态
+ */
+const { pause: pasueRequestLoginQrcodeStatus } = useIntervalFn(
+  () => {
+    if (!code || !qrcode) {
+      return
     }
-  }, 2000)
-}
 
-onUnmounted(() => {
-  clearInterval(interval)
-})
+    appService
+      .qrcodeLoginStatus(code)
+      .then(({ status, access_token, refresh_token }) => {
+        if (!status) {
+          return
+        }
 
-onMounted(() => {
-  requestLoginQrcode()
-  requestLoginQrcodeStatus()
+        pasueRequestLoginQrcodeStatus()
+        pauseRequestLoginQrcode()
+
+        store.user.updateToken({
+          accessToken: access_token,
+          refreshToken: refresh_token,
+        })
+
+        message.success('登录成功')
+        router.push('/')
+      })
+  },
+  1000 * 2,
+  { immediateCallback: true },
+)
+
+onBeforeUnmount(() => {
+  pasueRequestLoginQrcodeStatus()
+  pauseRequestLoginQrcode()
 })
 </script>
 

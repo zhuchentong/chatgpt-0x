@@ -154,7 +154,7 @@ async function requestRegister() {
     })
     .then(({ access_token, refresh_token }) => {
       store.user.updateToken({
-        assessToken: access_token,
+        accessToken: access_token,
         refreshToken: refresh_token,
       })
 

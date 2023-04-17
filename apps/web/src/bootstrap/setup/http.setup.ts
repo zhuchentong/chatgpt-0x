@@ -52,7 +52,6 @@ class ExceptionInterceptors implements ResponseInterceptor {
 
 function onResponse401() {
   const store = useStore()
-  // TODO: 登录过期处理
   store.user.logout()
 
   // 跳转根页面

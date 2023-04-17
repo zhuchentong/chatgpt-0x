@@ -84,7 +84,7 @@ async function requestLogin() {
     .login({ email: formModel.email, password: formModel.password })
     .then(({ access_token, refresh_token }) => {
       store.user.updateToken({
-        assessToken: access_token,
+        accessToken: access_token,
         refreshToken: refresh_token,
       })
 
