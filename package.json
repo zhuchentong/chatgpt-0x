@@ -4,6 +4,7 @@
   "scripts": {
     "build": "lerna run build",
     "test": "lerna run test",
+    "dev:admin": "lerna run dev --scope chatgpt-admin",
     "dev:web": "lerna run dev --scope chatgpt-web",
     "dev:server": "lerna run dev --scope chatgpt-server",
     "dev": "lerna run dev",

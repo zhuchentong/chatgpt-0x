@@ -171,10 +171,11 @@ export class WXMPMessageService implements MsgAdapter {
 
   async processInQrCodeEvent(inQrCodeEvent: InQrCodeEvent): Promise<OutMsg> {
     const openid = inQrCodeEvent.getFromUserName
+    const event = inQrCodeEvent.getEventKey.replace(/^qrscene\_/, '')
 
     switch (true) {
-      case inQrCodeEvent.getEventKey.startsWith('QRCODE_LOGIN:'):
-        this.cacheManager.set(inQrCodeEvent.getEventKey, openid, 60 * 5)
+      case event.startsWith('QRCODE_LOGIN:'):
+        this.cacheManager.set(event, openid, 60 * 5)
         break
     }
 
