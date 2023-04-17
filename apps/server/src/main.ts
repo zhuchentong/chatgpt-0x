@@ -35,6 +35,7 @@ function setupSwagger(app: NestFastifyApplication) {
       .addTag('administrator', '管理员')
       .addTag('qiniu', '七牛')
       .addTag('wechat', '微信')
+      .addTag('assistant', '助手')
       .build()
 
     const adminDocument = SwaggerModule.createDocument(

@@ -9,14 +9,22 @@ import { QiniuModule } from '../../shared/qiniu/qiniu.module'
 import { AdministratorController } from './controllers/administrator.controller'
 import { AdministratorService } from './services/administrator.service'
 import { Administrator } from 'src/entities/administrator.entity'
+import { AssistantController } from './controllers/assistant.controller'
+import { AssistantService } from './services/assistant.service'
+import { Assistant } from 'src/entities/assistant.entity'
 
 @Module({
   imports: [
     AuthModule,
     QiniuModule,
-    TypeOrmModule.forFeature([Administrator, User]),
+    TypeOrmModule.forFeature([Administrator, User, Assistant]),
   ],
-  providers: [UserService, AdministratorService],
-  controllers: [AdministratorController, UserController, AppController],
+  providers: [UserService, AdministratorService, AssistantService],
+  controllers: [
+    AdministratorController,
+    UserController,
+    AppController,
+    AssistantController,
+  ],
 })
 export class AdminModule {}

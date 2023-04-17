@@ -1,6 +1,6 @@
 import { Optional } from '@nestjs/common'
 import { ApiProperty } from '@nestjs/swagger'
-import { IsString, Length } from 'class-validator'
+import { IsString } from 'class-validator'
 
 export class ChatMessageInput {
   @ApiProperty({ description: '用户消息' })

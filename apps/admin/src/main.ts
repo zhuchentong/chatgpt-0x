@@ -1,5 +1,4 @@
 import { ViteSSG, type ViteSSGContext } from 'vite-ssg'
-import router from '~/router'
 
 import '@unocss/reset/tailwind.css'
 import 'uno.css'
@@ -8,6 +7,7 @@ import '~/styles/index.less'
 import App from './App.vue'
 import { bootstrap } from './bootstrap'
 
+import router from '~/router'
 /**
  * 加载模块
  * @param ctx

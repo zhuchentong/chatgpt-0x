@@ -1,4 +1,4 @@
-import { Entity, Column } from 'typeorm'
+import { Entity, Column, Generated } from 'typeorm'
 import { pipe } from 'ramda'
 import {
   EntityWithEnable,
@@ -8,7 +8,7 @@ import {
 } from '../common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
 
-@Entity('user')
+@Entity('assistant')
 export class Assistant extends pipe(
   EntityWithUUID,
   EntityWithEnable,
@@ -19,10 +19,15 @@ export class Assistant extends pipe(
   avatar: string
 
   @ApiProperty({ description: '助手名称' })
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   name: string
 
   @ApiProperty({ description: 'Prompt' })
   @Column({ nullable: true })
   prompt: string
+
+  @Column()
+  @ApiProperty({ description: 'Code' })
+  @Generated('increment')
+  code: number
 }

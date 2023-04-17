@@ -6,15 +6,15 @@ PageContainer(space)
     a-option(
       v-for='key of TabAction'
       :key='key'
-      :value='key'
-      :label='TabActionDict.get(key)')
+      :label='TabActionDict.get(key)'
+      :value='key')
 </template>
 
 <script setup lang="ts">
 import { TabActionDict } from '@/config/dict.config'
 import { TabAction } from '@/config/enum.config'
 
-let current = $ref(TabAction.CLOSE_OTHER)
+const current = $ref(TabAction.CLOSE_OTHER)
 </script>
 
 <route lang="yaml">
