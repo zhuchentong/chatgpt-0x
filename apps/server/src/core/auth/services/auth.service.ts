@@ -68,6 +68,7 @@ export class AuthService {
         username,
       },
     })
+    console.log(admin)
 
     if (!admin) {
       throw new UnauthorizedException('用户不存在')

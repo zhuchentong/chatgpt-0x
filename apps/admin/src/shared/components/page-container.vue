@@ -7,14 +7,19 @@
     slot
 </template>
 
+<style lang="less" scoped>
+.page-container {
+  overflow: auto;
+  min-height: calc(100vh - 159px);
+}
+</style>
+
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import { appConfig } from '@/config/app.config'
 import type { ClassName } from '@arco-design/web-vue/es/_utils/types'
+import { appConfig } from '@/config/app.config'
 import { useStore } from '@/store'
 
-const store = useStore()
-const route = useRoute()
 const props = withDefaults(
   defineProps<{
     title?: string
@@ -32,7 +37,8 @@ const props = withDefaults(
     space: true,
   },
 )
-
+const store = useStore()
+const route = useRoute()
 /**
  * 生成外层样式
  */
@@ -80,7 +86,6 @@ const pageBodyClass = computed<ClassName>(() => {
  */
 function updatePageTitle() {
   const title = props.title || route.meta.title
-  console.log(title)
   if (title) {
     store.app.updateTitle(title as string)
   }
@@ -115,10 +120,3 @@ export default {
   inheritAttrs: false,
 }
 </script>
-
-<style lang="less" scoped>
-.page-container {
-  overflow: auto;
-  min-height: calc(100vh - 159px);
-}
-</style>

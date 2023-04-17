@@ -8,7 +8,7 @@ export class TokenService implements RequestPlugin {
     if (store.user.accessToken) {
       options.headers = {
         ...options.headers,
-        ['Authorization']: `Bearer ${store.user.accessToken}`,
+        Authorization: `Bearer ${store.user.accessToken}`,
       }
     }
   }

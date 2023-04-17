@@ -1,37 +1,41 @@
 import { defineStore } from 'pinia'
+import type { Administrator } from '@/http/models/Administrator'
 
-type User = {
-  id: string
-  name: string
-}
-
-type State = {
-  token: string
-  current?: User
+interface State {
+  accessToken: string
+  refreshToken: string
+  current?: Administrator
 }
 
 const initialState: State = {
-  token: '',
+  accessToken: '',
+  refreshToken: '',
 }
 
 export const useUserStore = defineStore('user', {
   state: () => initialState,
   getters: {
-    isLogin: (state) => !!state.token,
+    isLogin: (state) => !!state.accessToken && state.current,
   },
   actions: {
-    updateUser(user: User) {
+    updateUser(user: Administrator) {
       this.current = user
     },
     /**
      * 更新用户
      * @param user
      */
-    updateToken(token: string) {
-      this.token = token
+    updateToken(token: { accessToken: string; refreshToken: string }) {
+      this.accessToken = token.accessToken
+      this.refreshToken = token.refreshToken
+    },
+    logout() {
+      this.accessToken = ''
+      this.refreshToken = ''
+      this.current = undefined
     },
   },
   persist: {
-    paths: ['token'],
+    paths: ['refreshToken'],
   },
 })

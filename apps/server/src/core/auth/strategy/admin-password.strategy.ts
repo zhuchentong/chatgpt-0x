@@ -14,7 +14,6 @@ export class AdminPasswordStrategy extends PassportStrategy(
 
   async validate(username: string, password: string): Promise<any> {
     const admin = await this.authService.adminLogin(username, password)
-
     if (admin) {
       return admin
     }

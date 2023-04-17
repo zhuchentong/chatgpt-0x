@@ -1,39 +1,75 @@
-import { useStore } from '@/store'
 import type { Router } from 'vue-router'
+import { useRequest } from 'virtual:request'
+import { useStore } from '@/store'
+import { HeaderService } from '@/http/extends/header.service'
 
-async function getUserDataByToken() {
+/**
+ * 更新用户数据
+ */
+function updateCurrentToken() {
   const store = useStore()
 
-  store.user.updateUser({ id: '1', name: 'test user' })
+  if (store.user.refreshToken && !store.user.accessToken) {
+    const appService = useRequest((service) => service.AppService)
+    return appService
+      .token([
+        new HeaderService({
+          Authorization: `Bearer ${store.user.refreshToken}`,
+        }),
+      ])
+      .then(({ access_token, refresh_token }) => {
+        store.user.updateToken({
+          accessToken: access_token,
+          refreshToken: refresh_token,
+        })
+      })
+      .catch(() => {
+        // ResfreshToken验证失败
+        store.user.logout()
+      })
+  }
 }
+
+/**
+ * 更新用户数据
+ */
+function updateCurrentUser() {
+  const store = useStore()
+  const appService = useRequest((service) => service.AppService)
+
+  if (store.user.accessToken) {
+    return appService.getCurrentAdmin().then((data) => {
+      store.user.updateUser(data)
+    })
+  }
+}
+
 /**
  * 系统启动列表
  * @returns
  */
 export default function userLaunch(router: Router) {
-  const store = useStore()
-
   router.beforeEach(async (to, from, next) => {
-    if (to.meta.requireAuth === false) {
+    const store = useStore()
+    const meta = to.meta
+    // 非必要授权页面直接进入
+    if (meta?.requireAuth === false) {
       return next()
     }
 
-    if (!store.user.token) {
-      return next('/login')
-    }
-    // 使用Token更新用户信息
+    // 未登录用户处理
     if (!store.user.current) {
-      await getUserDataByToken()
-        .then(() => store.menu.generateMenus(router))
-        .catch(() => {
-          return next('/login')
-        })
+      // 更新用户Token
+      await updateCurrentToken()
+
+      // 更新用户信息
+      await updateCurrentUser()
     }
 
-    // 验证用户角色
-    // if (to.meta.requireRoles && false) {
-    //   return next('403')
-    // }
+    // 未登录用户进行登录
+    if (!store.user.current) {
+      return next('/login')
+    }
 
     next()
   })

@@ -1,4 +1,3 @@
-import { useStore } from '@/store'
 import type { RequestPlugin, RequestSendOptions } from '@gopowerteam/request'
 
 export class HeaderService implements RequestPlugin {
