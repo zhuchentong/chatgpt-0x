@@ -107,26 +107,26 @@ export class AppService {
   /**
    * 用户登录
    */
-  public login(
+  public emailLogin(
     requestBody: EmailLoginInput,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & {
       type: RequestGenerateType.URL
     },
   ): string
-  public login(
+  public emailLogin(
     requestBody: EmailLoginInput,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions,
   ): Promise<TokenResponse>
-  public login(
+  public emailLogin(
     requestBody: EmailLoginInput,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions,
   ): Promise<TokenResponse> | string {
     const requestSendOptions = {
       service: this.service,
-      path: '/api/client/app/login',
+      path: '/api/client/app/email-login',
       method: 'post',
       paramsBody: requestBody,
     }

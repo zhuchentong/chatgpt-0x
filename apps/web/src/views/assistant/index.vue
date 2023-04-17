@@ -70,7 +70,7 @@
 </template>
 <style lang="less" scoped>
 .page-container {
-  margin: 100px;
+  margin: 20px;
   border-radius: 20px;
   background-color: v-bind('theme.bodyColor');
 }
@@ -99,9 +99,8 @@
 </style>
 <script setup lang="ts">
 import { useThemeVars } from 'naive-ui'
-import type { AssistantOptions } from '@/interfaces'
 import { useStore } from '@/store'
-import { useAssistants } from '@/composables/use-assistants'
+import type { Assistant } from '@/http/models/Assistant'
 
 const router = useRouter()
 const store = useStore()
@@ -109,7 +108,7 @@ const store = useStore()
 const theme = useThemeVars()
 const input = $ref('')
 
-const assistants = useAssistants().map((assistant) => ({
+const assistants = store.chat.assistantItems.map((assistant) => ({
   ...assistant,
   style: {
     backgroundColor: `rgb(${10 * Math.random()},${132 * Math.random()},${
@@ -124,8 +123,8 @@ const dataSource = computed(() =>
   ),
 )
 
-function onCreateAssistant(assistant: AssistantOptions) {
-  store.chat.createAssistant(assistant)
+function onCreateAssistant(assistant: Assistant) {
+  store.chat.createAssistant(assistant.id)
   router.push('/')
 }
 </script>

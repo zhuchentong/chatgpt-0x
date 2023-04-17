@@ -1,10 +1,12 @@
-import type { Assistant, AssistantOptions, Chat } from '@/interfaces'
+import type { Assistant } from '@/http/models/Assistant'
+import type { Chat } from '@/interfaces'
 import { useDialog } from 'naive-ui'
 import { defineStore } from 'pinia'
 
 type State = {
+  assistantItems: Assistant[]
   // 助手列表
-  assistants: Assistant[]
+  assistantKeys: string[]
   // 对话列表
   chats: Chat[]
   // 激活助手ID
@@ -14,15 +16,8 @@ type State = {
 }
 
 const initialState: State = {
-  assistants: [
-    {
-      id: 'default-assistant',
-      avatar: 'avatar-000',
-      name: '智能助手',
-      prompt: '',
-      auto: true,
-    },
-  ],
+  assistantItems: [],
+  assistantKeys: ['default-assistant'],
   chats: [
     {
       id: 'default-chat',
@@ -45,33 +40,25 @@ export const useChatStore = defineStore('chat', {
       return this.chats.find((x) => x.id === this.activeChat)!
     },
     currentAssistant(): Assistant {
-      return this.assistants.find((x) => x.id === this.activeAssistant)!
+      return this.assistantItems.find((x) => x.id === this.activeAssistant)!
+    },
+    assistants(): Assistant[] {
+      return this.assistantItems.filter((item) =>
+        this.assistantKeys.includes(item.id),
+      )
     },
   },
   actions: {
-    createAssistant(options: AssistantOptions, isDefault?: boolean) {
-      const id = `ASSISTANT_${Math.random()
-        .toString(32)
-        .slice(2)
-        .toUpperCase()}`
-
-      const assistant: Assistant = {
-        id,
-        default: isDefault,
-        ...options,
-      }
-
-      this.assistants.push(assistant)
+    createAssistant(id: string) {
+      this.assistantKeys.push(id)
       this.activeAssistant = id
 
       this.createChat()
     },
     deleteAssistant(id: string) {
-      const target = this.assistants.find((x) => x.default)
+      this.changeAssistant('default-assistant')
 
-      this.changeAssistant(target?.id!)
-
-      this.assistants = this.assistants.filter((x) => x.id !== id)
+      this.assistantKeys = this.assistantKeys.filter((x) => x !== id)
     },
     createChat() {
       // const { appendChatMessage } = useChat();
@@ -122,6 +109,20 @@ export const useChatStore = defineStore('chat', {
         this.activeChat = chat.id
       }
     },
+    updateAssistenItems(items: Assistant[]) {
+      this.assistantItems = items
+    },
   },
-  persist: true,
+  persist: {
+    paths: [
+      // 助手列表
+      'assistantKeys',
+      // 对话列表
+      'chats',
+      // 激活助手ID
+      'activeAssistant',
+      // 激活会话ID
+      'activeChat',
+    ],
+  },
 })

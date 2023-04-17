@@ -73,6 +73,7 @@ function setupSwagger(app: NestFastifyApplication) {
       .addTag('qiniu', '七牛')
       .addTag('openai', 'OpenAI')
       .addTag('wechat', '微信')
+      .addTag('assistant', '助手')
       .build()
 
     const clientDocument = SwaggerModule.createDocument(

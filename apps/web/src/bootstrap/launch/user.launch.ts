@@ -12,7 +12,7 @@ function updateCurrentToken() {
   if (store.user.refreshToken) {
     const appService = useRequest((service) => service.AppService)
 
-    appService
+    return appService
       .token([
         new HeaderService({
           ['Authorization']: `Bearer ${store.user.refreshToken}`,
@@ -45,6 +45,30 @@ function updateCurrentUser() {
   }
 }
 
+function getAssistantItems() {
+  const store = useStore()
+  const assistantService = useRequest((service) => service.AssistantService)
+
+  return assistantService.getAllAssistant().then((data) => {
+    store.chat.updateAssistenItems([
+      {
+        id: 'default-assistant',
+        avatar: 'avatar-000',
+        name: '智能助手',
+        prompt: '',
+        enable: true,
+        createdAt: '',
+        updatedAt: '',
+        code: 0,
+      },
+      ...data.map((item) => ({
+        ...item,
+        avatar: `avatar-${(item.code % 51).toString().padStart(3, '0')}`,
+      })),
+    ])
+  })
+}
+
 /**
  * 系统启动列表
  * @returns
@@ -70,6 +94,10 @@ export default function userLaunch(router: Router) {
     // 未登录用户进行登录
     if (!store.user.current) {
       return next('/login')
+    }
+
+    if (store.chat.assistantItems.length === 0) {
+      await getAssistantItems()
     }
 
     next()

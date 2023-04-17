@@ -1,7 +1,7 @@
 <template>
   <PageContainer absolute>
     <div
-      class="chat-container flex absolute inset-0 shadow-2xl overflow-hidden desktop:m-10px  desktop:mb-100px desktop:rounded-10px">
+      class="chat-container flex absolute inset-0 shadow-2xl overflow-hidden desktop:m-20px  desktop:mb-100px desktop:rounded-10px">
       <ChatList class="desktop:flex mobile:hidden"></ChatList>
       <ChatBox></ChatBox>
     </div>

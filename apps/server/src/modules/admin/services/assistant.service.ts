@@ -9,7 +9,7 @@ import {
 } from '../dtos/assistant.dto'
 import { QueryInputParam } from 'src/common/typeorm/interfaces'
 import { buildPaginator } from 'src/common/typeorm/query/paginator'
-import { PaginatorMode } from 'src/config/enum.config'
+import { Order, PaginatorMode } from 'src/config/enum.config'
 
 @Injectable()
 export class AssistantService {
@@ -31,7 +31,7 @@ export class AssistantService {
       mode: PaginatorMode.Index,
       entity: Assistant,
       query: {
-        order: order,
+        order: { code: Order.ASC, ...order },
         skip: page.skip,
         limit: page.limit,
       },

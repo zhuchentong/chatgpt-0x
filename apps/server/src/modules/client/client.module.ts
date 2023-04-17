@@ -10,16 +10,25 @@ import { User } from 'src/entities/user.entity'
 import { OpenAIService } from './services/openai.service'
 import { OpenaiController } from './controllers/openai.controller'
 import { WechatModule } from 'src/shared/wechat/wechat.module'
+import { AssistantService } from './services/assistant.service'
+import { Assistant } from 'src/entities/assistant.entity'
+import { AssistantController } from './controllers/assistant.controller'
 
 @Module({
   imports: [
     HttpModule,
     AuthModule,
     WechatModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Assistant]),
   ],
-  controllers: [AppController, OpenaiController],
-  providers: [AppService, EmailService, UserService, OpenAIService],
+  controllers: [AppController, OpenaiController, AssistantController],
+  providers: [
+    AppService,
+    EmailService,
+    UserService,
+    OpenAIService,
+    AssistantService,
+  ],
   exports: [OpenAIService],
 })
 export class ClientModule {}
