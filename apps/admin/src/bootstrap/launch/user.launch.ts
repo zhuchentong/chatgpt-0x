@@ -71,6 +71,8 @@ export default function userLaunch(router: Router) {
       return next('/login')
     }
 
+    await store.menu.generateMenus(router)
+
     next()
   })
 }

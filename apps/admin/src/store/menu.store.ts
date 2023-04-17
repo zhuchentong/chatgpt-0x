@@ -1,10 +1,10 @@
-import { appConfig } from '@/config/app.config'
-import type { Menu } from '@/types/workspace'
 import { defineStore } from 'pinia'
 import type { Router } from 'vue-router'
+import { appConfig } from '@/config/app.config'
+import type { Menu } from '@/types/workspace'
 import menus from '~/config/menu.config'
 
-type State = {
+interface State {
   // 侧边栏展开状态
   collapsed: boolean
   // 系统菜单列表
@@ -113,7 +113,7 @@ export const useMenuStore = defineStore('menu', {
 
         // 去除无子节点的空目录
         if (!menu.path && menu.children?.length === 0) {
-          return
+          //
         } else {
           return menu
         }
@@ -124,7 +124,6 @@ export const useMenuStore = defineStore('menu', {
         .map(createMenuTree)
         .filter(Boolean)
         .filter((menu) => menu?.path || menu?.children?.length) as Menu[]
-
       // 更新用户菜单
       this.updateMenus(userMenus)
       // 更新顶部菜单
