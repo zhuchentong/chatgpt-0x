@@ -3,7 +3,8 @@ module.exports = {
     {
       name: 'chatgpt-0x-server',
       port: '8040',
-      script: './.output/server/index.mjs',
+      cwd: '/data/chatgpt/apps/server',
+      script: '.output/server/index.mjs',
     },
   ],
   deploy: {
