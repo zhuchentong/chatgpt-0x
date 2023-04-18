@@ -2,14 +2,14 @@ import type { AppConfig } from '~/types/app.config'
 
 export const appConfig: AppConfig = {
   app: 'vue-web-template',
-  title: 'VueAdmin',
+  title: 'ChatGPT0X',
   logo: '/logo.png',
   http: {
     gateway: import.meta.env.VITE_HTTP_GATEWAY,
     timeout: 3000,
   },
   workspace: {
-    navigation: 'all',
+    navigation: 'side',
     tabs: true,
     headerFixed: true,
     sideFixed: true,
