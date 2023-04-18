@@ -1,4 +1,11 @@
 module.exports = {
+  apps: [
+    {
+      name: 'chatgpt-0x-server',
+      port: '8040',
+      script: './.output/server/index.mjs',
+    },
+  ],
   deploy: {
     production: {
       'user': 'root', // ssh 登陆服务器用户名
@@ -8,8 +15,7 @@ module.exports = {
       'path': '/data/chatgpt', // 项目存放服务器文件路径
       'ssh_options': 'StrictHostKeyChecking=no',
       'pre-deploy': 'git fetch --all',
-      'post-deploy':
-        'docker build -t chatgpt-0x . && docker rm -f chatgpt-0x && docker run -d -p 8040:4000 --name chatgpt-0x -v /data/chatgpt/.env.production:/app/apps/server/.env.production.local chatgpt-0x', // 部署后的动作
+      'post-deploy': 'pnpm install && pnpm build && zx scripts/deploy/index.mjs', // 部署后的动作
     },
   },
 }
