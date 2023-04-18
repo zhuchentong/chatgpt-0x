@@ -35,6 +35,40 @@ export class AssistantService {
   /**
    * 获取所有助手
    */
+  public getAssistantByKeys(
+    requestQuery: RequestQueryParams.GetAssistantByKeys,
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & {
+      type: RequestGenerateType.URL
+    },
+  ): string
+  public getAssistantByKeys(
+    requestQuery: RequestQueryParams.GetAssistantByKeys,
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions,
+  ): Promise<Assistant[]>
+  public getAssistantByKeys(
+    requestQuery: RequestQueryParams.GetAssistantByKeys,
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions,
+  ): Promise<Assistant[]> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/client/assistant/keys',
+      method: 'get',
+      paramsQuery: requestQuery,
+    }
+
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions,
+    )
+  }
+
+  /**
+   * 获取所有助手
+   */
   public getAllAssistant(
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & {
@@ -99,4 +133,11 @@ export class AssistantService {
   }
 }
 
-namespace RequestQueryParams {}
+namespace RequestQueryParams {
+  export type GetAssistantByKeys = {
+    /**
+     * id列表
+     */
+    keys?: string[]
+  }
+}

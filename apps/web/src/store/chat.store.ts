@@ -1,9 +1,9 @@
-import type { Assistant } from '@/http/models/Assistant'
-import type { Chat } from '@/interfaces'
 import { useDialog } from 'naive-ui'
 import { defineStore } from 'pinia'
+import type { Assistant } from '@/http/models/Assistant'
+import type { Chat } from '@/interfaces'
 
-type State = {
+interface State {
   assistantItems: Assistant[]
   // 助手列表
   assistantKeys: string[]
@@ -109,8 +109,8 @@ export const useChatStore = defineStore('chat', {
         this.activeChat = chat.id
       }
     },
-    updateAssistenItems(items: Assistant[]) {
-      this.assistantItems = items
+    appendAssistenItems(items: Assistant[]) {
+      this.assistantItems = [...this.assistantItems, ...items]
     },
   },
   persist: {

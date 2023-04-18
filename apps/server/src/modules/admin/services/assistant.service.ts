@@ -23,7 +23,7 @@ export class AssistantService {
   }
 
   findAll({ buildWhereQuery, page, order }: QueryInputParam<Assistant>) {
-    const builder = this.assistantRepository.createQueryBuilder('administrator')
+    const builder = this.assistantRepository.createQueryBuilder('assistant')
 
     builder.andWhere(buildWhereQuery())
 

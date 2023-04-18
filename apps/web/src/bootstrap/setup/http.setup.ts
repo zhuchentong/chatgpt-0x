@@ -1,6 +1,3 @@
-import { appConfig } from '@/config/app.config'
-import { TokenService } from '@/http/extends/token.service'
-import { useStore } from '@/store'
 import { Message } from '@arco-design/web-vue'
 import {
   type AdapterResponse,
@@ -8,6 +5,10 @@ import {
   setup,
 } from '@gopowerteam/request'
 import { AxiosAdapter } from '@gopowerteam/request/adapters'
+import { appConfig } from '@/config/app.config'
+import { TokenService } from '@/http/extends/token.service'
+import { useStore } from '@/store'
+
 class StatusInterceptors implements ResponseInterceptor {
   exec(respone: AdapterResponse) {
     return respone.status < 400

@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common'
+import { Controller, Get, Param, Query } from '@nestjs/common'
 import { AssistantService } from '../services/assistant.service'
 import { UUIDInput } from 'src/common/typeorm/dto/uuid.input'
 import {
@@ -8,6 +8,8 @@ import {
   ApiOperation,
 } from '@nestjs/swagger'
 import { Assistant } from 'src/entities/assistant.entity'
+import { plainToInstance } from 'class-transformer'
+import { FindAssistantInput } from '../dtos/assistant.dto'
 
 @Controller('assistant')
 @ApiTags('assistant')
@@ -15,11 +17,25 @@ import { Assistant } from 'src/entities/assistant.entity'
 export class AssistantController {
   constructor(private readonly assistantService: AssistantService) {}
 
+  @Get('keys')
+  @ApiOperation({ operationId: 'getAssistantByKeys', summary: '获取所有助手' })
+  @ApiOkResponse({ type: Assistant, isArray: true })
+  findByKeys(@Query() input: FindAssistantInput) {
+    console.log(input)
+    if (!input.keys || input.keys.length === 0) {
+      return []
+    }
+
+    return this.assistantService.findAll(input.params)
+  }
+
   @Get()
   @ApiOperation({ operationId: 'getAllAssistant', summary: '获取所有助手' })
   @ApiOkResponse({ type: Assistant, isArray: true })
   findAll() {
-    return this.assistantService.findAll()
+    // 构建查询参数
+    const input = plainToInstance(FindAssistantInput, {})
+    return this.assistantService.findAll(input.params)
   }
 
   @Get(':id')

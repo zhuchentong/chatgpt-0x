@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    ASpin: typeof import('@arco-design/web-vue')['Spin']
     'IconPark:avatar': typeof import('~icons/icon-park/avatar')['default']
     'IconParkOutline:arrowCircleLeft': typeof import('~icons/icon-park-outline/arrow-circle-left')['default']
     'IconParkOutline:check': typeof import('~icons/icon-park-outline/check')['default']
@@ -43,6 +44,7 @@ declare module '@vue/runtime-core' {
     NPopconfirm: typeof import('naive-ui')['NPopconfirm']
     NSelect: typeof import('naive-ui')['NSelect']
     NSelectOption: typeof import('naive-ui')['NSelectOption']
+    NSpin: typeof import('naive-ui')['NSpin']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']

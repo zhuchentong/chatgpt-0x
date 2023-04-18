@@ -15,7 +15,7 @@ function updateCurrentToken() {
     return appService
       .token([
         new HeaderService({
-          ['Authorization']: `Bearer ${store.user.refreshToken}`,
+          Authorization: `Bearer ${store.user.refreshToken}`,
         }),
       ])
       .then(({ access_token, refresh_token }) => {
@@ -49,24 +49,28 @@ function getAssistantItems() {
   const store = useStore()
   const assistantService = useRequest((service) => service.AssistantService)
 
-  return assistantService.getAllAssistant().then((data) => {
-    store.chat.updateAssistenItems([
-      {
-        id: 'default-assistant',
-        avatar: 'avatar-000',
-        name: '智能助手',
-        prompt: '',
-        enable: true,
-        createdAt: '',
-        updatedAt: '',
-        code: 0,
-      },
-      ...data.map((item) => ({
-        ...item,
-        avatar: `avatar-${(item.code % 51).toString().padStart(3, '0')}`,
-      })),
-    ])
-  })
+  return assistantService
+    .getAssistantByKeys({
+      keys: store.chat.assistantKeys.filter((x) => x !== 'default-assistant'),
+    })
+    .then((data) => {
+      store.chat.appendAssistenItems([
+        {
+          id: 'default-assistant',
+          avatar: 'avatar-000',
+          name: '智能助手',
+          prompt: '',
+          enable: true,
+          createdAt: '',
+          updatedAt: '',
+          code: 0,
+        },
+        ...data.map((item) => ({
+          ...item,
+          avatar: `avatar-${(item.code % 51).toString().padStart(3, '0')}`,
+        })),
+      ])
+    })
 }
 
 /**

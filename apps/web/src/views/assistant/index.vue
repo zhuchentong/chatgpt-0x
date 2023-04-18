@@ -2,14 +2,16 @@
   <div class="page-container flex absolute inset-0 space-y-5 shadow-2xl">
     <div class="actions p-5">
       <n-button
-        text
         class="w-40px h-40px"
+        text
         @click="() => router.back()">
         <icon-park-outline:arrow-circle-left
           class="w-40px h-40px"></icon-park-outline:arrow-circle-left>
       </n-button>
     </div>
-    <div class="flex-auto relative">
+    <div
+      v-if="assistants.length"
+      class="flex-auto relative">
       <div class="absolute inset-0 overflow-auto px-10 pb-10">
         <div class="mb-5">
           <n-input
@@ -21,33 +23,34 @@
           </n-input>
         </div>
         <n-grid
-          :x-gap="12"
-          :y-gap="8"
+          class="flex-auto"
           :cols="3"
-          class="flex-auto">
-          <n-grid-item v-for="(assistant, index) in dataSource">
+          :x-gap="12"
+          :y-gap="8">
+          <n-grid-item
+            v-for="assistant in dataSource"
+            :key="assistant.id">
             <div
               class="assistant-item space-y-4"
               :style="assistant.style">
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-2">
                   <n-avatar
-                    round
                     bordered
+                    round
                     :src="`/avatars/${assistant.avatar}.svg`"></n-avatar>
                   <div>{{ assistant.name }}</div>
                 </div>
                 <div>
                   <n-popconfirm
-                    positive-text="确定"
                     negative-text="取消"
+                    positive-text="确定"
                     @positive-click="() => onCreateAssistant(assistant)">
                     <template #trigger>
                       <n-button
                         circle
                         class="w-30px h-30px"
-                        text-color="#fff"
-                        @click="">
+                        text-color="#fff">
                         <icon-park-outline:plus></icon-park-outline:plus>
                       </n-button>
                     </template>
@@ -66,8 +69,14 @@
         </n-grid>
       </div>
     </div>
+    <div
+      v-else
+      class="flex-auto absolute inset-0 flex-center">
+      <NSpin size="large"></NSpin>
+    </div>
   </div>
 </template>
+
 <style lang="less" scoped>
 .page-container {
   margin: 20px;
@@ -97,8 +106,10 @@
   text-overflow: ellipsis;
 }
 </style>
+
 <script setup lang="ts">
 import { useThemeVars } from 'naive-ui'
+import { useRequest } from 'virtual:request'
 import { useStore } from '@/store'
 import type { Assistant } from '@/http/models/Assistant'
 
@@ -108,14 +119,8 @@ const store = useStore()
 const theme = useThemeVars()
 const input = $ref('')
 
-const assistants = store.chat.assistantItems.map((assistant) => ({
-  ...assistant,
-  style: {
-    backgroundColor: `rgb(${10 * Math.random()},${132 * Math.random()},${
-      255 * Math.random()
-    })`,
-  },
-}))
+const assistantService = useRequest((service) => service.AssistantService)
+let assistants = $ref<(Assistant & { style: string })[]>([])
 
 const dataSource = computed(() =>
   assistants.filter((assistant) =>
@@ -124,7 +129,29 @@ const dataSource = computed(() =>
 )
 
 function onCreateAssistant(assistant: Assistant) {
+  if (!store.chat.assistantItems.find((item) => item.id === assistant.id)) {
+    store.chat.appendAssistenItems([assistant])
+  }
+
   store.chat.createAssistant(assistant.id)
   router.push('/')
 }
+
+function onRequestAssistants() {
+  assistantService.getAllAssistant().then((data) => {
+    assistants = data.map((assistant) => ({
+      ...assistant,
+      style: {
+        backgroundColor: `rgb(${10 * Math.random()},${132 * Math.random()},${
+          255 * Math.random()
+        })`,
+      },
+      avatar: `avatar-${(assistant.code % 51).toString().padStart(3, '0')}`,
+    }))
+  })
+}
+
+onMounted(() => {
+  onRequestAssistants()
+})
 </script>

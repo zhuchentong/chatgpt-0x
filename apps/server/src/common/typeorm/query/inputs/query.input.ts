@@ -22,7 +22,6 @@ export class QueryInput<T = any> {
       .reduce((result, key) => {
         const type = Reflect.getMetadata(WHERE_OPTION_TYPE_METADATA, this, key)
         const name = Reflect.getMetadata(WHERE_OPTION_NAME_METADATA, this, key)
-
         switch (type) {
           case WhereOperator.In:
             result[name || key] = In(this[key])
@@ -74,9 +73,11 @@ export class QueryInput<T = any> {
 
           switch (type) {
             case WhereOperator.In:
-              where.andWhere(`${name} IN :${key}`, {
-                [key]: this[key],
-              })
+              {
+                where.andWhere(`${name} IN (:...${key})`, {
+                  [key]: this[key],
+                })
+              }
 
               break
             case WhereOperator.Like:
