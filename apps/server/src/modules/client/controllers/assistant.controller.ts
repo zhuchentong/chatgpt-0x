@@ -21,7 +21,6 @@ export class AssistantController {
   @ApiOperation({ operationId: 'getAssistantByKeys', summary: '获取所有助手' })
   @ApiOkResponse({ type: Assistant, isArray: true })
   findByKeys(@Query() input: FindAssistantInput) {
-    console.log(input)
     if (!input.keys || input.keys.length === 0) {
       return []
     }
