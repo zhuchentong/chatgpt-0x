@@ -75,7 +75,7 @@ export class QueryInput<T = any> {
             case WhereOperator.In:
               {
                 where.andWhere(`${name} IN (:...${key})`, {
-                  [key]: this[key],
+                  [key]: Array.isArray(this[key]) ? this[key] : [this[key]],
                 })
               }
 
