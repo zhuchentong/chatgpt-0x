@@ -49,6 +49,8 @@ function onCreate() {
     record: {
       name: '',
       prompt: '',
+      placeholder: '',
+      foreword: '',
     },
     appendRowKey: true,
     submit: (data) => {
@@ -83,9 +85,18 @@ const editsForms: FormItemsOptions = [
   {
     key: 'prompt',
     title: 'Prompt',
-
     rules: [{ required: true, message: '请输入Prompt' }],
     render: (r) => r.textarea({ autosize: { minRows: 5, maxRows: 10 } }),
+  },
+  {
+    key: 'placeholder',
+    title: '提示',
+    render: (r) => r.input(),
+  },
+  {
+    key: 'foreword',
+    title: '前言',
+    render: (r) => r.input(),
   },
 ]
 
@@ -97,6 +108,14 @@ const columns: TableColumnsOptions<Assistant> = [
   {
     key: 'name',
     title: '名称',
+  },
+  {
+    key: 'placeholder',
+    title: '提示',
+  },
+  {
+    key: 'foreword',
+    title: '前言',
   },
   {
     key: 'action',

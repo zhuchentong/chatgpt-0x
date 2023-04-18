@@ -1,9 +1,9 @@
-import type { AssistantChatRecord, Chat } from '@/interfaces'
-import { useStore } from '@/store'
-import { ChatRole } from '@/config/enum.config'
 import type { ChatMessage } from 'chatgpt'
 import { useRequest } from 'virtual:request'
 import { RequestGenerateType } from '@gopowerteam/request'
+import type { AssistantChatRecord, Chat } from '@/interfaces'
+import { useStore } from '@/store'
+import { ChatRole } from '@/config/enum.config'
 
 function appendUserMessage(chat: Chat, message: string) {
   chat.records.push({

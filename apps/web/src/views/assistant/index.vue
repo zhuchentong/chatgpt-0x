@@ -110,6 +110,7 @@
 <script setup lang="ts">
 import { useThemeVars } from 'naive-ui'
 import { useRequest } from 'virtual:request'
+import type { CSSProperties } from 'vue'
 import { useStore } from '@/store'
 import type { Assistant } from '@/http/models/Assistant'
 
@@ -120,7 +121,7 @@ const theme = useThemeVars()
 const input = $ref('')
 
 const assistantService = useRequest((service) => service.AssistantService)
-let assistants = $ref<(Assistant & { style: string })[]>([])
+let assistants = $ref<(Assistant & { style: CSSProperties })[]>([])
 
 const dataSource = computed(() =>
   assistants.filter((assistant) =>

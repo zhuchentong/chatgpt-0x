@@ -26,6 +26,14 @@ export class Assistant extends pipe(
   @Column({ nullable: true })
   prompt: string
 
+  @ApiProperty({ description: 'placeholder' })
+  @Column({ nullable: true })
+  placeholder: string
+
+  @ApiProperty({ description: '前置提问' })
+  @Column({ nullable: true })
+  foreword: string
+
   @Column()
   @ApiProperty({ description: 'Code' })
   @Generated('increment')

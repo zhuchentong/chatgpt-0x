@@ -6,9 +6,9 @@ export type QrcodeLoginResponse = {
   /**
    * 登录二维码
    */
-  qrcode: string
+  qrcode: string;
   /**
    * 登录码
    */
-  code: string
+  code: string;
 }

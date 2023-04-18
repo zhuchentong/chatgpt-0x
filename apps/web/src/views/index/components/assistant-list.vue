@@ -2,22 +2,23 @@
   <div class="assistant-list flex space-x-5">
     <div
       v-for="assistant in store.chat.assistants"
+      :key="assistant.id"
       class="assistant text-center"
       @click="() => onChangeAssistant(assistant.id)">
       <n-avatar
-        round
         bordered
-        :src="`/avatars/${assistant.avatar}.svg`"
         class="avatar"
-        :class="{ active: store.chat.activeAssistant === assistant.id }" />
+        :class="{ active: store.chat.activeAssistant === assistant.id }"
+        round
+        :src="`/avatars/${assistant.avatar}.svg`" />
       <div class="text-center text-xs text-white">{{ assistant.name }}</div>
     </div>
     <n-button
-      strong
-      secondary
       circle
-      type="primary"
       class="button"
+      secondary
+      strong
+      type="primary"
       @click="() => $router.push('/assistant')">
       <template #icon>
         <icon-park-outline:plus
@@ -26,6 +27,7 @@
     </n-button>
   </div>
 </template>
+
 <style lang="less" scoped>
 .assistant-list {
   position: fixed;
@@ -52,6 +54,7 @@
   width: 50px;
 }
 </style>
+
 <script setup lang="ts">
 import { useStore } from '@/store'
 

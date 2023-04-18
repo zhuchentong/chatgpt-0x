@@ -1,7 +1,8 @@
-import { useDialog } from 'naive-ui'
 import { defineStore } from 'pinia'
+import { nanoid } from 'nanoid'
 import type { Assistant } from '@/http/models/Assistant'
 import type { Chat } from '@/interfaces'
+import { useChat } from '@/composables/use-chat'
 
 interface State {
   assistantItems: Assistant[]
@@ -37,9 +38,11 @@ export const useChatStore = defineStore('chat', {
 
   getters: {
     currentChat(): Chat {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return this.chats.find((x) => x.id === this.activeChat)!
     },
     currentAssistant(): Assistant {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return this.assistantItems.find((x) => x.id === this.activeAssistant)!
     },
     assistants(): Assistant[] {
@@ -50,9 +53,11 @@ export const useChatStore = defineStore('chat', {
   },
   actions: {
     createAssistant(id: string) {
-      this.assistantKeys.push(id)
-      this.activeAssistant = id
+      if (!this.assistantKeys.includes(id)) {
+        this.assistantKeys.push(id)
+      }
 
+      this.activeAssistant = id
       this.createChat()
     },
     deleteAssistant(id: string) {
@@ -63,10 +68,12 @@ export const useChatStore = defineStore('chat', {
     createChat() {
       // const { appendChatMessage } = useChat();
       const assistant = this.currentAssistant
-      const id = `ASSISTANT_${Math.random()
-        .toString(32)
-        .slice(2)
-        .toUpperCase()}`
+      const { sendChatMessage } = useChat()
+      if (!assistant) {
+        return
+      }
+
+      const id = nanoid()
 
       const chat: Chat = {
         id,
@@ -79,23 +86,31 @@ export const useChatStore = defineStore('chat', {
 
       this.chats.push(chat)
       this.activeChat = id
+
+      if (assistant.foreword?.trim()) {
+        // nextTick(() => {
+        sendChatMessage(assistant.foreword)
+        // })
+      }
     },
     deleteChat(chat: Chat) {
-      const dialog = useDialog()
+      const chats = this.chats.filter((x) => x.assistantId === chat.assistantId)
 
-      dialog.warning({
-        title: '删除',
-        content: '确定删除对话？',
-        positiveText: '确定',
-        negativeText: '取消',
-        maskClosable: false,
-        onPositiveClick: () => {
-          chat.deleted = true
-        },
-      })
+      if (chats.length <= 1) {
+        return
+      }
+
+      const index = chats.findIndex((x) => x.id === chat.id)
+
+      this.activeChat = chats[index === 0 ? 1 : index - 1].id
+
+      this.chats.splice(
+        this.chats.findIndex((x) => x.id === chat.id),
+        1,
+      )
     },
     clearChat() {
-      this.currentChat.records.forEach((record) => (record.deleted = true))
+      this.currentChat?.records.forEach((record) => (record.deleted = true))
     },
     changeChat(id: string) {
       this.activeChat = id

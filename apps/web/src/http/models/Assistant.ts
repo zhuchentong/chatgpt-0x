@@ -6,33 +6,41 @@ export type Assistant = {
   /**
    * ID
    */
-  id: string
+  id: string;
   /**
    * 启用状态
    */
-  enable: boolean
+  enable: boolean;
   /**
    * 创建日期
    */
-  createdAt: string
+  createdAt: string;
   /**
    * 更新日期
    */
-  updatedAt: string
+  updatedAt: string;
   /**
    * 用户头像
    */
-  avatar: string
+  avatar: string;
   /**
    * 助手名称
    */
-  name: string
+  name: string;
   /**
    * Prompt
    */
-  prompt: string
+  prompt: string;
+  /**
+   * placeholder
+   */
+  placeholder: string;
+  /**
+   * 前置提问
+   */
+  foreword: string;
   /**
    * Code
    */
-  code: number
+  code: number;
 }

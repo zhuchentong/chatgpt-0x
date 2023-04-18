@@ -5,12 +5,12 @@
         v-if="editing"
         class="flex space-x-2">
         <n-input
-          size="small"
           v-model:value="title"
-          :maxlength="18"></n-input>
+          :maxlength="18"
+          size="small"></n-input>
         <n-button
-          text
           size="large"
+          text
           @click="() => ((chat.title = title), (editing = false))">
           <icon-park-outline:check
             style="color: #17a058"></icon-park-outline:check>
@@ -21,8 +21,8 @@
         class="flex space-x-2">
         <div>{{ chat.title }}</div>
         <n-button
-          text
           size="large"
+          text
           @click="() => (editing = true)">
           <icon-park-outline:edit></icon-park-outline:edit>
         </n-button>
@@ -42,15 +42,15 @@
       </n-popover> -->
 
       <n-button
-        text
         size="large"
+        text
         @click="onExport">
         <icon-park-outline:export></icon-park-outline:export>
       </n-button>
 
       <n-button
-        text
         size="large"
+        text
         @click="onClear">
         <icon-park-outline:clear></icon-park-outline:clear>
       </n-button>
@@ -82,7 +82,7 @@ function onClear() {
 }
 
 function onExport() {
-  if (chat.records.filter((record) => !record.deleted).length == 0) {
+  if (chat.records.filter((record) => !record.deleted).length === 0) {
     message.warning('暂无可导出的消息')
     return
   }

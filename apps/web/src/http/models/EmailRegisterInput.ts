@@ -6,13 +6,13 @@ export type EmailRegisterInput = {
   /**
    * 用户邮箱
    */
-  email: string
+  email: string;
   /**
    * 密码
    */
-  password: string
+  password: string;
   /**
    * 验证码
    */
-  code: string
+  code: string;
 }

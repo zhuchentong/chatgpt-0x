@@ -4,50 +4,50 @@
     :model="formModel"
     :rules="formRules">
     <n-form-item
-      path="email"
-      label="邮箱">
+      label="邮箱"
+      path="email">
       <div class="flex w-full space-x-2">
         <n-input
           v-model:value="formModel.email"
-          @keydown.enter.prevent
-          placeholder="请输入邮箱"></n-input>
+          placeholder="请输入邮箱"
+          @keydown.enter.prevent></n-input>
         <n-button
-          @click="onSendCode"
-          :disabled="isActive">
+          :disabled="isActive"
+          @click="onSendCode">
           发送验证码 {{ timer === 0 ? '' : timer }}
         </n-button>
       </div>
     </n-form-item>
     <n-form-item
-      path="code"
-      label="验证码">
+      label="验证码"
+      path="code">
       <n-input
         v-model:value="formModel.code"
-        @keydown.enter.prevent
-        placeholder="请输入验证码" />
+        placeholder="请输入验证码"
+        @keydown.enter.prevent />
     </n-form-item>
     <n-form-item
-      path="password"
-      label="密码">
+      label="密码"
+      path="password">
       <n-input
-        type="password"
         v-model:value="formModel.password"
-        @keydown.enter.prevent
-        placeholder="请输入密码" />
+        placeholder="请输入密码"
+        type="password"
+        @keydown.enter.prevent />
     </n-form-item>
     <n-form-item
-      path="repassowrd"
-      label="重复密码">
+      label="重复密码"
+      path="repassowrd">
       <n-input
-        type="password"
         v-model:value="formModel.repassword"
-        @keydown.enter.prevent
-        placeholder="请再次输入密码" />
+        placeholder="请再次输入密码"
+        type="password"
+        @keydown.enter.prevent />
     </n-form-item>
     <n-form-item>
       <n-button
-        type="primary"
         block
+        type="primary"
         @click="onSubmit">
         注册
       </n-button>
@@ -56,9 +56,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useStore } from '@/store'
 import { type FormInst, type FormRules, useMessage } from 'naive-ui'
 import { useRequest } from 'virtual:request'
+import { useStore } from '@/store'
 
 const store = useStore()
 const router = useRouter()
@@ -173,8 +173,8 @@ function onSendCode() {
       timer = 60
       resume()
     })
-    .catch((ex) => {
-      console.log(ex)
+    .catch(() => {
+      // console.log(ex)
     })
 }
 </script>

@@ -4,26 +4,26 @@
     :model="formModel"
     :rules="formRules">
     <n-form-item
-      path="email"
-      label="邮箱">
+      label="邮箱"
+      path="email">
       <n-input
         v-model:value="formModel.email"
-        @keydown.enter.prevent
-        placeholder="请输入邮箱" />
+        placeholder="请输入邮箱"
+        @keydown.enter.prevent />
     </n-form-item>
     <n-form-item
-      path="password"
-      label="密码">
+      label="密码"
+      path="password">
       <n-input
-        type="password"
         v-model:value="formModel.password"
-        @keydown.enter.prevent
-        placeholder="请输入密码" />
+        placeholder="请输入密码"
+        type="password"
+        @keydown.enter.prevent />
     </n-form-item>
     <n-form-item>
       <n-button
-        type="primary"
         block
+        type="primary"
         @click="onSubmit">
         登录
       </n-button>
@@ -32,9 +32,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useStore } from '@/store'
 import { type FormInst, type FormRules, useMessage } from 'naive-ui'
 import { useRequest } from 'virtual:request'
+import { useStore } from '@/store'
+
 const router = useRouter()
 const message = useMessage()
 const store = useStore()
@@ -81,7 +82,7 @@ function onSubmit() {
  */
 async function requestLogin() {
   appService
-    .login({ email: formModel.email, password: formModel.password })
+    .emailLogin({ email: formModel.email, password: formModel.password })
     .then(({ access_token, refresh_token }) => {
       store.user.updateToken({
         accessToken: access_token,

@@ -31,4 +31,16 @@ export type Assistant = {
    * Prompt
    */
   prompt: string
+  /**
+   * placeholder
+   */
+  placeholder: string
+  /**
+   * 前置提问
+   */
+  foreword: string
+  /**
+   * Code
+   */
+  code: number
 }

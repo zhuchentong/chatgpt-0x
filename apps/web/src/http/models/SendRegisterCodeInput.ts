@@ -6,5 +6,5 @@ export type SendRegisterCodeInput = {
   /**
    * 用户邮箱
    */
-  email: string
+  email: string;
 }

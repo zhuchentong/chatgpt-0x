@@ -4,42 +4,42 @@
     :model="formModel"
     :rules="formRules">
     <n-form-item
-      path="apikey"
-      label="助手名称">
+      label="助手名称"
+      path="apikey">
       <n-input
         v-model:value="formModel.name"
         @keydown.enter.prevent />
     </n-form-item>
     <n-form-item
-      path="apiurl"
-      label="Prompt">
+      label="Prompt"
+      path="apiurl">
       <n-input
-        type="textarea"
-        rows="10"
-        readonly
         v-model:value="formModel.prompt"
+        readonly
+        rows="10"
+        type="textarea"
         @keydown.enter.prevent />
     </n-form-item>
     <n-form-item>
       <div class="w-full space-y-2">
         <n-button
-          type="primary"
           block
+          type="primary"
           @click="onSubmit">
           确定
         </n-button>
 
         <n-popconfirm
+          v-if="assistant.id !== 'default-assistant'"
           icon="warning"
+          negative-text="取消"
           placement="bottom"
           positive-text="确定"
-          negative-text="取消"
-          @positive-click="onDelete"
-          v-if="!assistant.default">
+          @positive-click="onDelete">
           <template #trigger>
             <n-button
-              type="error"
-              block>
+              block
+              type="error">
               删除
             </n-button>
           </template>
@@ -49,7 +49,9 @@
     </n-form-item>
   </n-form>
 </template>
+
 <style lang="less"></style>
+
 <script setup lang="ts">
 import { type FormInst, useMessage } from 'naive-ui'
 import { useStore } from '@/store'
@@ -60,7 +62,7 @@ const form = $(templateRef<FormInst>('form'))
 
 const assistant = computed(() => store.chat.currentAssistant)
 
-let formModel = reactive({
+const formModel = reactive({
   name: assistant.value.name,
   prompt: assistant.value.prompt,
 })

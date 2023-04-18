@@ -1,9 +1,24 @@
+<template>
+  <modal-provider>
+    <n-config-provider
+      :theme="themes[colorMode].theme"
+      :theme-overrides="themes[colorMode].overrides">
+      <n-dialog-provider>
+        <n-message-provider>
+          <RouterView />
+        </n-message-provider>
+      </n-dialog-provider>
+      <n-global-style />
+    </n-config-provider>
+  </modal-provider>
+</template>
+
 <script setup lang="ts">
-import { appConfig } from './config/app.config'
 import { ModalProvider } from '@gopowerteam/vue-modal'
-import { useStore } from '@/store'
 import { darkTheme, lightTheme } from 'naive-ui'
-import { useColorMode, type BasicColorSchema } from '@vueuse/core'
+import { type BasicColorSchema, useColorMode } from '@vueuse/core'
+import { appConfig } from './config/app.config'
+import { useStore } from '@/store'
 
 const colorMode = useColorMode()
 
@@ -17,7 +32,7 @@ const title = computed(() => {
 })
 
 useHead({
-  title: title,
+  title,
   meta: [
     {
       name: 'description',
@@ -45,18 +60,3 @@ const themes = {
   },
 }
 </script>
-
-<template>
-  <modal-provider>
-    <n-config-provider
-      :theme="themes[colorMode].theme"
-      :theme-overrides="themes[colorMode].overrides">
-      <n-dialog-provider>
-        <n-message-provider>
-          <RouterView />
-        </n-message-provider>
-      </n-dialog-provider>
-      <n-global-style />
-    </n-config-provider>
-  </modal-provider>
-</template>

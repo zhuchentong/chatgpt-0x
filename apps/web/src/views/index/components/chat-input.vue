@@ -4,18 +4,18 @@
     <div class="input-container flex items-end">
       <n-input
         v-model:value="inputText"
-        class="flex-auto"
-        :placeholder="assistant.placeholder || '请输入消息'"
-        type="textarea"
-        @keypress.exact.enter.stop.prevent="onSubmit"
         :autosize="{
           minRows: 1,
           maxRows: 5,
-        }" />
+        }"
+        class="flex-auto"
+        :placeholder="assistant?.placeholder || '请输入提问内容'"
+        type="textarea"
+        @keypress.exact.enter.stop.prevent="onSubmit" />
       <n-button
-        text
         class="w-50px h-35px"
         size="large"
+        text
         @click="onSubmit">
         <template #icon>
           <icon-park-outline:send></icon-park-outline:send>
@@ -24,7 +24,9 @@
     </div>
   </div>
 </template>
+
 <style lang="less" scoped></style>
+
 <script setup lang="ts">
 import { useChat } from '@/composables/use-chat'
 import { useStore } from '@/store'
@@ -40,6 +42,10 @@ const chat = $(computed(() => store.chat.currentChat))
  * 发送消息
  */
 function onSubmit() {
+  if (!chat) {
+    return
+  }
+
   chat.inputing = false
   if (!inputText || chat.inputing) {
     return

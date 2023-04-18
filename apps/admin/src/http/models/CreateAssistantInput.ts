@@ -5,4 +5,6 @@
 export type CreateAssistantInput = {
   name: string
   prompt: string
+  placeholder?: string
+  foreword?: string
 }

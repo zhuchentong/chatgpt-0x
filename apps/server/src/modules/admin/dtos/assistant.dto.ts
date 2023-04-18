@@ -1,3 +1,4 @@
+import { Optional } from '@nestjs/common'
 import { ApiProperty, PartialType } from '@nestjs/swagger'
 import { IsOptional, IsString } from 'class-validator'
 import { pipe } from 'rxjs'
@@ -18,6 +19,14 @@ export class CreateAssistantInput {
   @ApiProperty()
   @IsString()
   prompt: string
+
+  @ApiProperty({ required: false })
+  @Optional()
+  placeholder?: string
+
+  @ApiProperty({ required: false })
+  @Optional()
+  foreword?: string
 }
 
 /*

@@ -6,5 +6,5 @@ export type QiniuConfig = {
   /**
    * 域名
    */
-  domain: string
+  domain: string;
 }

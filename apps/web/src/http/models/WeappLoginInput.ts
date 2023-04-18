@@ -3,5 +3,5 @@
 /* eslint-disable */
 
 export type WeappLoginInput = {
-  code: string
+  code: string;
 }

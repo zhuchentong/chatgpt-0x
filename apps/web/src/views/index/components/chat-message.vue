@@ -1,101 +1,25 @@
-<script lang="ts" setup>
-import { computed } from 'vue'
-import MarkdownIt from 'markdown-it'
-import mdKatex from '@traptitech/markdown-it-katex'
-import mila from 'markdown-it-link-attributes'
-import hljs from 'highlight.js'
-import { ChatRole } from '@/config/enum.config'
-import { useMessage } from 'naive-ui'
-
-const el = useCurrentElement()
-const message = useMessage()
-const theme = useColorMode()
-const props = defineProps<{
-  content: string
-  role: ChatRole
-}>()
-
-function highlightBlock(str: string, lang?: string) {
-  return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
-}
-
-const mdi = new MarkdownIt({
-  linkify: true,
-  highlight(code, language) {
-    const validLang = !!(language && hljs.getLanguage(language))
-    if (validLang) {
-      const lang = language ?? ''
-      return highlightBlock(
-        hljs.highlight(code, { language: lang }).value,
-        lang,
-      )
-    }
-    return highlightBlock(hljs.highlightAuto(code).value, '')
-  },
-})
-
-mdi.use(mila, { attrs: { target: '_blank', rel: 'noopener' } })
-mdi.use(mdKatex, {
-  blockClass: 'katexmath-block rounded-md p-[10px]',
-  errorColor: '#cc0000',
-})
-
-watch(
-  () => props.content,
-  () => {
-    debouncedFn()
-  },
-)
-
-const debouncedFn = useDebounceFn(() => {
-  copyCodeBlock()
-}, 1000)
-
-onMounted(() => {
-  copyCodeBlock()
-})
-
-function copyText(text: string) {
-  if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(text)
-    message.info('已复制到粘贴板')
-  }
-}
-
-function copyCodeBlock() {
-  const codeBlockWrapper = el.value.querySelectorAll('.code-block-wrapper')
-  codeBlockWrapper.forEach((wrapper) => {
-    const copyBtn = wrapper.querySelector('.code-block-header__copy')
-    const codeBlock = wrapper.querySelector('.code-block-body')
-    if (copyBtn && codeBlock) {
-      copyBtn.addEventListener('click', () => {
-        copyText(codeBlock.textContent ?? '')
-      })
-    }
-  })
-}
-
-const text = computed(() => {
-  const value = props.content ?? ''
-  return mdi.render(value)
-})
-
-const colorSchemes = computed(() => {
-  switch (theme.value) {
-    case 'light':
-      return {
-        backgroundColor: '#f4f6f8',
-        preBackgroundColor: '#fff',
-      }
-    case 'dark':
-    default:
-      return {
-        backgroundColor: '#1e1e20',
-        preBackgroundColor: '#282c34',
-      }
-  }
-})
-</script>
+<!-- eslint-disable vue/no-v-html -->
+<template>
+  <div
+    class="message-container"
+    :class="{
+      user: role === ChatRole.User,
+      assistant: role === ChatRole.Assistant,
+    }">
+    <div class="leading-relaxed break-words">
+      <div>
+        <div
+          v-if="role === ChatRole.User"
+          class="whitespace-pre-wrap"
+          v-text="content" />
+        <div
+          v-else
+          class="markdown-body"
+          v-html="text" />
+      </div>
+    </div>
+  </div>
+</template>
 
 <style lang="less" scoped>
 .message-container {
@@ -175,24 +99,100 @@ const colorSchemes = computed(() => {
 }
 </style>
 
-<template>
-  <div
-    class="message-container"
-    :class="{
-      user: role === ChatRole.User,
-      assistant: role === ChatRole.Assistant,
-    }">
-    <div class="leading-relaxed break-words">
-      <div>
-        <div
-          v-if="role === ChatRole.User"
-          class="whitespace-pre-wrap"
-          v-text="content" />
-        <div
-          v-else
-          class="markdown-body"
-          v-html="text" />
-      </div>
-    </div>
-  </div>
-</template>
+<script lang="ts" setup>
+import { computed } from 'vue'
+import MarkdownIt from 'markdown-it'
+import mdKatex from '@traptitech/markdown-it-katex'
+import mila from 'markdown-it-link-attributes'
+import hljs from 'highlight.js'
+import { useMessage } from 'naive-ui'
+import { ChatRole } from '@/config/enum.config'
+
+const props = defineProps<{
+  content: string
+  role: ChatRole
+}>()
+const el = useCurrentElement()
+const message = useMessage()
+const theme = useColorMode()
+function highlightBlock(str: string, lang?: string) {
+  return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
+}
+
+const mdi = new MarkdownIt({
+  linkify: true,
+  highlight(code, language) {
+    const validLang = !!(language && hljs.getLanguage(language))
+    if (validLang) {
+      const lang = language ?? ''
+      return highlightBlock(
+        hljs.highlight(code, { language: lang }).value,
+        lang,
+      )
+    }
+    return highlightBlock(hljs.highlightAuto(code).value, '')
+  },
+})
+
+mdi.use(mila, { attrs: { target: '_blank', rel: 'noopener' } })
+mdi.use(mdKatex, {
+  blockClass: 'katexmath-block rounded-md p-[10px]',
+  errorColor: '#cc0000',
+})
+
+const debouncedFn = useDebounceFn(() => {
+  copyCodeBlock()
+}, 1000)
+
+watch(
+  () => props.content,
+  () => {
+    debouncedFn()
+  },
+)
+
+onMounted(() => {
+  copyCodeBlock()
+})
+
+function copyText(text: string) {
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text)
+    message.info('已复制到粘贴板')
+  }
+}
+
+function copyCodeBlock() {
+  const codeBlockWrapper = el.value.querySelectorAll('.code-block-wrapper')
+  codeBlockWrapper.forEach((wrapper) => {
+    const copyBtn = wrapper.querySelector('.code-block-header__copy')
+    const codeBlock = wrapper.querySelector('.code-block-body')
+    if (copyBtn && codeBlock) {
+      copyBtn.addEventListener('click', () => {
+        copyText(codeBlock.textContent ?? '')
+      })
+    }
+  })
+}
+
+const text = computed(() => {
+  const value = props.content ?? ''
+  return mdi.render(value)
+})
+
+const colorSchemes = computed(() => {
+  switch (theme.value) {
+    case 'light':
+      return {
+        backgroundColor: '#f4f6f8',
+        preBackgroundColor: '#fff',
+      }
+    case 'dark':
+    default:
+      return {
+        backgroundColor: '#1e1e20',
+        preBackgroundColor: '#282c34',
+      }
+  }
+})
+</script>

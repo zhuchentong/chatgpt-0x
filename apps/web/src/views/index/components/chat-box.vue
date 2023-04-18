@@ -5,18 +5,19 @@
     </div>
     <div class="chat-record-container flex-auto relative">
       <div
-        class="chat-record-list absolute inset-0 overflow-auto space-y-2"
-        ref="record-list">
+        ref="record-list"
+        class="chat-record-list absolute inset-0 overflow-auto space-y-2">
         <ClientOnly>
           <div id="chat-content">
             <ChatRecord
               v-for="(record, index) in records"
-              :record="record"
-              :index="index"></ChatRecord>
+              :key="index"
+              :index="index"
+              :record="record"></ChatRecord>
             <ChatRecord
               v-if="chat.inputing"
-              :record="{ role: ChatRole.Assistant, content: '' }"
-              loading></ChatRecord>
+              loading
+              :record="{ role: ChatRole.Assistant, content: '' }"></ChatRecord>
           </div>
         </ClientOnly>
       </div>
@@ -27,6 +28,7 @@
     </div>
   </div>
 </template>
+
 <style lang="less" scoped>
 .chat-box {
   flex: auto;
@@ -36,13 +38,15 @@
   background-color: v-bind('theme.baseColor');
 }
 </style>
+
 <script setup lang="ts">
-import { useStore } from '@/store'
+import { useThemeVars } from 'naive-ui'
 import ChatRecord from './chat-record.vue'
 import ChatInput from './chat-input.vue'
 import ChatHeader from './chat-header.vue'
+import { useStore } from '@/store'
 import { ChatRole } from '@/config/enum.config'
-import { useThemeVars } from 'naive-ui'
+
 const store = useStore()
 const theme = useThemeVars()
 const records = computed(() => {
