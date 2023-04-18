@@ -6,9 +6,9 @@
     {{ messageDate }}
   </div>
   <div
-    class="chat-record flex items-start"
+    class="chat-record flex items-center"
     :class="record.role">
-    <div class="record-avatar">
+    <div class="record-avatar self-start">
       <n-avatar
         v-if="record.role === 'assistant'"
         round
