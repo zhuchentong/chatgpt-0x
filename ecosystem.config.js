@@ -4,7 +4,10 @@ module.exports = {
       name: 'chatgpt-0x-server',
       port: '8040',
       cwd: '/data/chatgpt/current/apps/server',
-      script: 'dist/main',
+      script: 'dist/main.js',
+      env: {
+        NODE_ENV: 'production',
+      },
     },
   ],
   deploy: {
