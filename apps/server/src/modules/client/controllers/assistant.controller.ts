@@ -8,8 +8,8 @@ import {
   ApiOperation,
 } from '@nestjs/swagger'
 import { Assistant } from 'src/entities/assistant.entity'
-import { plainToInstance } from 'class-transformer'
-import { FindAssistantInput } from '../dtos/assistant.dto'
+import { FindAssistantByKeys, FindAssistantInput } from '../dtos/assistant.dto'
+import { toPageResponse } from 'src/common/typeorm/responses/page.response'
 
 @Controller('assistant')
 @ApiTags('assistant')
@@ -20,20 +20,18 @@ export class AssistantController {
   @Get('keys')
   @ApiOperation({ operationId: 'getAssistantByKeys', summary: '获取所有助手' })
   @ApiOkResponse({ type: Assistant, isArray: true })
-  findByKeys(@Query() input: FindAssistantInput) {
+  findByKeys(@Query() input: FindAssistantByKeys) {
     if (!input.keys || input.keys.length === 0) {
       return []
     }
 
-    return this.assistantService.findAll(input.params)
+    return this.assistantService.findAll(input.params, false)
   }
 
   @Get()
   @ApiOperation({ operationId: 'getAllAssistant', summary: '获取所有助手' })
-  @ApiOkResponse({ type: Assistant, isArray: true })
-  findAll() {
-    // 构建查询参数
-    const input = plainToInstance(FindAssistantInput, {})
+  @ApiOkResponse({ type: toPageResponse(Assistant) })
+  findAll(@Query() input: FindAssistantInput) {
     return this.assistantService.findAll(input.params)
   }
 

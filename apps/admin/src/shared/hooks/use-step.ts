@@ -16,7 +16,7 @@ export function useStep() {
 
   const onNextStep =
     // 获取下一步操作
-    inject(StepProvideKey)?.onNextStep || (() => void 0)
+    inject(StepProvideKey)?.onNextStep || (() => undefined)
 
   return {
     dataSource,

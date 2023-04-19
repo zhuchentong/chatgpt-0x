@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Assistant } from '../models/Assistant';
+import type { PageAssistant } from '../models/PageAssistant';
 import { RequestService, RequestGenerateType, type RequestSendOptions, type RequestPlugin, type RequestGenerateOptions } from '@gopowerteam/request';
 export class AssistantService {
   // 请求实例
@@ -70,21 +71,25 @@ export class AssistantService {
    * 获取所有助手
    */
   public getAllAssistant(
+    requestQuery: RequestQueryParams.GetAllAssistant,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public getAllAssistant(
+    requestQuery: RequestQueryParams.GetAllAssistant,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions
-  ): Promise<Assistant[]>
+  ): Promise<PageAssistant>
   public getAllAssistant(
+    requestQuery: RequestQueryParams.GetAllAssistant,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions
-  ): Promise<Assistant[]> | string {
+  ): Promise<PageAssistant> | string {
     const requestSendOptions = {
       service: this.service,
       path: '/api/client/assistant',
       method: 'get',
+      paramsQuery: requestQuery,
     }
   
     return this.generateRequest(
@@ -141,5 +146,11 @@ namespace RequestQueryParams {
      * id列表
      */
     keys?: string[];
+  }
+  export type GetAllAssistant = {
+    /**
+     * 助手名称(模糊查询)
+     */
+    name?: string;
   }
 }
