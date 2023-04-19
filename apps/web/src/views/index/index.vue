@@ -1,35 +1,14 @@
 <template>
   <PageContainer absolute>
     <div
-      class="chat-container flex absolute inset-0 shadow-2xl overflow-hidden desktop:m-20px desktop:mb-100px desktop:rounded-10px">
-      <ChatList class="desktop:flex mobile:hidden"></ChatList>
+      class="chat-container flex absolute inset-0 shadow-2xl overflow-hidden">
+      <ChatSide></ChatSide>
       <ChatBox></ChatBox>
     </div>
-    <div class="desktop:flex mobile:hidden">
+    <!-- <div class="desktop:flex mobile:hidden">
       <AssistantList></AssistantList>
-    </div>
+    </div> -->
   </PageContainer>
-  <n-drawer
-    v-model:show="store.app.assistantSettingShow"
-    placement="right"
-    :width="400">
-    <n-drawer-content title="助手设置">
-      <AssistantSetting></AssistantSetting>
-    </n-drawer-content>
-  </n-drawer>
-  <n-drawer
-    v-model:show="store.app.systemSettingShow"
-    placement="right"
-    :width="400">
-    <n-drawer-content>
-      <n-tabs>
-        <n-tab-pane name="简介"><APISetting></APISetting></n-tab-pane>
-        <n-tab-pane name="系统设置">
-          <SystemSetting></SystemSetting>
-        </n-tab-pane>
-      </n-tabs>
-    </n-drawer-content>
-  </n-drawer>
 </template>
 
 <style lang="less" scoped>
@@ -40,12 +19,8 @@
 
 <script setup lang="ts">
 import { useThemeVars } from 'naive-ui'
-import AssistantList from './components/assistant-list.vue'
-import ChatList from './components/chat-list.vue'
+import ChatSide from './components/chat-side.vue'
 import ChatBox from './components/chat-box.vue'
-import AssistantSetting from './components/assistant-setting.vue'
-import SystemSetting from './components/system-setting.vue'
-import APISetting from './components/api-setting.vue'
 import { useStore } from '@/store'
 
 const store = useStore()

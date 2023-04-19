@@ -1,6 +1,10 @@
 <template>
-  <n-form ref="form">
-    <!-- <n-form-item label="model">
+  <n-card
+    :bordered="false"
+    segmented
+    title="系统设置">
+    <n-form ref="form">
+      <!-- <n-form-item label="model">
       <n-select
         :value="store.OPENAI_MODEL"
         placeholder="选择Model"
@@ -21,17 +25,18 @@
         </template>
       </n-input-number>
     </n-form-item> -->
-    <n-form-item label="主题">
-      <n-select
-        v-model:value="colorMode"
-        :on-update:value="changeColorMode"
-        :options="[
-          { value: 'dark', label: '深色' },
-          { value: 'light', label: '浅色' },
-          { value: 'auto', label: '自动' },
-        ]"></n-select>
-    </n-form-item>
-  </n-form>
+      <n-form-item label="主题">
+        <n-select
+          v-model:value="colorMode"
+          :on-update:value="changeColorMode"
+          :options="[
+            { value: 'dark', label: '深色' },
+            { value: 'light', label: '浅色' },
+            { value: 'auto', label: '自动' },
+          ]"></n-select>
+      </n-form-item>
+    </n-form>
+  </n-card>
 </template>
 
 <style lang="less"></style>

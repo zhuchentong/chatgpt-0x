@@ -3,8 +3,8 @@
     v-if="store.menu.sideMenus.length"
     class="side !relative"
     :collapsed="store.menu.collapsed"
-    :width="appConfig.workspace.sideWidth"
-    :collapsed-width="appConfig.workspace.sideCollapsedWidth">
+    :collapsed-width="appConfig.workspace.sideCollapsedWidth"
+    :width="appConfig.workspace.sideWidth">
     <div class="flex flex-col justify-between h-full">
       <SideMenu></SideMenu>
 
@@ -24,16 +24,6 @@
   </a-layout-sider>
 </template>
 
-<script setup lang="ts">
-import { appConfig } from '@/config/app.config'
-import { useStore } from '@/store'
-import SideMenu from './side-menu.vue'
-
-const store = useStore()
-
-const width = computed(() => `${appConfig.workspace.sideCollapsedWidth}px`)
-</script>
-
 <style lang="less" scoped>
 .side {
   z-index: 100;
@@ -48,3 +38,13 @@ const width = computed(() => `${appConfig.workspace.sideCollapsedWidth}px`)
   }
 }
 </style>
+
+<script setup lang="ts">
+import SideMenu from './side-menu.vue'
+import { appConfig } from '@/config/app.config'
+import { useStore } from '@/store'
+
+const store = useStore()
+
+const width = computed(() => `${appConfig.workspace.sideCollapsedWidth}px`)
+</script>

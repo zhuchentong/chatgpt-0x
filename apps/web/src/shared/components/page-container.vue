@@ -3,8 +3,8 @@
     class="page-container"
     :style="containerStyle">
     <div
-      class="page-header flex justify-end"
-      v-if="$slots.action">
+      v-if="$slots.action"
+      class="page-header flex justify-end">
       <div class="page-actions mb-2">
         <slot name="action"></slot>
       </div>
@@ -17,14 +17,18 @@
   </div>
 </template>
 
+<style lang="less" scoped>
+.page-container {
+  overflow: auto;
+  min-height: calc(100vh - 159px);
+}
+</style>
+
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import { appConfig } from '@/config/app.config'
 import type { ClassName } from '@arco-design/web-vue/es/_utils/types'
 import { useStore } from '@/store'
 
-const store = useStore()
-const route = useRoute()
 const props = withDefaults(
   defineProps<{
     title?: string
@@ -42,7 +46,8 @@ const props = withDefaults(
     space: true,
   },
 )
-
+const store = useStore()
+const route = useRoute()
 /**
  * 生成外层样式
  */
@@ -141,10 +146,3 @@ export default {
   inheritAttrs: false,
 }
 </script>
-
-<style lang="less" scoped>
-.page-container {
-  overflow: auto;
-  min-height: calc(100vh - 159px);
-}
-</style>

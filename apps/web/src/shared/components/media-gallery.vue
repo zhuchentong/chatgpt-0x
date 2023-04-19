@@ -2,10 +2,28 @@
   <div class="media-gallery">
     <a-image-preview-group infinite>
       <div class="flex flex-wrap">
-        <media-gallery-item class="m-5px" v-for="media in medias" :key="media" :type="type" :src="media" @delete="onDeleteMedia"></media-gallery-item>
-        <media-gallery-item class="m-5px" v-for="task in tasks" :key="task.key" :task="task" :type="type" @delete="onDeleteTask"></media-gallery-item>
-        <div class="upload-button" v-if="uploadButton">
-          <upload-container class="m-5px" :multiple="multiple" :filetype="type" @upload="onAddMedia">
+        <media-gallery-item
+          v-for="media in medias"
+          :key="media"
+          class="m-5px"
+          :src="media"
+          :type="type"
+          @delete="onDeleteMedia"></media-gallery-item>
+        <media-gallery-item
+          v-for="task in tasks"
+          :key="task.key"
+          class="m-5px"
+          :task="task"
+          :type="type"
+          @delete="onDeleteTask"></media-gallery-item>
+        <div
+          v-if="uploadButton"
+          class="upload-button">
+          <upload-container
+            class="m-5px"
+            :filetype="type"
+            :multiple="multiple"
+            @upload="onAddMedia">
             <div class="upload-button-wrapper flex-center">
               <icon-park:plus class="text-2xl"></icon-park:plus>
             </div>
@@ -16,10 +34,21 @@
   </div>
 </template>
 
+<style lang="less" scoped>
+.upload-gallery {
+  position: relative;
+}
+.upload-button-wrapper {
+  width: v-bind(width);
+  height: v-bind(height);
+  border: dashed 1px rgb(0 0 0 / 10%);
+}
+</style>
+
 <script setup lang="ts">
-import { FileType } from '@/config/enum.config'
 import { useUploader } from '../hooks'
 import type { UploadTask } from '../utils/upload.service'
+import { FileType } from '@/config/enum.config'
 
 const props = withDefaults(
   defineProps<{
@@ -39,6 +68,7 @@ const props = withDefaults(
   },
 )
 
+const emit = defineEmits(['update:modelValue'])
 const uploader = useUploader()
 let tasks = $shallowRef<UploadTask[]>([])
 let medias = $ref<string[]>([...props.modelValue])
@@ -48,7 +78,6 @@ defineExpose({
   uploaded: () => tasks.every((x) => x.completed.value === true),
 })
 
-const emit = defineEmits(['update:modelValue'])
 useVModel(props, 'modelValue', emit)
 
 const width = toRef(props, 'width')
@@ -93,14 +122,3 @@ export default defineComponent({
   name: 'MediaGallery',
 })
 </script>
-
-<style lang="less" scoped>
-.upload-gallery {
-  position: relative;
-}
-.upload-button-wrapper {
-  width: v-bind(width);
-  height: v-bind(height);
-  border: dashed 1px rgb(0 0 0 / 10%);
-}
-</style>
