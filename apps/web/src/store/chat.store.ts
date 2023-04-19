@@ -64,6 +64,7 @@ export const useChatStore = defineStore('chat', {
       this.changeAssistant('default-assistant')
 
       this.assistantKeys = this.assistantKeys.filter((x) => x !== id)
+      this.chats = this.chats.filter((chat) => chat.assistantId !== id)
     },
     createChat() {
       // const { appendChatMessage } = useChat();

@@ -77,7 +77,7 @@ function onSubmit() {
     }
 
     assistant.value.name = formModel.name
-    store.app.toggleAssistantSettingShow()
+    emits('close')
   })
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-side flex flex-col">
+  <div class="chat-side flex flex-col py-20px">
     <div class="title text-2xl text-center">ChatGPT 0X</div>
     <n-divider />
     <div class="assistants flex-auto">
@@ -38,7 +38,7 @@
       </NGrid>
     </div>
     <n-divider />
-    <div class="actions flex flex-col items-start space-y-2">
+    <div class="actions flex flex-col items-start space-y-2 px-5">
       <NButton
         block
         @click="() => (showSystemSetting = true)">
@@ -80,7 +80,7 @@
   <n-drawer
     v-model:show="showSystemSetting"
     placement="right"
-    :width="400">
+    :width="300">
     <n-drawer-content body-content-style="padding:0;">
       <SystemSetting></SystemSetting>
     </n-drawer-content>
@@ -89,9 +89,8 @@
 
 <style lang="less" scoped>
 .chat-side {
-  width: 250px;
-  padding: 30px 20px;
-  // background-color: red;
+  position: absolute;
+  inset: 0;
 }
 
 .assistants {

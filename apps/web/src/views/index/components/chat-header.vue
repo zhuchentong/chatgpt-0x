@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-header">
+  <div class="chat-header desktop:block mobile:hidden pt-15px">
     <n-tabs
       addable
       animated
@@ -74,6 +74,28 @@
       </template>
     </n-tabs>
   </div>
+  <div
+    class="chat-header flex desktop-hidden items-center justify-between p-15px">
+    <div>
+      <NButton
+        text
+        @click="() => (showAssistantList = true)">
+        <template #icon>
+          <icon-park-outline:peoples></icon-park-outline:peoples>
+        </template>
+      </NButton>
+    </div>
+    <div class="title">{{ store.chat.currentChat.title }}</div>
+    <div>
+      <NButton
+        text
+        @click="() => (showChatList = true)">
+        <template #icon>
+          <icon-park-outline:hamburger-button></icon-park-outline:hamburger-button>
+        </template>
+      </NButton>
+    </div>
+  </div>
   <n-drawer
     v-model:show="showAsssistantSetting"
     placement="right"
@@ -83,16 +105,30 @@
         @close="() => (showAsssistantSetting = false)"></AssistantSetting>
     </n-drawer-content>
   </n-drawer>
+  <n-drawer
+    v-model:show="showAssistantList"
+    placement="left"
+    :width="300">
+    <n-drawer-content body-content-style="padding:0;">
+      <ChatSide></ChatSide>
+    </n-drawer-content>
+  </n-drawer>
+  <n-drawer
+    v-model:show="showChatList"
+    placement="right"
+    :width="300">
+    <n-drawer-content body-content-style="padding:0;">
+      <ChatList @close="() => (showChatList = false)"></ChatList>
+    </n-drawer-content>
+  </n-drawer>
 </template>
 
-<style lang="less" scoped>
-.chat-header {
-  padding: 15px 0px 0px 0px;
-}
-</style>
+<style lang="less" scoped></style>
 
 <script setup lang="ts">
 import { useDialog, useMessage } from 'naive-ui'
+import ChatSide from './chat-side.vue'
+import ChatList from './chat-list.vue'
 import { useStore } from '@/store'
 import { useExport } from '@/composables/use-export'
 import AssistantSetting from '@/components/assistant-setting.vue'
@@ -105,6 +141,8 @@ const message = useMessage()
 const title = $ref(store.chat.currentChat.title)
 const chatEditing = $ref(false)
 const showAsssistantSetting = $ref(false)
+const showAssistantList = $ref(false)
+const showChatList = $ref(false)
 
 const chats = computed(() =>
   store.chat.chats.filter(

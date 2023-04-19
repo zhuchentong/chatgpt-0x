@@ -1,19 +1,17 @@
 <template>
-  <div class="page-container flex absolute inset-0 space-y-5 shadow-2xl">
-    <div class="actions p-5">
-      <n-button
-        class="w-40px h-40px"
-        text
-        @click="() => router.back()">
-        <icon-park-outline:arrow-circle-left
-          class="w-40px h-40px"></icon-park-outline:arrow-circle-left>
-      </n-button>
-    </div>
-    <div
-      v-if="assistants.length"
-      class="flex-auto relative">
-      <div class="absolute inset-0 overflow-auto px-10 pb-10">
-        <div class="mb-5">
+  <div
+    class="page-container absolute inset-0 space-y-5 shadow-2xl overflow-auto">
+    <div>
+      <div class="flex m-10 items-center space-x-5">
+        <n-button
+          style="--n-icon-size: 35px"
+          text
+          @click="() => router.back()">
+          <template #icon>
+            <icon-park-outline:arrow-circle-left></icon-park-outline:arrow-circle-left>
+          </template>
+        </n-button>
+        <div class="flex-auto">
           <n-input
             v-model:value="input"
             placeholder="搜索你想要的助理">
@@ -22,52 +20,56 @@
             </template>
           </n-input>
         </div>
-        <n-grid
-          class="flex-auto"
-          :cols="3"
-          :x-gap="12"
-          :y-gap="8">
-          <n-grid-item
-            v-for="assistant in dataSource"
-            :key="assistant.id">
-            <div
-              class="assistant-item space-y-4"
-              :style="assistant.style">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                  <n-avatar
-                    bordered
-                    round
-                    :src="`/avatars/${assistant.avatar}.svg`"></n-avatar>
-                  <div>{{ assistant.name }}</div>
-                </div>
-                <div>
-                  <n-popconfirm
-                    negative-text="取消"
-                    positive-text="确定"
-                    @positive-click="() => onCreateAssistant(assistant)">
-                    <template #trigger>
-                      <n-button
-                        circle
-                        class="w-30px h-30px"
-                        text-color="#fff">
-                        <icon-park-outline:plus></icon-park-outline:plus>
-                      </n-button>
-                    </template>
-                    <div>添加 {{ assistant.name }} 作为我的小助理</div>
-                  </n-popconfirm>
-                </div>
+      </div>
+    </div>
+    <div
+      v-if="assistants.length > 0"
+      class="px-30px pb-20px">
+      <n-grid
+        class="flex-auto"
+        :cols="store.app.mobile ? 1 : 3"
+        :x-gap="12"
+        :y-gap="8">
+        <n-grid-item
+          v-for="assistant in dataSource"
+          :key="assistant.id">
+          <div
+            class="assistant-item space-y-4"
+            :style="assistant.style">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <n-avatar
+                  bordered
+                  round
+                  :src="`/avatars/${assistant.avatar}.svg`"></n-avatar>
+                <div>{{ assistant.name }}</div>
               </div>
-              <div class="prompt">
-                {{
-                  assistant.prompt ||
-                  '我是一个智能助手,我会按照您的要求去回答提问.'
-                }}
+              <div>
+                <n-popconfirm
+                  negative-text="取消"
+                  positive-text="确定"
+                  @positive-click="() => onCreateAssistant(assistant)">
+                  <template #trigger>
+                    <n-button
+                      circle
+                      class="w-30px h-30px"
+                      text-color="#fff">
+                      <icon-park-outline:plus></icon-park-outline:plus>
+                    </n-button>
+                  </template>
+                  <div>添加 {{ assistant.name }} 作为我的小助理</div>
+                </n-popconfirm>
               </div>
             </div>
-          </n-grid-item>
-        </n-grid>
-      </div>
+            <div class="prompt">
+              {{
+                assistant.prompt ||
+                '我是一个智能助手,我会按照您的要求去回答提问.'
+              }}
+            </div>
+          </div>
+        </n-grid-item>
+      </n-grid>
     </div>
     <div
       v-else
@@ -82,6 +84,9 @@
   margin: 20px;
   border-radius: 20px;
   background-color: v-bind('theme.bodyColor');
+  &::-webkit-scrollbar {
+    display: none; /* Chrome Safari */
+  }
 }
 
 .actions {

@@ -1,25 +1,23 @@
 import { defineStore } from 'pinia'
 
-type State = {
+interface State {
   // 系统准备状态
   ready: boolean
   // 页面标题
   title: string
-  // 助手设置
-  assistantSettingShow: boolean
-  // 系统设置
-  systemSettingShow: boolean
 }
 
 const initialState: State = {
   ready: false,
   title: '',
-  assistantSettingShow: false,
-  systemSettingShow: false,
 }
 
 export const useAppStore = defineStore('app', {
   state: () => initialState,
+  getters: {
+    desktop: () => useMediaQuery('(min-width: 768px)').value,
+    mobile: () => useMediaQuery('(max-width: 768px)').value,
+  },
   actions: {
     /**
      * 更新系统状态
@@ -32,12 +30,6 @@ export const useAppStore = defineStore('app', {
      */
     updateTitle(title: string) {
       this.title = title
-    },
-    toggleAssistantSettingShow() {
-      this.assistantSettingShow = !this.assistantSettingShow
-    },
-    toggleSystemSettingShow() {
-      this.systemSettingShow = !this.systemSettingShow
     },
   },
 })
