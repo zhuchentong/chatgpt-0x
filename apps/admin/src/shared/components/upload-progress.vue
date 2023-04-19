@@ -6,14 +6,6 @@
   slot
 </template>
 
-<script setup lang="ts">
-import type { UploadTask } from '../utils/upload.service'
-
-defineProps<{
-  task?: UploadTask
-}>()
-</script>
-
 <style lang="less" scoped>
 .upload-progress {
   display: inline-block;
@@ -43,3 +35,11 @@ defineProps<{
   transition-delay: 5s;
 }
 </style>
+
+<script setup lang="ts">
+import type { UploadTask } from '../utils/upload.service'
+
+defineProps<{
+  task?: UploadTask
+}>()
+</script>

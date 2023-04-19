@@ -5,8 +5,8 @@
       a-step(
         v-for='(step, index) in steps'
         :key='index'
-        :title='step.title'
-        :description='step.description')
+        :description='step.description'
+        :title='step.title')
   .step-content
     StepContent
   .step-actions.space-x-4.text-center
@@ -22,9 +22,13 @@
 </template>
 
 <script setup lang="tsx">
-import { StepProvideKey } from '@/config/provide.config'
 import { Message } from '@arco-design/web-vue'
 import type { NextStepExecutor } from '../hooks/use-step'
+import { StepProvideKey } from '@/config/provide.config'
+
+const emits = defineEmits({
+  submit: (data: Record<string, any>) => data,
+})
 
 const instance = getCurrentInstance()
 
@@ -33,10 +37,6 @@ let stepIndex = $ref(1)
 
 // 数据源
 const dataSource = new Map<string, any>()
-
-const emits = defineEmits({
-  submit: (data: Record<string, any>) => data,
-})
 
 // 当前验证器
 let currentStepValidator = $ref<NextStepExecutor>()
@@ -68,13 +68,13 @@ function initSteps() {
   const nodes = (slot && slot()) || []
 
   steps = nodes.map((node) => {
-    const key = (node.props?.['stepKey'] || node.props?.['step-key']) as string
+    const key = (node.props?.stepKey || node.props?.['step-key']) as string
     const vnode = h(node, { key })
 
     return {
       key,
-      title: node.props?.['title'] as string,
-      description: node.props?.['description'] as string,
+      title: node.props?.title as string,
+      description: node.props?.description as string,
       component: vnode,
     }
   })

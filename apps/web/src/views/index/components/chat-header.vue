@@ -1,10 +1,10 @@
 <template>
   <div class="chat-header desktop:block mobile:hidden pt-15px">
     <n-tabs
+      v-model:value="store.chat.activeChat"
       addable
       animated
       :on-add="() => store.chat.createChat()"
-      :on-update:value="(id) => store.chat.changeChat(id)"
       tab-style="min-width:100px;display:flex;justify-content:center;"
       type="card">
       <n-tab

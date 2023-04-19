@@ -3,11 +3,11 @@
   slot
 </template>
 
+<style scoped lang="less"></style>
+
 <script setup lang="ts">
 defineProps<{
   stepKey: string
   title: string
 }>()
 </script>
-
-<style scoped lang="less"></style>
