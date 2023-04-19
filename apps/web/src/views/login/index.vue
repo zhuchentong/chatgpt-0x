@@ -2,53 +2,30 @@
   <page-container
     absolute
     layout="flex-center">
-    <!-- <n-card class="form-container desktop:w-40%! mobile:w-90%!">
-      <n-tabs
-        class="card-tabs"
-        default-value="login"
-        justify-content="center"
-        size="large"
-        animated
-        style="margin: 0 -4px"
-        pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;">
-        <n-tab-pane
-          name="login"
-          tab="登录">
-          <login-form></login-form>
-        </n-tab-pane>
-        <n-tab-pane
-          name="register"
-          tab="注册">
-          <register-form></register-form>
-        </n-tab-pane>
-      </n-tabs>
-    </n-card> -->
-
-    <n-card
-      class="login-container"
-      v-if="qrcode">
+    <div
+      v-if="qrcode"
+      class="login-container">
       <div class="qrcode-container">
         <img
-          class="m-atuo"
+          class="m-atuo desktop:w-300px mobile:w-200px"
           :src="qrcode" />
         <div>扫码关注公众号登录</div>
       </div>
-    </n-card>
+    </div>
   </page-container>
 </template>
 
 <style lang="less" scoped>
 .login-container {
-  width: 400px;
-  border-radius: 10px;
-
   .qrcode-container {
     text-align: center;
     font-size: 14px;
     font-weight: bold;
-    img {
-      width: 350px;
-    }
+  }
+
+  img {
+    border-radius: 15px;
+    border: solid 15px #18181c;
   }
 }
 </style>

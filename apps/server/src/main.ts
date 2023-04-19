@@ -1,6 +1,6 @@
 import { RequestMethod, ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { NestFactory } from '@nestjs/core'
+import { HttpAdapterHost, NestFactory } from '@nestjs/core'
 import {
   FastifyAdapter,
   NestFastifyApplication,
@@ -12,6 +12,7 @@ import { ClientModule } from './modules/client/client.module'
 import { QiniuModule } from './shared/qiniu/qiniu.module'
 import { WechatModule } from './shared/wechat/wechat.module'
 import { RequestContextMiddleware } from './middlewaves/request-context.middlewave'
+import { ExceptionsFilter } from './filters/exceptions.filter'
 /**
  * 配置Swagger
  * @param app
@@ -133,6 +134,8 @@ async function bootstrap() {
       },
     }),
   )
+
+  app.useGlobalFilters(new ExceptionsFilter(app.get(HttpAdapterHost)))
 
   // 安装中间件
   app.use(RequestContextMiddleware)
