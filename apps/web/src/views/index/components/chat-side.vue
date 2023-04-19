@@ -1,7 +1,11 @@
 <template>
   <div class="chat-side flex flex-col py-20px">
-    <div class="title text-2xl text-center">ChatGPT 0X</div>
-    <n-divider />
+    <div class="title text-2xl text-center">
+      <img
+        src="/logo.png"
+        style="width: 80%" />
+    </div>
+    <n-divider class="mt-10px!" />
     <div class="assistants flex-auto">
       <NGrid
         :cols="3"

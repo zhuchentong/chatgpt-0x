@@ -15,9 +15,8 @@
         :src="`/avatars/${assistant?.avatar}.svg`"></n-avatar>
       <n-avatar
         v-else
-        round>
-        <icon-park:avatar></icon-park:avatar>
-      </n-avatar>
+        round
+        src="/avatar.png"></n-avatar>
     </div>
 
     <div class="record-content">
