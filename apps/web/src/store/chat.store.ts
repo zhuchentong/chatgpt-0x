@@ -14,6 +14,8 @@ interface State {
   activeAssistant: string
   // 激活会话ID
   activeChat: string
+  // 是否保持上下文
+  keepContext: boolean
 }
 
 const initialState: State = {
@@ -31,6 +33,7 @@ const initialState: State = {
   ],
   activeAssistant: 'default-assistant',
   activeChat: 'default-chat',
+  keepContext: true,
 }
 
 export const useChatStore = defineStore('chat', {
@@ -127,6 +130,9 @@ export const useChatStore = defineStore('chat', {
     },
     appendAssistenItems(items: Assistant[]) {
       this.assistantItems = [...this.assistantItems, ...items]
+    },
+    toggleKeepContext() {
+      this.keepContext = !this.keepContext
     },
   },
   persist: {

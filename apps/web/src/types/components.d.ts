@@ -23,6 +23,7 @@ declare module '@vue/runtime-core' {
     'IconParkOutline:finance': typeof import('~icons/icon-park-outline/finance')['default']
     'IconParkOutline:hamburger': typeof import('~icons/icon-park-outline/hamburger')['default']
     'IconParkOutline:hamburgerButton': typeof import('~icons/icon-park-outline/hamburger-button')['default']
+    'IconParkOutline:history': typeof import('~icons/icon-park-outline/history')['default']
     'IconParkOutline:list': typeof import('~icons/icon-park-outline/list')['default']
     'IconParkOutline:messageOne': typeof import('~icons/icon-park-outline/message-one')['default']
     'IconParkOutline:monumentOne': typeof import('~icons/icon-park-outline/monument-one')['default']

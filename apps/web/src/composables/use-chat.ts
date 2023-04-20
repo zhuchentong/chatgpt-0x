@@ -47,45 +47,14 @@ function sendChatMessage(message: string) {
   const chat = store.chat.currentChat
   // 获取当前助手
   const assistant = store.chat.currentAssistant
-
   // 获取上一条消息
-  const lastMessage = chat.records.findLast(
-    (record) => record.role === ChatRole.Assistant && !record.deleted,
-  ) as AssistantChatRecord
-
-  // // 创建消息请求
-  // const xhr = new XMLHttpRequest()
-  // xhr.open('POST', '/api/chatgpt/message', true)
-  // xhr.onprogress = () => {
-  //   if (chat.inputing) {
-  //     chat.inputing = false
-  //   }
-
-  //   if (xhr.responseText) {
-  //     const text = xhr.responseText
-  //     const chunk = text.substring(text.replace(/\n$/, '').lastIndexOf('\n'))
-  //     const data = JSON.parse(chunk)
-
-  //     appendChatMessage(chat, data)
-  //   }
-  // }
-
-  // xhr.onload = () => {
-  //   chat.inputing = false
-  // }
-
-  // xhr.onerror = () => {
-  //   chat.inputing = false
-  // }
-
-  // xhr.setRequestHeader('Content-type', 'application/json')
-  // xhr.send(
-  //   JSON.stringify({
-  //     message,
-  //     parentMessageId: lastMessage?.id,
-  //     prompt: assistant.prompt,
-  //   }),
-  // )
+  let lastMessage = null
+  // 开启上下文
+  if (store.chat.keepContext) {
+    lastMessage = chat.records.findLast(
+      (record) => record.role === ChatRole.Assistant && !record.deleted,
+    ) as AssistantChatRecord
+  }
 
   const event = new EventSource(
     openAIService.message(

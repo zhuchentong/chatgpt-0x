@@ -36,6 +36,19 @@
       <template #suffix>
         <div class="flex px-5 space-x-5">
           <div class="actions space-x-2">
+            <div
+              class="inline-block text-12px cursor-pointer"
+              :class="{
+                'text-[#4b9e5f]': store.chat.keepContext,
+                'text-[#a8071a]': !store.chat.keepContext,
+              }"
+              :focusable="false"
+              ghost
+              size="tiny"
+              text
+              @click="store.chat.toggleKeepContext">
+              <icon-park-outline:history></icon-park-outline:history>
+            </div>
             <n-button
               size="tiny"
               text
