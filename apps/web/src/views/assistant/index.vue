@@ -112,8 +112,18 @@
 }
 
 .assistant-list {
+  // 滚动条美化
   &::-webkit-scrollbar {
-    display: none; /* Chrome Safari */
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: v-bind('theme.railColor');
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: v-bind('theme.bodyColor');
+    border-radius: 4px;
   }
 }
 

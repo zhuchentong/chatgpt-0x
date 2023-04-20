@@ -37,6 +37,22 @@
 .chat-record-container {
   background-color: v-bind('theme.baseColor');
 }
+
+.chat-record-list {
+  // 滚动条美化
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: v-bind('theme.railColor');
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: v-bind('theme.bodyColor');
+    border-radius: 4px;
+  }
+}
 </style>
 
 <script setup lang="ts">
