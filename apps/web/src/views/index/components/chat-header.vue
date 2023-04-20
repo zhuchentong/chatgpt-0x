@@ -20,7 +20,7 @@
             size="tiny"
             style="width: 120px"></n-input>
           <n-button
-            size="small"
+            size="tiny"
             text
             @click="() => ((chat.title = title), (chatEditing = false))">
             <icon-park-outline:check
