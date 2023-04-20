@@ -1,4 +1,4 @@
-import { Entity, Column } from 'typeorm'
+import { Entity, Column, OneToMany } from 'typeorm'
 import { pipe } from 'ramda'
 import {
   EntityWithEnable,
@@ -7,6 +7,7 @@ import {
   EntityWithUUID,
 } from '../common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
+import { Order } from './order.entity'
 
 @Entity('user')
 export class User extends pipe(

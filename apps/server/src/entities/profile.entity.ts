@@ -8,8 +8,8 @@ import {
 } from '../common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
 
-@Entity('user_profile')
-export class UserProfile extends pipe(
+@Entity('profile')
+export class Profile extends pipe(
   EntityWithUUID,
   EntityWithEnable,
   EntityWithTime,

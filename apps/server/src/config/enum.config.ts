@@ -37,15 +37,6 @@ export enum AppOrigin {
 }
 
 /**
- * Banner类型
- */
-export enum BannerType {
-  URL = 'URL',
-  Page = 'PAGE',
-  Project = 'PROJECT',
-}
-
-/**
  * 文件类型
  */
 export enum FileType {
@@ -59,7 +50,7 @@ export enum FileType {
 /**
  * 商品订单状态
  */
-export enum ProductOrderState {
+export enum OrderState {
   Pending = 'PENDING', // 待支付
   Processing = 'PROCESSING', // 进行中
   Finished = 'FINISHED', // 已完成
@@ -71,9 +62,14 @@ export enum ProductOrderState {
 /**
  * 支付订单状态
  */
-export enum PaymentOrderState {
+export enum PaymentState {
   Pending = 'PENDING', // 待支付
   Paid = 'PAID', // 已支付
   Expired = 'EXPIRED', // 已过期
   Refunded = 'REFUNDED', // 已退款
+}
+
+export enum ProductType {
+  Count = 'COUNT',
+  Time = 'TIME',
 }
