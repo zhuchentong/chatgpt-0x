@@ -5,4 +5,5 @@ export default pages({
   exclude: ['**/components/*.vue'],
   extensions: ['vue'],
   routeStyle: 'nuxt',
+  importMode: 'async',
 })

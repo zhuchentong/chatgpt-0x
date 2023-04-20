@@ -114,8 +114,6 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { marked } from 'marked'
-import hljs from 'highlight.js'
 import isToday from 'dayjs/plugin/isToday'
 import { useDialog, useMessage } from 'naive-ui'
 import ChatMessage from './chat-message.vue'
@@ -140,12 +138,6 @@ const clipboard = useClipboard()
 const message = useMessage()
 const dialog = useDialog()
 const { sendChatMessage } = useChat()
-
-marked.setOptions({
-  highlight(code: string) {
-    return hljs.highlightAuto(code).value
-  },
-})
 
 const messageDate = computed(() => {
   if (props.index === undefined || !props.record.datetime) {
