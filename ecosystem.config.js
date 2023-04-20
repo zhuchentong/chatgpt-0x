@@ -7,7 +7,9 @@ module.exports = {
       script: 'dist/main.js',
       error_file: './logs/error.log', // 错误输出日志
       out_file: './logs/out.log', // 日志
-      log_date_format: 'YYYY-MM-DD HH:mm Z', // 日期格式
+      merge_logs: true,
+      log_date_format: 'YYYY-MM-DD HH:mm:ss', // 指定日志文件的时间格式
+      autorestart: true,
       env: {
         NODE_ENV: 'production',
       },
