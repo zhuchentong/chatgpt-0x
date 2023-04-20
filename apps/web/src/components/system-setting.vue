@@ -35,6 +35,12 @@
             { value: 'auto', label: '自动' },
           ]"></n-select>
       </n-form-item>
+      <n-form-item label="关怀模式">
+        <n-switch v-model:value="store.app.careMode.enable">
+          <template #checked>开启</template>
+          <template #unchecked>关闭</template>
+        </n-switch>
+      </n-form-item>
     </n-form>
   </n-card>
 </template>
@@ -43,9 +49,10 @@
 
 <script setup lang="ts">
 import type { FormInst } from 'naive-ui'
-// import { useStore } from '@/store'
+import { useStore } from '@/store'
 
-// const store = useStore()
+const store = useStore()
+
 const form = $(templateRef<FormInst>('form'))
 const colorMode = useColorMode()
 

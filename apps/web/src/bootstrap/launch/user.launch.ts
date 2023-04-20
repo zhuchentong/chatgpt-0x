@@ -1,8 +1,38 @@
 import type { Router } from 'vue-router'
 import { useRequest } from 'virtual:request'
+import dayjs from 'dayjs'
 import { useStore } from '@/store'
 import { HeaderService } from '@/http/extends/header.service'
+import { useChat } from '@/composables/use-chat'
+import { ChatRole } from '@/config/enum.config'
 
+function sendCareMessage() {
+  const store = useStore()
+
+  if (store.app.careMode.dates.includes(dayjs().format('YYYY-MM-DD'))) {
+    return
+  }
+
+  const { sendChatMessage } = useChat()
+
+  const now = Date.now()
+  const records = store.chat.currentChat?.records
+    .filter(
+      (record) =>
+        record.role === ChatRole.User &&
+        record.content.length >= 5 &&
+        record.datetime &&
+        now - record.datetime <= 1000 * 60 * 60 * 24,
+    )
+    ?.slice(0, 10)
+
+  if (records.length >= 5) {
+    const content = records.map((record) => `[${record.content}]`).join(',')
+    const message = `您好, 以下"[]"内是我最近几条的提问与消息：${content}，请根据我的提问与消息生成一些问候的话语让我温暖些, 谢谢！`
+    store.app.appendCareModeDate(dayjs().format('YYYY-MM-DD'))
+    sendChatMessage(message)
+  }
+}
 /**
  * 更新用户数据
  */
@@ -61,6 +91,8 @@ function getAssistantItems() {
           name: '智能助手',
           prompt: '',
           enable: true,
+          placeholder: '',
+          foreword: '',
           createdAt: '',
           updatedAt: '',
           code: 0,
@@ -102,6 +134,10 @@ export default function userLaunch(router: Router) {
 
     if (store.chat.assistantItems.length === 0) {
       await getAssistantItems()
+    }
+
+    if (store.app.careMode.enable) {
+      await sendCareMessage()
     }
 
     next()

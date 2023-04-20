@@ -8,6 +8,10 @@ interface State {
   title: string
   desktop: Ref<boolean>
   mobile: Ref<boolean>
+  careMode: {
+    enable: boolean
+    dates: string[]
+  }
 }
 
 const initialState: State = {
@@ -15,6 +19,10 @@ const initialState: State = {
   title: '',
   desktop: useMediaQuery('(min-width: 768px)'),
   mobile: useMediaQuery('(max-width: 768px)'),
+  careMode: {
+    enable: true,
+    dates: [],
+  },
 }
 
 export const useAppStore = defineStore('app', {
@@ -33,5 +41,21 @@ export const useAppStore = defineStore('app', {
     updateTitle(title: string) {
       this.title = title
     },
+    /**
+     * 切换关怀模式
+     */
+    toggleCareMode() {
+      this.careMode.enable = !this.careMode.enable
+    },
+    /**
+     * 添加关怀模式日期
+     * @param date 日期
+     */
+    appendCareModeDate(date: string) {
+      this.careMode.dates.push(date)
+    },
+  },
+  persist: {
+    paths: ['careMode'],
   },
 })
