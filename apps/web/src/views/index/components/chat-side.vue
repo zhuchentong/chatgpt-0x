@@ -2,7 +2,7 @@
   <div class="chat-side flex flex-col py-20px">
     <div class="title text-2xl text-center">
       <img
-        src="/logo.png"
+        :src="colorMode === 'light' ? '/logo-light.png' : '/logo-dark.png'"
         style="width: 80%" />
     </div>
     <n-divider class="mt-10px!" />
@@ -123,6 +123,7 @@ import SystemSetting from '@/components/system-setting.vue'
 
 const store = useStore()
 const showSystemSetting = ref(false)
+const colorMode = useColorMode()
 
 function onChangeAssistant(id: string) {
   store.chat.changeAssistant(id)
