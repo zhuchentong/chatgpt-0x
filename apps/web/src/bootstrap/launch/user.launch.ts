@@ -28,7 +28,7 @@ function sendCareMessage() {
 
   if (records.length >= 5) {
     const content = records.map((record) => `[${record.content}]`).join(',')
-    const message = `您好, 以下"[]"内是我最近几条的提问与消息：${content}，请根据我的提问与消息生成一些问候的话语让我温暖些, 谢谢！`
+    const message = ` 以下"[]"内是我最近几条的提问与消息：${content}，请根据我的提问与消息生成一些问候的话语让我温暖些,并以"😊 亲爱的主人,"作为开头,谢谢！`
     store.app.appendCareModeDate(dayjs().format('YYYY-MM-DD'))
     sendChatMessage(message)
   }
