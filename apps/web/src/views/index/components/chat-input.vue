@@ -46,13 +46,13 @@ function onSubmit() {
     return
   }
 
-  chat.inputing = false
-  if (!inputText || chat.inputing) {
+  if (!inputText || chat.inputing || chat.waiting) {
     return
   }
 
   // 等待消息返回
-  chat.inputing = true
+  chat.waiting = true
+  chat.inputing = false
   // 添加用户消息
   appendUserMessage(chat, inputText as string)
   // 发送聊天消息

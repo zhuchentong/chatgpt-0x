@@ -30,16 +30,38 @@
         :role="record.role"></ChatMessage>
     </div>
 
-    <div class="m-0! delete hidden">
+    <div
+      v-if="!loading"
+      class="flex items-center space-x-2 actions">
       <n-button
-        v-if="!loading"
-        class="w-14px h-14px"
-        size="small"
+        size="tiny"
         text
-        @click="() => (record.deleted = true)">
-        <icon-park-outline:delete></icon-park-outline:delete>
+        @click="onDelete">
+        <template #icon>
+          <icon-park-outline:delete></icon-park-outline:delete>
+        </template>
+      </n-button>
+      <n-button
+        v-if="record.role === ChatRole.Assistant"
+        size="tiny"
+        text
+        @click="onCopy">
+        <template #icon>
+          <icon-park-outline:copy></icon-park-outline:copy>
+        </template>
+      </n-button>
+      <n-button
+        v-if="record.role === ChatRole.Assistant"
+        size="tiny"
+        text
+        @click="onRedo">
+        <template #icon>
+          <icon-park-outline:redo></icon-park-outline:redo>
+        </template>
       </n-button>
     </div>
+
+    <!-- <div class="m-0! delete inline-block"></div> -->
   </div>
 </template>
 
@@ -65,9 +87,16 @@
     line-height: 1.5;
   }
 
+  .actions {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease;
+  }
+
   &:hover {
-    .delete {
-      display: block;
+    .actions {
+      opacity: 1;
+      visibility: visible;
     }
   }
 
@@ -87,12 +116,14 @@
 import dayjs from 'dayjs'
 import { marked } from 'marked'
 import hljs from 'highlight.js'
-import { useMessage } from 'naive-ui'
 import isToday from 'dayjs/plugin/isToday'
+import { useDialog, useMessage } from 'naive-ui'
 import ChatMessage from './chat-message.vue'
 import ChatLoading from './chat-loading.vue'
 import { useStore } from '@/store'
 import type { ChatRecord } from '@/interfaces'
+import { ChatRole } from '@/config/enum.config'
+import { useChat } from '@/composables/use-chat'
 
 const props = defineProps<{
   index?: number
@@ -105,7 +136,10 @@ dayjs.extend(isToday)
 const store = useStore()
 const chat = $(computed(() => store.chat.currentChat))
 const assistant = computed(() => store.chat.currentAssistant)
+const clipboard = useClipboard()
 const message = useMessage()
+const dialog = useDialog()
+const { sendChatMessage } = useChat()
 
 marked.setOptions({
   highlight(code: string) {
@@ -139,4 +173,39 @@ const messageDate = computed(() => {
     return date.format('YYYY-MM-DD hh:mm')
   }
 })
+
+function onCopy() {
+  if (clipboard.isSupported) {
+    clipboard.copy(props.record.content).then(() => {
+      message.success('复制成功')
+    })
+  }
+}
+
+function onDelete() {
+  dialog.warning({
+    title: '删除消息',
+    content: '是否删除此消息?',
+    positiveText: '确定',
+    negativeText: '取消',
+    maskClosable: false,
+    onPositiveClick: () => {
+      // eslint-disable-next-line vue/no-mutating-props
+      props.record.deleted = true
+    },
+  })
+}
+
+function onRedo() {
+  // eslint-disable-next-line vue/no-mutating-props
+  props.record.deleted = true
+
+  const record = chat.records.findLast(
+    (record) => record.deleted !== true && record.role === ChatRole.User,
+  )
+
+  if (record) {
+    sendChatMessage(record.content)
+  }
+}
 </script>

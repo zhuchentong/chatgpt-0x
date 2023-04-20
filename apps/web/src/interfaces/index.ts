@@ -22,6 +22,8 @@ export interface Chat {
   assistantId: string
   title: string
   inputing: boolean
+  waiting: boolean
+  eventSource?: { close: () => void }
   usage: number
   records: (AssistantChatRecord | UserChatRecord)[]
   deleted?: boolean

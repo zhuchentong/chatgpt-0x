@@ -36,19 +36,17 @@
       <template #suffix>
         <div class="flex px-5 space-x-5">
           <div class="actions space-x-2">
-            <div
-              class="inline-block text-12px cursor-pointer"
-              :class="{
-                'text-[#4b9e5f]': store.chat.keepContext,
-                'text-[#a8071a]': !store.chat.keepContext,
-              }"
-              :focusable="false"
-              ghost
-              size="tiny"
-              text
-              @click="store.chat.toggleKeepContext">
-              <icon-park-outline:history></icon-park-outline:history>
-            </div>
+            <Transition>
+              <n-button
+                v-if="store.chat.currentChat.inputing"
+                class="stop-btn"
+                size="tiny"
+                text
+                type="warning"
+                @click="onStop">
+                <icon-park-outline:pause-one></icon-park-outline:pause-one>
+              </n-button>
+            </Transition>
             <n-button
               size="tiny"
               text
@@ -68,6 +66,19 @@
               @click="() => (chatEditing = true)">
               <icon-park-outline:edit-two></icon-park-outline:edit-two>
             </n-button>
+            <div
+              class="inline-block text-12px cursor-pointer"
+              :class="{
+                'text-[#4b9e5f]': store.chat.keepContext,
+                'text-[#a8071a]': !store.chat.keepContext,
+              }"
+              :focusable="false"
+              ghost
+              size="tiny"
+              text
+              @click="store.chat.toggleKeepContext">
+              <icon-park-outline:history></icon-park-outline:history>
+            </div>
           </div>
           <n-divider vertical></n-divider>
           <div class="flex items-center text-xs">
@@ -136,7 +147,21 @@
   </n-drawer>
 </template>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.stop-btn {
+  &.v-enter-active,
+  &.v-leave-active {
+    transition: all 0.5s ease;
+  }
+
+  &.v-enter-from,
+  &.v-leave-to {
+    opacity: 0;
+    margin-top: -40px;
+    margin-bottom: 0px;
+  }
+}
+</style>
 
 <script setup lang="ts">
 import { useDialog, useMessage } from 'naive-ui'
@@ -197,5 +222,13 @@ function onExport() {
       exportToPng(element)
     },
   })
+}
+
+function onStop() {
+  const eventSource = store.chat.currentChat.eventSource
+
+  if (eventSource && eventSource.close) {
+    eventSource.close()
+  }
 }
 </script>

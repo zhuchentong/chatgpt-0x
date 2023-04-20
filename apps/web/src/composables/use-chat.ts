@@ -69,19 +69,31 @@ function sendChatMessage(message: string) {
   const closeEvent = () => {
     event.close()
     chat.inputing = false
+    chat.waiting = false
+    delete chat.eventSource
   }
 
-  event.addEventListener('message', ({ data }) => {
+  try {
+    event.addEventListener('message', ({ data }) => {
+      chat.inputing = true
+      chat.waiting = false
+
+      if (data === '[DONE]') {
+        return closeEvent()
+      }
+
+      appendChatMessage(chat, JSON.parse(data))
+    })
+  } catch (e) {
     chat.inputing = false
-
-    if (data === '[DONE]') {
-      return closeEvent()
-    }
-
-    appendChatMessage(chat, JSON.parse(data))
-  })
+    chat.waiting = false
+  }
 
   event.addEventListener('error', () => closeEvent())
+
+  chat.eventSource = {
+    close: closeEvent,
+  }
 }
 
 export function useChat() {

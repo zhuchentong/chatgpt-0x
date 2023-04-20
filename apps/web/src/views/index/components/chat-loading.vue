@@ -1,6 +1,11 @@
 <template>
   <div class="loading-container">
-    <div class="loading">
+    <div
+      class="loading"
+      :class="{
+        'text-[#000]': colorMode === 'light',
+        'text-[#fff]': colorMode === 'dark',
+      }">
       <div></div>
       <div></div>
       <div></div>
@@ -18,7 +23,6 @@
 .loading {
   display: block;
   font-size: 0;
-  color: #000;
 
   div {
     width: 10px;
@@ -50,4 +54,6 @@
 }
 </style>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const colorMode = useColorMode()
+</script>

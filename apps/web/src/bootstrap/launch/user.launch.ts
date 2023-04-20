@@ -6,6 +6,15 @@ import { HeaderService } from '@/http/extends/header.service'
 import { useChat } from '@/composables/use-chat'
 import { ChatRole } from '@/config/enum.config'
 
+function resetChatState() {
+  const store = useStore()
+
+  store.chat.chats.forEach((chat) => {
+    chat.inputing = false
+    chat.waiting = false
+  })
+}
+
 function sendCareMessage() {
   const store = useStore()
 
@@ -131,6 +140,8 @@ export default function userLaunch(router: Router) {
     if (!store.user.current) {
       return next('/login')
     }
+
+    resetChatState()
 
     if (store.chat.assistantItems.length === 0) {
       await getAssistantItems()

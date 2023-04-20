@@ -15,7 +15,7 @@
               :index="index"
               :record="record"></ChatRecord>
             <ChatRecord
-              v-if="chat.inputing"
+              v-if="chat.waiting"
               loading
               :record="{ role: ChatRole.Assistant, content: '' }"></ChatRecord>
           </div>

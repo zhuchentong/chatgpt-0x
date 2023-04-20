@@ -28,6 +28,7 @@ const initialState: State = {
       title: 'New Chat',
       usage: 0,
       inputing: false,
+      waiting: false,
       records: [],
     },
   ],
@@ -85,6 +86,7 @@ export const useChatStore = defineStore('chat', {
         title: 'New Chat',
         usage: 0,
         inputing: false,
+        waiting: false,
         records: [],
       }
 
@@ -145,6 +147,8 @@ export const useChatStore = defineStore('chat', {
       'activeAssistant',
       // 激活会话ID
       'activeChat',
+      // 是否保持上下文
+      'keepContext',
     ],
   },
 })

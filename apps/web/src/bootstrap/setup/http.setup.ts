@@ -8,6 +8,7 @@ import { AxiosAdapter } from '@gopowerteam/request/adapters'
 import { appConfig } from '@/config/app.config'
 import { TokenService } from '@/http/extends/token.service'
 import { useStore } from '@/store'
+import { useLogger } from '@/shared/hooks'
 
 class StatusInterceptors implements ResponseInterceptor {
   exec(respone: AdapterResponse) {
@@ -29,6 +30,7 @@ class ErrorInterceptors implements ResponseInterceptor {
 
 class ExceptionInterceptors implements ResponseInterceptor {
   exec(response: AdapterResponse) {
+    const logger = useLogger()
     const defaultError = '服务通讯连接失败'
     const messageList: { [key: number]: string | undefined } = {
       400: '请求参数错误',
@@ -41,7 +43,11 @@ class ExceptionInterceptors implements ResponseInterceptor {
       const errorMessage =
         responseMessage || messageList[response.status] || defaultError
 
-      Message.error(errorMessage)
+      logger.error(errorMessage)
+
+      if (responseMessage) {
+        Message.error(responseMessage)
+      }
     }
     switch (response.status) {
       case 401:
