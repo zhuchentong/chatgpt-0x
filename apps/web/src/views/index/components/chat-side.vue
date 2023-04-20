@@ -59,27 +59,29 @@
       </NButton> -->
     </div>
     <n-divider />
-    <div class="contact flex flex-row space-x-3 justify-center">
-      <div>
-        <NAvatar
-          round
-          size="large"
-          src="/avatar.png"></NAvatar>
-      </div>
-      <div class="space-y-1">
-        <div class="text-bold text-sm">Jwdstef</div>
-        <div class="text-gray text-xs">
-          奥创·
-          <a
-            class="text-green-600 no-underline"
-            href="https://jq.qq.com/?_wv=1027&k=51ukmBo"
-            target="_blank"
-            title="点击加入玩家交流群">
-            QQ:25463204
-          </a>
+
+    <n-popover trigger="hover">
+      <template #trigger>
+        <div
+          class="contact flex flex-row space-x-3 justify-center cursor-pointer">
+          <div>
+            <NAvatar
+              round
+              size="large"
+              src="/avatar.png"></NAvatar>
+          </div>
+          <div class="space-y-1">
+            <div class="text-bold text-sm">Jwdstef</div>
+            <div class="text-gray text-xs">添加微信加入交流群</div>
+          </div>
         </div>
+      </template>
+      <div>
+        <img
+          class="w-300px"
+          src="/contact.jpg" />
       </div>
-    </div>
+    </n-popover>
   </div>
   <n-drawer
     v-model:show="showSystemSetting"
