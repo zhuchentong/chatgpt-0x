@@ -26,7 +26,7 @@
   padding: 10px;
   border-radius: 10px;
   &.user {
-    background-color: #d2f9d1;
+    background-color: #a1db94;
     color: #000;
   }
   &.assistant {
