@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany } from 'typeorm'
+import { Entity, Column } from 'typeorm'
 import { pipe } from 'ramda'
 import {
   EntityWithEnable,
@@ -11,7 +11,6 @@ import { ApiProperty } from '@nestjs/swagger'
 import { EntityWithOperator } from 'src/common/typeorm/entity/entity-with-operator'
 import { EntityWithCreator } from 'src/common/typeorm/entity/entity-with-creator'
 import { ProductType } from 'src/config/enum.config'
-import { Order } from './order.entity'
 
 @Entity('product')
 export class Product extends pipe(
@@ -35,10 +34,6 @@ export class Product extends pipe(
   value: number
 
   @ApiProperty({ description: '价格' })
-  @Column({ type: 'decimal' })
+  @Column()
   price: number
-
-  @ApiProperty({ description: '商品' })
-  @OneToMany(() => Order, (order) => order.product)
-  orders: Order
 }

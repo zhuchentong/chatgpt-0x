@@ -29,8 +29,8 @@ export class Order extends pipe(
   @Column()
   price: number
 
-  @ApiProperty({ description: '商品' })
-  @ManyToOne(() => Product, (product) => product.orders)
+  @ApiProperty({ description: '产品' })
+  @ManyToOne(() => Product)
   product: Product
 
   @ApiProperty({ description: '用户' })

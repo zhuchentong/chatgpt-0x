@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { AsyncLocalStorage } from 'node:async_hooks'
 import { Request, Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
-import { IncomingMessage, OutgoingMessage } from 'node:http'
+import { IncomingMessage } from 'node:http'
 import { AppOrigin } from 'src/config/enum.config'
-import { User } from 'src/entities/user.entity'
 
 export function RequestContextMiddleware(
   req: Request,
@@ -22,6 +21,7 @@ export class RequestContext {
   static cls = new AsyncLocalStorage<RequestContext>()
 
   static get currentContext() {
+    console.log('xxzxczxc')
     return this.cls.getStore()
   }
 

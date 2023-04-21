@@ -6,26 +6,26 @@ export type Administrator = {
   /**
    * ID
    */
-  id: string
+  id: string;
   /**
    * 启用状态
    */
-  enable: boolean
+  enable: boolean;
   /**
    * 创建日期
    */
-  createdAt: string
+  createdAt: string;
   /**
    * 更新日期
    */
-  updatedAt: string
+  updatedAt: string;
   /**
    * 用户名
    */
-  username: string
+  username: string;
   /**
    * 姓名
    */
-  realname: string
-  password: string
+  realname: string;
+  password: string;
 }

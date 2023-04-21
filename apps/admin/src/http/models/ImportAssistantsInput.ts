@@ -3,5 +3,5 @@
 /* eslint-disable */
 
 export type ImportAssistantsInput = {
-  assistants: any[][]
+  assistants: any[][];
 }

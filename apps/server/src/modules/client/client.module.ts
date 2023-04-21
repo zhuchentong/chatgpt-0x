@@ -13,6 +13,14 @@ import { WechatModule } from 'src/shared/wechat/wechat.module'
 import { AssistantService } from './services/assistant.service'
 import { Assistant } from 'src/entities/assistant.entity'
 import { AssistantController } from './controllers/assistant.controller'
+import { BalanceController } from './controllers/balance.controller';
+import { ActiveCodeController } from './controllers/active-code.controller';
+import { OrderController } from './controllers/order.controller';
+import { ProductController } from './controllers/product.controller';
+import { ActiveCodeService } from './services/active-code.service';
+import { OrderService } from './services/order.service';
+import { ProductService } from './services/product.service';
+import { BalanceService } from './services/balance.service';
 
 @Module({
   imports: [
@@ -21,13 +29,17 @@ import { AssistantController } from './controllers/assistant.controller'
     WechatModule,
     TypeOrmModule.forFeature([User, Assistant]),
   ],
-  controllers: [AppController, OpenaiController, AssistantController],
+  controllers: [AppController, OpenaiController, AssistantController, BalanceController, ActiveCodeController, OrderController, ProductController],
   providers: [
     AppService,
     EmailService,
     UserService,
     OpenAIService,
     AssistantService,
+    ActiveCodeService,
+    OrderService,
+    ProductService,
+    BalanceService,
   ],
   exports: [OpenAIService],
 })

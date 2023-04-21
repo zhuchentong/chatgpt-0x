@@ -37,6 +37,10 @@ function setupSwagger(app: NestFastifyApplication) {
       .addTag('qiniu', '七牛')
       .addTag('wechat', '微信')
       .addTag('assistant', '助手')
+      .addTag('product', '产品')
+      .addTag('active-code', '激活码')
+      .addTag('order', '订单')
+      .addTag('balance', '余额')
       .build()
 
     const adminDocument = SwaggerModule.createDocument(
@@ -75,6 +79,10 @@ function setupSwagger(app: NestFastifyApplication) {
       .addTag('openai', 'OpenAI')
       .addTag('wechat', '微信')
       .addTag('assistant', '助手')
+      .addTag('product', '产品')
+      .addTag('active-code', '激活码')
+      .addTag('order', '订单')
+      .addTag('balance', '余额')
       .build()
 
     const clientDocument = SwaggerModule.createDocument(

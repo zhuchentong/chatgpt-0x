@@ -15,6 +15,7 @@ declare module 'vue-router' {
       key: string
       title: string
       icon?: string
+      index?: number
     }
 
     // 每个路由都必须声明

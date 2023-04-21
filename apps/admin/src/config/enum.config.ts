@@ -21,4 +21,24 @@ export enum FileType {
   Other = 'OTHER',
 }
 
+/**
+ * 支付订单状态
+ */
+export enum OrderState {
+  Pending = 'PENDING', // 待支付
+  Paid = 'PAID', // 已支付
+  Expired = 'EXPIRED', // 已过期
+  Refunded = 'REFUNDED', // 已退款
+}
+
+export enum ProductType {
+  Count = 'COUNT',
+  Time = 'TIME',
+}
+
+export enum BalanceOrigin {
+  Code = 'CODE',
+  Order = 'ORDER',
+}
+
 // #endregion

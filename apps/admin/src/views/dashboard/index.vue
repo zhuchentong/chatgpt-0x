@@ -1,5 +1,5 @@
 <template lang="pug">
-PageContainer(absolute title='仪表盘' layout='flex-center')
+PageContainer(absolute layout='flex-center' title='仪表盘')
   .text-3xl Welcome To Use The QuickStart Project Template
 </template>
 

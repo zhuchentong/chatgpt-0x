@@ -47,22 +47,22 @@ export enum FileType {
   Other = 'OTHER',
 }
 
-/**
- * 商品订单状态
- */
-export enum OrderState {
-  Pending = 'PENDING', // 待支付
-  Processing = 'PROCESSING', // 进行中
-  Finished = 'FINISHED', // 已完成
-  Expired = 'EXPIRED', // 已过期
-  Refunded = 'REFUNDED', // 已退款
-  Closed = 'CLOSED', // 已关闭
-}
+// /**
+//  * 商品订单状态
+//  */
+// export enum OrderState {
+//   Pending = 'PENDING', // 待支付
+//   Processing = 'PROCESSING', // 进行中
+//   Finished = 'FINISHED', // 已完成
+//   Expired = 'EXPIRED', // 已过期
+//   Refunded = 'REFUNDED', // 已退款
+//   Closed = 'CLOSED', // 已关闭
+// }
 
 /**
  * 支付订单状态
  */
-export enum PaymentState {
+export enum OrderState {
   Pending = 'PENDING', // 待支付
   Paid = 'PAID', // 已支付
   Expired = 'EXPIRED', // 已过期
@@ -72,4 +72,9 @@ export enum PaymentState {
 export enum ProductType {
   Count = 'COUNT',
   Time = 'TIME',
+}
+
+export enum BalanceOrigin {
+  Code = 'CODE',
+  Order = 'ORDER',
 }

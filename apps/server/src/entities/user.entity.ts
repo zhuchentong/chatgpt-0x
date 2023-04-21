@@ -7,7 +7,6 @@ import {
   EntityWithUUID,
 } from '../common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
-import { Order } from './order.entity'
 
 @Entity('user')
 export class User extends pipe(

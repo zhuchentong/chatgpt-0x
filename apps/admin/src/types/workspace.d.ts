@@ -11,6 +11,7 @@ export type Menu = {
   children?: Menu[]
   // 是否为叶子节点
   isLeaf?: boolean
+  index?: number
 }
 
 export type Tab = Required<Menu> & {

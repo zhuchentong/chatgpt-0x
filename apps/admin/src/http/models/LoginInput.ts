@@ -6,9 +6,9 @@ export type LoginInput = {
   /**
    * 用户名
    */
-  username: string
+  username: string;
   /**
    * 密码
    */
-  password: string
+  password: string;
 }
