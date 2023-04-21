@@ -19,7 +19,7 @@
         src="/avatar.jpg"></n-avatar>
     </div>
 
-    <div class="record-content">
+    <div class="record-content desktop:max-w-[85%] mobile:max-w-[73%]">
       <ChatLoading
         v-if="loading"
         :content="record.content"
@@ -79,7 +79,6 @@
     margin-top: 15px;
   }
   .record-content {
-    max-width: 85%;
     border-radius: 10px;
     margin: 10px;
     color: #fff;

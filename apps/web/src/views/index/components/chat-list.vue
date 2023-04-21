@@ -52,7 +52,7 @@
       </div>
     </div>
     <n-divider />
-    <div class="flex space-x-4 px-2">
+    <div class="actions flex space-x-4 px-2">
       <n-button
         text
         @click="onExport">
@@ -70,6 +70,21 @@
             style="font-size: 15px"></icon-park-outline:clear>
         </NAvatar>
       </n-button>
+      <NAvatar circle>
+        <div
+          class="text-15px cursor-pointer flex-center"
+          :class="{
+            'text-[#4b9e5f]': store.chat.keepContext,
+            'text-[#5D5D62]': !store.chat.keepContext,
+          }"
+          :focusable="false"
+          ghost
+          size="tiny"
+          text
+          @click="store.chat.toggleKeepContext">
+          <icon-park-outline:history></icon-park-outline:history>
+        </div>
+      </NAvatar>
     </div>
     <n-divider />
     <div class="space-y-2">

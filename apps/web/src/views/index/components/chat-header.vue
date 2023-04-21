@@ -47,25 +47,6 @@
                 <icon-park-outline:pause-one></icon-park-outline:pause-one>
               </n-button>
             </Transition>
-            <n-button
-              size="tiny"
-              text
-              @click="onExport">
-              <icon-park-outline:export></icon-park-outline:export>
-            </n-button>
-
-            <n-button
-              size="tiny"
-              text
-              @click="onClear">
-              <icon-park-outline:clear></icon-park-outline:clear>
-            </n-button>
-            <n-button
-              size="tiny"
-              text
-              @click="() => (chatEditing = true)">
-              <icon-park-outline:edit-two></icon-park-outline:edit-two>
-            </n-button>
             <div
               class="inline-block text-12px cursor-pointer"
               :class="{
@@ -79,6 +60,31 @@
               @click="store.chat.toggleKeepContext">
               <icon-park-outline:history></icon-park-outline:history>
             </div>
+            <n-button
+              size="tiny"
+              text
+              @click="() => (chatEditing = true)">
+              <icon-park-outline:edit-two></icon-park-outline:edit-two>
+            </n-button>
+            <n-button
+              size="tiny"
+              text
+              @click="onExport">
+              <icon-park-outline:export></icon-park-outline:export>
+            </n-button>
+            <n-button
+              size="tiny"
+              text
+              @click="onClear">
+              <icon-park-outline:clear></icon-park-outline:clear>
+            </n-button>
+            <n-button
+              :disabled="chats.length <= 1"
+              size="tiny"
+              text
+              @click="onDelete">
+              <icon-park-outline:delete></icon-park-outline:delete>
+            </n-button>
           </div>
           <n-divider vertical></n-divider>
           <div class="flex items-center text-xs">
@@ -99,8 +105,8 @@
     </n-tabs>
   </div>
   <div
-    class="chat-header flex desktop-hidden items-center justify-between p-15px">
-    <div>
+    class="chat-header flex desktop-hidden items-center justify-center p-15px">
+    <div class="left-actions absolute left-20px flex items-center">
       <NButton
         text
         @click="() => (showAssistantList = true)">
@@ -110,7 +116,7 @@
       </NButton>
     </div>
     <div class="title">{{ store.chat.currentChat.title }}</div>
-    <div>
+    <div class="right-actions absolute right-15px space-x-2 flex flex-center">
       <NButton
         text
         @click="() => (showChatList = true)">
@@ -220,6 +226,19 @@ function onExport() {
     onPositiveClick: () => {
       const element = document.getElementById('chat-content') as HTMLDivElement
       exportToPng(element)
+    },
+  })
+}
+
+function onDelete() {
+  dialog.warning({
+    title: '删除',
+    content: '确定删除对话？',
+    positiveText: '确定',
+    negativeText: '取消',
+    maskClosable: false,
+    onPositiveClick: () => {
+      store.chat.deleteChat(store.chat.currentChat)
     },
   })
 }
