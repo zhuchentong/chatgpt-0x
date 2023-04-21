@@ -9,7 +9,8 @@
         <img
           class="m-atuo desktop:w-300px mobile:w-200px"
           :src="qrcode" />
-        <div>扫码关注公众号登录</div>
+        <div class="mobile:hidden">扫码关注公众号登录</div>
+        <div class="desktop:hidden">长按二维码,关注后返回页面即可登录</div>
       </div>
     </div>
   </page-container>
