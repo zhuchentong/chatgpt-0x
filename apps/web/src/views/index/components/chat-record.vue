@@ -16,7 +16,7 @@
       <n-avatar
         v-else
         round
-        src="/avatar.png"></n-avatar>
+        src="/avatar.jpg"></n-avatar>
     </div>
 
     <div class="record-content">

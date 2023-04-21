@@ -68,7 +68,7 @@
             <NAvatar
               round
               size="large"
-              src="/avatar.png"></NAvatar>
+              src="/avatar.jpg"></NAvatar>
           </div>
           <div class="space-y-1">
             <div class="text-bold text-sm">Jwdstef</div>
