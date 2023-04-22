@@ -1,9 +1,4 @@
-import {
-  CACHE_MANAGER,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Administrator } from 'src/entities/administrator.entity'
@@ -16,6 +11,7 @@ import { Cache } from 'cache-manager'
 import { HttpService } from '@nestjs/axios'
 import { lastValueFrom } from 'rxjs'
 import { nanoid } from 'nanoid/non-secure'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
 
 const WEAPP_API = {
   token: 'https://api.weixin.qq.com/cgi-bin/token',
@@ -23,6 +19,9 @@ const WEAPP_API = {
   getuserphonenumber:
     'https://api.weixin.qq.com/wxa/business/getuserphonenumber',
 }
+
+const accessTokenExpiresIn = 60 * 60 * 12
+const refreshTokenExpiresIn = 60 * 60 * 24 * 30
 
 @Injectable()
 export class AuthService {
@@ -169,9 +168,6 @@ export class AuthService {
       origin: jwtOrigin,
     }
 
-    const accessTokenExpiresIn = 60 * 60 * 1
-    const refreshTokenExpiresIn = 60 * 60 * 24 * 7
-
     // 获取AccessToken
     const accessToken = this.jwtService.sign(payload, {
       secret: this.config.get('jwt.accessTokenSecret'),
@@ -223,9 +219,6 @@ export class AuthService {
       id: user.id,
       origin: jwtOrigin,
     }
-
-    const accessTokenExpiresIn = 60 * 60 * 1
-    const refreshTokenExpiresIn = 60 * 60 * 24 * 7
 
     // 获取AccessToken
     const accessToken = this.jwtService.sign(payload, {

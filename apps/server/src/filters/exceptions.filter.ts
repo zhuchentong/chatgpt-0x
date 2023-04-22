@@ -17,17 +17,37 @@ export class ExceptionsFilter implements ExceptionFilter {
     const { httpAdapter } = this.httpAdapterHost
 
     const ctx = host.switchToHttp()
-    const httpStatus =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR
 
-    const responseBody = {
-      timestamp: new Date().toISOString(),
-      path: httpAdapter.getRequestUrl(ctx.getRequest()),
-      exceptions: exception.response.message,
+    const getHttpStatus = () => {
+      if (exception instanceof HttpException) {
+        return exception.getStatus()
+      } else {
+        HttpStatus.INTERNAL_SERVER_ERROR
+      }
     }
 
-    httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus)
+    const getResponseBody = () => {
+      const body: Record<string, any> = {
+        timestamp: new Date().toISOString(),
+        path: httpAdapter.getRequestUrl(ctx.getRequest()),
+      }
+
+      switch (true) {
+        case typeof exception?.response === 'string':
+          body.message = exception?.response
+          break
+        case typeof exception?.response?.message === 'string':
+          body.message = exception?.response?.message
+          break
+      }
+
+      if (exception?.response?.toast) {
+        body.toast = true
+      }
+
+      return body
+    }
+
+    httpAdapter.reply(ctx.getResponse(), getResponseBody(), getHttpStatus())
   }
 }

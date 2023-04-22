@@ -3,7 +3,7 @@
     <div
       class="chat-container flex absolute inset-0 shadow-2xl overflow-hidden">
       <div
-        class="chat-side-wrapper desktop:block mobile:hidden relative w-250px">
+        class="chat-side-wrapper desktop:block mobile:hidden relative min-w-250px">
         <ChatSide></ChatSide>
       </div>
       <ChatBox></ChatBox>

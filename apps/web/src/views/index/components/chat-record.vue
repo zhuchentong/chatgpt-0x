@@ -16,10 +16,10 @@
       <n-avatar
         v-else
         round
-        src="/avatar.png"></n-avatar>
+        src="/avatar.jpg"></n-avatar>
     </div>
 
-    <div class="record-content">
+    <div class="record-content desktop:max-w-[85%] mobile:max-w-[73%]">
       <ChatLoading
         v-if="loading"
         :content="record.content"
@@ -79,7 +79,6 @@
     margin-top: 15px;
   }
   .record-content {
-    max-width: 85%;
     border-radius: 10px;
     margin: 10px;
     color: #fff;
@@ -114,8 +113,6 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { marked } from 'marked'
-import hljs from 'highlight.js'
 import isToday from 'dayjs/plugin/isToday'
 import { useDialog, useMessage } from 'naive-ui'
 import ChatMessage from './chat-message.vue'
@@ -140,12 +137,6 @@ const clipboard = useClipboard()
 const message = useMessage()
 const dialog = useDialog()
 const { sendChatMessage } = useChat()
-
-marked.setOptions({
-  highlight(code: string) {
-    return hljs.highlightAuto(code).value
-  },
-})
 
 const messageDate = computed(() => {
   if (props.index === undefined || !props.record.datetime) {
