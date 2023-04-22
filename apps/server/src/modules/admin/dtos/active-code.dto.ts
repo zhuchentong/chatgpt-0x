@@ -5,6 +5,9 @@ import { PageInput } from 'src/common/typeorm/query/inputs/page.input'
 import { QueryInput } from 'src/common/typeorm/query/inputs/query.input'
 import { ActiveCode } from 'src/entities/active-code.entity'
 import { pipe } from 'ramda'
+import { ProductType, WhereOperator } from 'src/config/enum.config'
+import { IsEnum, IsInt } from 'class-validator'
+import { WhereOption } from 'src/common/typeorm/decorators'
 
 /*
  * 添加管理员
@@ -19,10 +22,18 @@ export class CreateActiveCodeInput {
   endTime?: Date
 
   @ApiProperty({ description: '总量' })
-  count: string
+  count: number
 
-  @ApiProperty({ description: '商品ID' })
-  productId: string
+  @ApiProperty({ enum: ProductType, description: '兑换类型' })
+  @IsEnum(ProductType)
+  type: ProductType
+
+  @ApiProperty({ description: '兑换值' })
+  @IsInt()
+  value: number
+
+  @ApiProperty({ description: '状态' })
+  enable: boolean
 }
 
 export class UpdateActiveCodeInput extends PartialType(CreateActiveCodeInput) {}
@@ -31,11 +42,18 @@ export class FindActiveCodeInput extends pipe(
   PageInput,
   OrderInput,
 )(QueryInput<ActiveCode>) {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Optional()
+  @WhereOption({ type: WhereOperator.Equal })
   code?: string
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Optional()
+  @WhereOption({ type: WhereOperator.Equal })
   enable?: boolean
+
+  @ApiProperty({ enum: ProductType, description: '兑换类型', required: false })
+  @Optional()
+  @WhereOption({ type: WhereOperator.Equal })
+  type?: ProductType
 }

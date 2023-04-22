@@ -41,8 +41,8 @@ export class ActiveCodeService {
     return paginator.paginate(builder)
   }
 
-  findOne(id: string) {
-    return this.activeCodeRepository.findOneBy({ id })
+  findOne(key: string) {
+    return this.activeCodeRepository.findOneBy({ key })
   }
 
   update(id: string, input: UpdateActiveCodeInput) {

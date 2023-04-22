@@ -1,12 +1,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CreateProductInput } from '../models/CreateProductInput';
-import type { Product } from '../models/Product';
+import type { CreateActiveCodeInput } from '../models/CreateActiveCodeInput';
+import type { ActiveCode } from '../models/ActiveCode';
+import type { PageActiveCode } from '../models/PageActiveCode';
 import type { Assistant } from '../models/Assistant';
-import type { UpdateProductInput } from '../models/UpdateProductInput';
+import type { UpdateActiveCodeInput } from '../models/UpdateActiveCodeInput';
 import { RequestService, RequestGenerateType, type RequestSendOptions, type RequestPlugin, type RequestGenerateOptions } from '@gopowerteam/request';
-export class ProductService {
+export class ActiveCodeService {
   // 请求实例
   private request = RequestService.getInstance();
   private service = ''
@@ -36,26 +37,26 @@ export class ProductService {
   }
 
   /**
-   * 创建产品
+   * 创建兑换码
    */
-  public createProduct(
-    requestBody: CreateProductInput,
+  public createActiveCode(
+    requestBody: CreateActiveCodeInput,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
-  public createProduct(
-    requestBody: CreateProductInput,
+  public createActiveCode(
+    requestBody: CreateActiveCodeInput,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions
-  ): Promise<Product>
-  public createProduct(
-    requestBody: CreateProductInput,
+  ): Promise<ActiveCode>
+  public createActiveCode(
+    requestBody: CreateActiveCodeInput,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions
-  ): Promise<Product> | string {
+  ): Promise<ActiveCode> | string {
     const requestSendOptions = {
       service: this.service,
-      path: '/api/admin/product',
+      path: '/api/admin/active-code',
       method: 'post',
       paramsBody: requestBody,
     }
@@ -70,26 +71,26 @@ export class ProductService {
   }
   
   /**
-   * 获取所有产品
+   * 查找激活码
    */
-  public getProducts(
-    requestQuery: RequestQueryParams.GetProducts,
+  public findActiveCodes(
+    requestQuery: RequestQueryParams.FindActiveCodes,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
-  public getProducts(
-    requestQuery: RequestQueryParams.GetProducts,
+  public findActiveCodes(
+    requestQuery: RequestQueryParams.FindActiveCodes,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions
-  ): Promise<Product[]>
-  public getProducts(
-    requestQuery: RequestQueryParams.GetProducts,
+  ): Promise<PageActiveCode>
+  public findActiveCodes(
+    requestQuery: RequestQueryParams.FindActiveCodes,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions
-  ): Promise<Product[]> | string {
+  ): Promise<PageActiveCode> | string {
     const requestSendOptions = {
       service: this.service,
-      path: '/api/admin/product',
+      path: '/api/admin/active-code',
       method: 'get',
       paramsQuery: requestQuery,
     }
@@ -104,26 +105,26 @@ export class ProductService {
   }
   
   /**
-   * 获取产品
+   * 获取激活码
    */
-  public getProduct(
+  public getActiveCode(
     id: string,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
-  public getProduct(
+  public getActiveCode(
     id: string,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Assistant>
-  public getProduct(
+  public getActiveCode(
     id: string,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Assistant> | string {
     const requestSendOptions = {
       service: this.service,
-      path: '/api/admin/product/{id}',
+      path: '/api/admin/active-code/{id}',
       method: 'get',
       paramsPath: {
         id,
@@ -140,29 +141,29 @@ export class ProductService {
   }
   
   /**
-   * 更新产品
+   * 更新激活码
    */
-  public updateProduct(
+  public updateActiveCode(
     id: string,
-    requestBody: UpdateProductInput,
+    requestBody: UpdateActiveCodeInput,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
-  public updateProduct(
+  public updateActiveCode(
     id: string,
-    requestBody: UpdateProductInput,
+    requestBody: UpdateActiveCodeInput,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Assistant>
-  public updateProduct(
+  public updateActiveCode(
     id: string,
-    requestBody: UpdateProductInput,
+    requestBody: UpdateActiveCodeInput,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Assistant> | string {
     const requestSendOptions = {
       service: this.service,
-      path: '/api/admin/product/{id}',
+      path: '/api/admin/active-code/{id}',
       method: 'patch',
       paramsPath: {
         id,
@@ -180,26 +181,26 @@ export class ProductService {
   }
   
   /**
-   * 删除产品
+   * 删除激活码
    */
-  public removeProduct(
+  public removeActiveCode(
     id: string,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
-  public removeProduct(
+  public removeActiveCode(
     id: string,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void>
-  public removeProduct(
+  public removeActiveCode(
     id: string,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void> | string {
     const requestSendOptions = {
       service: this.service,
-      path: '/api/admin/product/{id}',
+      path: '/api/admin/active-code/{id}',
       method: 'delete',
       paramsPath: {
         id,
@@ -219,7 +220,12 @@ export class ProductService {
 
 
 namespace RequestQueryParams {
-  export type GetProducts = {
-    enable: boolean;
+  export type FindActiveCodes = {
+    code?: string;
+    enable?: boolean;
+    /**
+     * 兑换类型
+     */
+    type?: 'COUNT' | 'TIME';
   }
 }

@@ -19,6 +19,7 @@ export class ErrorInterceptor implements NestInterceptor {
         } else {
           throw new HttpException(
             {
+              toast: true,
               message: error.message,
               stack: error.stack,
             },

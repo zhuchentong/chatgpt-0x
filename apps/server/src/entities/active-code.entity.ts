@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, ManyToOne, BeforeInsert } from 'typeorm'
+import { Entity, Column, BeforeInsert, OneToMany, PrimaryColumn } from 'typeorm'
 import { pipe } from 'ramda'
 import {
   EntityWithEnable,
@@ -7,19 +7,18 @@ import {
   EntityWithUUID,
 } from '../common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
-import { Balance } from './balance.entity'
-import { Product } from './product.entity'
 import { customAlphabet } from 'nanoid'
+import { ProductType } from 'src/config/enum.config'
+import { Balance } from './balance.entity'
 
 @Entity('active_code')
 export class ActiveCode extends pipe(
-  EntityWithUUID,
   EntityWithEnable,
   EntityWithTime,
 )(EntityClass) {
   @ApiProperty({ description: '激活码' })
-  @Column({ unique: true })
-  code: string
+  @PrimaryColumn()
+  key: string
 
   @ApiProperty({ description: '激活码' })
   @Column({
@@ -41,19 +40,27 @@ export class ActiveCode extends pipe(
   @Column({
     name: 'count',
   })
-  count: string
+  count: number
 
-  @ApiProperty({ description: '产品' })
-  @ManyToOne(() => Product)
-  product: Product
+  @ApiProperty({ description: '兑换类型' })
+  @Column({ enum: ProductType })
+  type: ProductType
 
-  @ApiProperty({ description: '总量' })
+  @ApiProperty({ description: '兑换数值' })
+  @Column()
+  value: number
+
+  @ApiProperty({ description: '备注' })
+  @Column({ nullable: true })
+  remark: string
+
+  @ApiProperty({ description: '使用记录' })
   @OneToMany(() => Balance, (balance) => balance.code)
   balances: Balance[]
 
   @BeforeInsert()
   generateCode() {
     const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 6)
-    this.code = nanoid().toLocaleUpperCase()
+    this.key = nanoid().toLocaleUpperCase()
   }
 }

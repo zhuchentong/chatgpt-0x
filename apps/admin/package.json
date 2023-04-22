@@ -44,7 +44,7 @@
     "@babel/eslint-parser": "7.19.1",
     "@commitlint/cli": "17.4.4",
     "@commitlint/config-conventional": "17.4.4",
-    "@gopowerteam/request-generate": "0.1.17",
+    "@gopowerteam/request-generate": "0.1.18",
     "@iconify-json/icon-park": "1.1.10",
     "@iconify-json/icon-park-outline": "1.1.10",
     "@prettier/plugin-pug": "2.4.1",

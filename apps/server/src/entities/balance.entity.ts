@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne } from 'typeorm'
+import { Entity, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm'
 import { pipe } from 'ramda'
 import {
   EntityWithEnable,
@@ -9,6 +9,8 @@ import {
 import { ApiProperty } from '@nestjs/swagger'
 import { BalanceOrigin, ProductType } from 'src/config/enum.config'
 import { ActiveCode } from './active-code.entity'
+import { Order } from './order.entity'
+import { User } from './user.entity'
 
 @Entity('balance')
 export class Balance extends pipe(
@@ -25,10 +27,17 @@ export class Balance extends pipe(
   type: ProductType
 
   @ApiProperty({ description: '激活码' })
-  @ManyToOne(() => ActiveCode, (activeCode) => activeCode.balances, {
+  @ManyToOne(() => ActiveCode, (code) => code.balances, {
     nullable: true,
   })
+  @JoinColumn({ name: 'code' })
   code: ActiveCode
+
+  @ApiProperty({ description: '订单' })
+  @OneToOne(() => Order, {
+    nullable: true,
+  })
+  order: Order
 
   @ApiProperty({ description: '初始次数' })
   @Column({
@@ -50,7 +59,7 @@ export class Balance extends pipe(
     name: 'start_time',
     type: 'timestamp without time zone',
   })
-  startTime: number
+  startTime: Date
 
   @ApiProperty({ description: '结束时间' })
   @Column({
@@ -58,5 +67,10 @@ export class Balance extends pipe(
     name: 'end_time',
     type: 'timestamp without time zone',
   })
-  endTime: number
+  endTime: Date
+
+  @ApiProperty({ description: '用户' })
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
+  user: User
 }
