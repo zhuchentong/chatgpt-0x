@@ -25,6 +25,7 @@ import { AppInitInput } from '../dtos/app.dto'
 import { AdministratorService } from '../services/administrator.service'
 import { AppBaseResponse, TokenResponse } from '../responses/app.response'
 import { ConfigService } from '@nestjs/config'
+import { ToastException } from 'src/exceptions/toast.exception'
 
 @Controller('app')
 @ApiTags('app')
@@ -43,7 +44,7 @@ export class AppController {
     const count = await this.administratorService.countAdministrator()
 
     if (count !== 0) {
-      return new HttpException(
+      return new ToastException(
         '系统已进行过初始化配置',
         HttpStatus.EXPECTATION_FAILED,
       )

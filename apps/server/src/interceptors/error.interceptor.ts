@@ -14,16 +14,17 @@ export class ErrorInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((error: HttpException | Error) => {
-        if (error instanceof HttpException) {
-          throw error
-        } else {
-          throw new HttpException(
-            {
-              message: error.message,
-              stack: error.stack,
-            },
-            HttpStatus.INTERNAL_SERVER_ERROR,
-          )
+        switch (true) {
+          case error instanceof HttpException:
+            throw error
+          default:
+            throw new HttpException(
+              {
+                message: error.message,
+                stack: error.stack,
+              },
+              HttpStatus.INTERNAL_SERVER_ERROR,
+            )
         }
       }),
     )
