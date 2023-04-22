@@ -1,6 +1,7 @@
 import type { ChatMessage } from 'chatgpt'
 import { useRequest } from 'virtual:request'
 import { RequestGenerateType } from '@gopowerteam/request'
+import { EventSourcePolyfill } from 'event-source-polyfill'
 import type { AssistantChatRecord, Chat } from '@/interfaces'
 import { useStore } from '@/store'
 import { ChatRole } from '@/config/enum.config'
@@ -56,7 +57,7 @@ function sendChatMessage(message: string) {
     ) as AssistantChatRecord
   }
 
-  const event = new EventSource(
+  const event = new EventSourcePolyfill(
     openAIService.message(
       { message, parentMessageId: lastMessage?.id, prompt: assistant.prompt },
       [],
@@ -64,6 +65,11 @@ function sendChatMessage(message: string) {
         type: RequestGenerateType.URL,
       },
     ),
+    {
+      headers: {
+        Authorization: `Bearer ${store.user.accessToken}`,
+      },
+    },
   )
 
   const closeEvent = () => {

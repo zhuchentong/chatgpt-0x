@@ -543,21 +543,18 @@ importers:
       dom-to-image:
         specifier: ^2.6.0
         version: 2.6.0
+      event-source-polyfill:
+        specifier: ^1.0.31
+        version: 1.0.31
       highlight.js:
         specifier: ^11.7.0
         version: 11.7.0
-      highlightjs-copy:
-        specifier: ^1.0.3
-        version: 1.0.3
       markdown-it:
         specifier: ^13.0.1
         version: 13.0.1
       markdown-it-link-attributes:
         specifier: ^4.0.1
         version: 4.0.1
-      marked:
-        specifier: ^4.3.0
-        version: 4.3.0
       naive-ui:
         specifier: ^2.34.3
         version: 2.34.3(vue@3.2.47)
@@ -607,15 +604,15 @@ importers:
       '@prettier/plugin-pug':
         specifier: 2.4.1
         version: 2.4.1(prettier@2.8.4)
+      '@types/event-source-polyfill':
+        specifier: ^1.0.1
+        version: 1.0.1
       '@types/markdown-it':
         specifier: ^12.2.3
         version: 12.2.3
       '@types/markdown-it-link-attributes':
         specifier: ^3.0.1
         version: 3.0.1
-      '@types/marked':
-        specifier: ^4.0.8
-        version: 4.0.8
       '@types/node':
         specifier: '18'
         version: 18.15.11
@@ -3883,6 +3880,10 @@ packages:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
     dev: true
 
+  /@types/event-source-polyfill@1.0.1:
+    resolution: {integrity: sha512-dls8b0lUgJ/miRApF0efboQ9QZnAm7ofTO6P1ILu8bRPxUFKDxVwFf8+TeuuErmNui6blpltyr7+eV72dbQXlQ==}
+    dev: true
+
   /@types/express-serve-static-core@4.17.33:
     resolution: {integrity: sha512-TPBqmR/HRYI3eC2E5hmiivIzv+bidAfXofM+sbonAGvyDhySGw9/PQZFt2BLOrjUUR++4eJVpx6KnLQK1Fk9tA==}
     dependencies:
@@ -3978,10 +3979,6 @@ packages:
     dependencies:
       '@types/linkify-it': 3.0.2
       '@types/mdurl': 1.0.2
-    dev: true
-
-  /@types/marked@4.0.8:
-    resolution: {integrity: sha512-HVNzMT5QlWCOdeuBsgXP8EZzKUf0+AXzN+sLmjvaB3ZlLqO+e4u0uXrdw9ub69wBKFs+c6/pA4r9sy6cCDvImw==}
     dev: true
 
   /@types/mdast@3.0.11:
@@ -8088,6 +8085,10 @@ packages:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
 
+  /event-source-polyfill@1.0.31:
+    resolution: {integrity: sha512-4IJSItgS/41IxN5UVAVuAyczwZF7ZIEsM1XAoUzIHA6A+xzusEZUutdXz2Nr+MQPLxfTiCvqE79/C8HT8fKFvA==}
+    dev: false
+
   /event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
@@ -9166,10 +9167,6 @@ packages:
   /highlight.js@11.7.0:
     resolution: {integrity: sha512-1rRqesRFhMO/PRF+G86evnyJkCgaZFOI+Z6kdj15TA18funfoqJXvgPCLSf0SWq3SRfg1j3HlDs8o4s3EGq1oQ==}
     engines: {node: '>=12.0.0'}
-    dev: false
-
-  /highlightjs-copy@1.0.3:
-    resolution: {integrity: sha512-vXHBmzz7IuJg8f5ixX7qxhfCCDnEQCXRuIzcd7yTblJazZT3ZkaRto0md8IfBu86JdK4VRIdKMubxKt7kwNGfg==}
     dev: false
 
   /homedir-polyfill@1.0.3:
@@ -11349,12 +11346,6 @@ packages:
       linkify-it: 4.0.1
       mdurl: 1.0.1
       uc.micro: 1.0.6
-    dev: false
-
-  /marked@4.3.0:
-    resolution: {integrity: sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==}
-    engines: {node: '>= 12'}
-    hasBin: true
     dev: false
 
   /mathml-tag-names@2.1.3:

@@ -4,6 +4,8 @@ import { OpenAIService } from '../services/openai.service'
 import { Public } from 'src/decorators/public.decorator'
 import { Observable } from 'rxjs'
 import { ChatMessageInput } from '../dtos/openai.dto'
+import { RequestUser } from 'src/decorators/request-user.decorator'
+import { User } from 'src/entities/user.entity'
 
 @Controller('openai')
 @ApiTags('openai')
@@ -11,11 +13,11 @@ import { ChatMessageInput } from '../dtos/openai.dto'
 export class OpenaiController {
   constructor(private readonly openai: OpenAIService) {}
 
-  @Public()
   @ApiOperation({ operationId: 'message', summary: '发送消息' })
   @Sse('message')
   message(
     @Query() { message, parentMessageId, prompt }: ChatMessageInput,
+    @RequestUser() _user: User,
   ): Observable<MessageEvent> {
     return new Observable((subscriber) => {
       this.openai
