@@ -63,7 +63,6 @@
       </NButton>
     </div>
     <n-divider />
-    <n-divider />
 
     <n-popover trigger="hover">
       <template #trigger>
