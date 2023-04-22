@@ -4,7 +4,6 @@ import {
   EntityWithEnable,
   EntityWithTime,
   EntityClass,
-  EntityWithUUID,
 } from '../common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
 import { customAlphabet } from 'nanoid'

@@ -32,7 +32,7 @@ export class ActiveCodeService {
       mode: PaginatorMode.Index,
       entity: ActiveCode,
       query: {
-        order: { code: Order.ASC, ...order },
+        order: { createdAt: Order.DESC, ...order },
         skip: page.skip,
         limit: page.limit,
       },

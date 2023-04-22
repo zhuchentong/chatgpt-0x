@@ -220,6 +220,6 @@ export class ProductService {
 
 namespace RequestQueryParams {
   export type GetProducts = {
-    enable: boolean;
+    enable?: boolean;
   }
 }

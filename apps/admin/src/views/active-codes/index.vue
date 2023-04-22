@@ -105,7 +105,7 @@ const editsForms: FormItemsOptions = [
 
 const columns: TableColumnsOptions<ActiveCode> = [
   {
-    key: 'code',
+    key: 'key',
     title: '兑换码',
   },
   {
@@ -151,7 +151,7 @@ const columns: TableColumnsOptions<ActiveCode> = [
             confirmText: '是否确定执行此操作？',
             callback: (record) => {
               activeCodeService
-                .updateActiveCode(record.id, { enable: !record.enable })
+                .updateActiveCode(record.key, { enable: !record.enable })
                 .then(() => {
                   table.reload()
                 })
@@ -162,7 +162,7 @@ const columns: TableColumnsOptions<ActiveCode> = [
             confirm: true,
             confirmText: '是否确定删除此兑换码？',
             callback: (record) => {
-              activeCodeService.removeActiveCode(record.id).then(() => {
+              activeCodeService.removeActiveCode(record.key).then(() => {
                 table.reload()
               })
             },
@@ -176,7 +176,7 @@ const columns: TableColumnsOptions<ActiveCode> = [
                 columns: 1,
                 submit: async (data) => {
                   activeCodeService
-                    .updateActiveCode(record.id, data)
+                    .updateActiveCode(record.key, data)
                     .then(() => {
                       table.reload()
                     })

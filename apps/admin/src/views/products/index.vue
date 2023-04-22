@@ -64,8 +64,8 @@ function onCreate() {
   })
 }
 
-function loadData({ update }: LoadDataParams) {
-  productService.getProducts([pageService]).then((data) => {
+function loadData({ search, update }: LoadDataParams) {
+  productService.getProducts(search, [pageService]).then((data) => {
     update(data)
   })
 }

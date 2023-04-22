@@ -45,7 +45,7 @@ export class FindActiveCodeInput extends pipe(
   @ApiProperty({ required: false })
   @Optional()
   @WhereOption({ type: WhereOperator.Equal })
-  code?: string
+  key?: string
 
   @ApiProperty({ required: false })
   @Optional()

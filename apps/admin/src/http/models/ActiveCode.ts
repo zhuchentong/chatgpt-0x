@@ -18,7 +18,7 @@ export type ActiveCode = {
   /**
    * 激活码
    */
-  code: string;
+  key: string;
   /**
    * 激活码
    */

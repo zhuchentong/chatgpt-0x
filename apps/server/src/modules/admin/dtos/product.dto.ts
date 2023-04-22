@@ -1,8 +1,9 @@
 import { Optional } from '@nestjs/common'
 import { ApiProperty, PartialType } from '@nestjs/swagger'
 import { IsEnum, IsInt, IsNumber, IsString } from 'class-validator'
+import { WhereOption } from 'src/common/typeorm/decorators'
 import { QueryInput } from 'src/common/typeorm/query/inputs/query.input'
-import { ProductType } from 'src/config/enum.config'
+import { ProductType, WhereOperator } from 'src/config/enum.config'
 import { Product } from 'src/entities/product.entity'
 
 /*
@@ -35,7 +36,8 @@ export class CreateProductInput {
 export class UpdateProductInput extends PartialType(CreateProductInput) {}
 
 export class FindProductInput extends QueryInput<Product> {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Optional()
+  @WhereOption({ type: WhereOperator.Equal })
   enable?: boolean
 }
