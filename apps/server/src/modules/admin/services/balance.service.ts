@@ -1,46 +1,65 @@
-import { Injectable } from '@nestjs/common'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { BalanceOrigin, ProductType } from 'src/config/enum.config'
-import { ActiveCode } from 'src/entities/active-code.entity'
+import { ProductType } from 'src/config/enum.config'
 import { Balance } from 'src/entities/balance.entity'
-import { Repository } from 'typeorm'
-import dayjs from 'dayjs'
-import { Order } from 'src/entities/order.entity'
-import { User } from 'src/entities/user.entity'
+import { MoreThan, Raw, Repository } from 'typeorm'
+import { Cache } from 'cache-manager'
 @Injectable()
 export class BalanceService {
   constructor(
     @InjectRepository(Balance)
     private balanceRepository: Repository<Balance>,
+    @Inject(CACHE_MANAGER)
+    private cacheManager: Cache,
   ) {}
 
-  // findAll({ buildWhereQuery, page, order }: QueryInputParam<ActiveCode>) {
-  //   const builder = this.activeCodeRepository.createQueryBuilder('active_code')
+  private async getUserBalanceFromCache(userId) {
+    const balance = await this.cacheManager.get<Balance>(`BALANCE:${userId}`)
 
-  //   builder.andWhere(buildWhereQuery())
+    if (balance) {
+      return balance
+    }
+  }
 
-  //   const paginator = buildPaginator({
-  //     mode: PaginatorMode.Index,
-  //     entity: ActiveCode,
-  //     query: {
-  //       order: { code: Order.ASC, ...order },
-  //       skip: page.skip,
-  //       limit: page.limit,
-  //     },
-  //   })
+  private async getUserBalanceFromDB(userId) {
+    const balances = await this.balanceRepository.find({
+      where: [
+        {
+          enable: true,
+          type: ProductType.Time,
+          startTime: Raw((time) => `${time} < NOW()`),
+          endTime: Raw((time) => `${time} > NOW()`),
+          user: { id: userId },
+        },
+        {
+          enable: true,
+          type: ProductType.Count,
+          currentCount: MoreThan(0),
+          user: { id: userId },
+        },
+      ],
+      relations: { user: true },
+    })
 
-  //   return paginator.paginate(builder)
-  // }
+    const balance =
+      balances.find((balance) => balance.type === ProductType.Time) ||
+      balances.find((balance) => balance.type === ProductType.Count)
 
-  // findOne(id: string) {
-  //   return this.activeCodeRepository.findOneBy({ id })
-  // }
+    if (balance) {
+      this.cacheManager.set(`BALANCE:${userId}`, balance)
+    }
 
-  // update(id: string, input: UpdateActiveCodeInput) {
-  //   return this.activeCodeRepository.update(id, input)
-  // }
+    return balance
+  }
 
-  // remove(id: string) {
-  //   return this.activeCodeRepository.softDelete(id)
-  // }
+  async getUserBalance(userId: string) {
+    const balance = await this.getUserBalanceFromCache(userId)
+
+    if (balance) {
+      return balance
+    } else {
+      return this.getUserBalanceFromDB(userId)
+    }
+  }
 }

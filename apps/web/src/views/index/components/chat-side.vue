@@ -45,19 +45,24 @@
     <div class="actions flex flex-col items-start space-y-2 px-5">
       <NButton
         block
+        :focusable="false"
         @click="() => (showSystemSetting = true)">
         <template #icon>
           <icon-park-outline:setting></icon-park-outline:setting>
         </template>
         系统设置
       </NButton>
-      <!-- <NButton block>
+      <NButton
+        block
+        :focusable="false"
+        @click="() => (showUserRecharge = true)">
         <template #icon>
           <icon-park-outline:finance></icon-park-outline:finance>
         </template>
         会员充值
-      </NButton> -->
+      </NButton>
     </div>
+    <n-divider />
     <n-divider />
 
     <n-popover trigger="hover">
@@ -91,6 +96,9 @@
       <SystemSetting></SystemSetting>
     </n-drawer-content>
   </n-drawer>
+  <n-modal v-model:show="showUserRecharge">
+    <UserRecharge @close="() => (showUserRecharge = false)"></UserRecharge>
+  </n-modal>
 </template>
 
 <style lang="less" scoped>
@@ -120,11 +128,15 @@
 </style>
 
 <script setup lang="ts">
+import { useModal } from '@gopowerteam/vue-modal'
 import { useStore } from '@/store'
 import SystemSetting from '@/components/system-setting.vue'
+import UserRecharge from '@/components/user-recharge.vue'
 
+const modal = useModal()
 const store = useStore()
 const showSystemSetting = ref(false)
+const showUserRecharge = ref(false)
 const colorMode = useColorMode()
 
 function onChangeAssistant(id: string) {

@@ -1,13 +1,17 @@
 declare module 'virtual:request' {
+import { ActiveCodeService } from '~/http/services/ActiveCodeService'
 import { AppService } from '~/http/services/AppService'
 import { AssistantService } from '~/http/services/AssistantService'
+import { BalanceService } from '~/http/services/BalanceService'
 import { OpenaiService } from '~/http/services/OpenaiService'
 import { QiniuService } from '~/http/services/QiniuService'
 import { WechatService } from '~/http/services/WechatService'
 
 const serviceMap = {
+  ActiveCodeService,
   AppService,
   AssistantService,
+  BalanceService,
   OpenaiService,
   QiniuService,
   WechatService,

@@ -1,10 +1,11 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ActiveCode } from 'src/entities/active-code.entity'
 import { Balance } from 'src/entities/balance.entity'
 import { User } from 'src/entities/user.entity'
 import { Raw, Repository } from 'typeorm'
 import { BalanceService } from './balance.service'
+import { ToastException } from 'src/exceptions/toast.exception'
 
 @Injectable()
 export class ActiveCodeService {
@@ -31,13 +32,13 @@ export class ActiveCodeService {
       where: {
         key,
         enable: true,
-        startTime: Raw((time) => `${time} > NOW()`),
-        endTime: Raw((time) => `${time} < NOW()`),
+        startTime: Raw((time) => `${time} < NOW()`),
+        endTime: Raw((time) => `${time} > NOW()`),
       },
     })
 
     if (!code) {
-      throw new Error('兑换码不存在或已经过期')
+      throw new ToastException('兑换码不存在或已经过期')
     }
 
     // 检测兑换码是否已经使用
@@ -49,7 +50,7 @@ export class ActiveCodeService {
     })
 
     if (isUsed) {
-      throw new Error('兑换码已失效')
+      throw new ToastException('兑换码已使用')
     }
 
     // 检测兑换码是否已经使用完
@@ -60,7 +61,7 @@ export class ActiveCodeService {
     })
 
     if (code.count <= useCount) {
-      throw new Error('兑换码已失效')
+      throw new ToastException('兑换码已失效')
     }
 
     return this.balanceService.createByCode(code, user)

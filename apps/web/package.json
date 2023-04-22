@@ -25,7 +25,6 @@
     }
   },
   "dependencies": {
-    "@arco-design/web-vue": "2.43.2",
     "@gopowerteam/request": "0.1.16",
     "@gopowerteam/vue-dynamic-table": "~0.0.34",
     "@gopowerteam/vue-modal": "0.1.12",

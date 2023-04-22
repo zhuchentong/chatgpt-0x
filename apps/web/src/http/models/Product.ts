@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type User = {
+export type Product = {
   /**
    * ID
    */
@@ -20,27 +20,31 @@ export type User = {
    */
   updatedAt: string;
   /**
-   * 用户邮箱
+   * 删除时间
    */
-  email: string;
+  deletedAt: string;
   /**
-   * 用户昵称
+   * 创建人
    */
-  nickname: string;
+  creator: string;
   /**
-   * OPENID
+   * 操作人
    */
-  openid: string;
+  operator: string;
   /**
-   * UNIONID
+   * 标题
    */
-  unionid: string;
+  title: string;
   /**
-   * 手机号码
+   * 类型
    */
-  mobile: string;
+  type: string;
   /**
-   * 用户头像
+   * 数值
    */
-  avatar: string;
+  value: number;
+  /**
+   * 价格
+   */
+  price: number;
 }
