@@ -5,6 +5,7 @@ import {
   EntityClass,
   EntityWithDelete,
   EntityWithUUID,
+  EntityWithNanoID,
 } from 'src/common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
 import { EntityWithCreator } from 'src/common/typeorm/entity/entity-with-creator'
@@ -15,11 +16,10 @@ import { User } from './user.entity'
 
 @Entity('order')
 export class Order extends pipe(
-  EntityWithUUID,
+  EntityWithNanoID,
   EntityWithTime,
   EntityWithDelete,
   EntityWithCreator,
-  EntityWithOperator,
 )(EntityClass) {
   @ApiProperty({ description: '订单状态', enum: OrderState })
   @Column({ enum: OrderState })
@@ -38,4 +38,19 @@ export class Order extends pipe(
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User
+
+  @Column({
+    name: 'transaction_id',
+    nullable: true,
+  })
+  @ApiProperty({ description: '微信支付交易号' })
+  public transactionId: string
+
+  @Column({
+    name: 'paid_time',
+    type: 'timestamp without time zone',
+    nullable: true,
+  })
+  @ApiProperty({ description: '支付时间', type: 'string' })
+  public paidTime: Date
 }

@@ -4,9 +4,10 @@ import { Request, Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
 import { IncomingMessage } from 'node:http'
 import { AppOrigin } from 'src/config/enum.config'
+import { FastifyRequest } from 'fastify'
 
 export function RequestContextMiddleware(
-  req: Request,
+  req: FastifyRequest,
   res: Response,
   next: () => void,
 ) {
@@ -15,19 +16,18 @@ export function RequestContextMiddleware(
 
 @Injectable()
 export class RequestContext {
-  private req: Request
+  private req: FastifyRequest
   private res: Response
 
   static cls = new AsyncLocalStorage<RequestContext>()
 
   static get currentContext() {
-    console.log('xxzxczxc')
     return this.cls.getStore()
   }
 
   private get payload() {
     const jwtService = new JwtService()
-    const request = RequestContext.currentContext.req as IncomingMessage
+    const request = RequestContext.currentContext.req as FastifyRequest
     const jwt = request.headers.authorization
 
     return jwtService.decode(jwt.replace('Bearer ', '')) as {
@@ -45,7 +45,11 @@ export class RequestContext {
     return this.payload?.id
   }
 
-  public static create(req: Request, res: Response) {
+  public get host() {
+    return this.req.headers.host
+  }
+
+  public static create(req: FastifyRequest, res: Response) {
     const context = new RequestContext()
     context.req = req
     context.res = res

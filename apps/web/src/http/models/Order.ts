@@ -45,4 +45,12 @@ export type Order = {
    * 用户
    */
   user: User;
+  /**
+   * 微信支付交易号
+   */
+  transactionId: string;
+  /**
+   * 支付时间
+   */
+  paidTime: string;
 }

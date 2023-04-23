@@ -8,6 +8,7 @@ import { WXMPService } from './services/wxmp.service'
 import { WXMPMessageService } from './services/wxmp-message.service'
 import { HttpModule } from '@nestjs/axios'
 import { ClientModule } from 'src/modules/client/client.module'
+import { WXPayService } from './services/wxpay.service'
 
 @Module({
   imports: [
@@ -16,8 +17,8 @@ import { ClientModule } from 'src/modules/client/client.module'
     forwardRef(() => ClientModule),
   ],
   controllers: [WXMPController],
-  providers: [RequestContext, WXMPService, WXMPMessageService],
-  exports: [WXMPService],
+  providers: [RequestContext, WXMPService, WXMPMessageService, WXPayService],
+  exports: [WXMPService, WXPayService],
 })
 export class WechatModule implements OnModuleInit {
   constructor(private readonly config: ConfigService) {}

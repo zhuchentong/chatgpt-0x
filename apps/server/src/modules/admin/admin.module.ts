@@ -24,11 +24,14 @@ import { Product } from 'src/entities/product.entity'
 import { ActiveCode } from 'src/entities/active-code.entity'
 import { Balance } from 'src/entities/balance.entity'
 import { Order } from 'src/entities/order.entity'
+import { WechatModule } from 'src/shared/wechat/wechat.module'
+import { PaymentController } from './controllers/payment.controller'
 
 @Module({
   imports: [
     AuthModule,
     QiniuModule,
+    WechatModule,
     TypeOrmModule.forFeature([
       Administrator,
       User,
@@ -57,6 +60,7 @@ import { Order } from 'src/entities/order.entity'
     ActiveCodeController,
     OrderController,
     BalanceController,
+    PaymentController,
   ],
 })
 export class AdminModule {}

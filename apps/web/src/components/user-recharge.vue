@@ -15,40 +15,102 @@
           </div>
         </div>
       </template>
-      <n-form
-        ref="form"
-        label-placement="left"
-        label-width="80px"
-        :model="formModel"
-        :rules="formRules"
-        :show-require-mark="false">
-        <n-form-item
-          label="兑换码:"
-          path="activeCode">
-          <n-input-group>
-            <n-input
-              v-model:value="formModel.activeCode"
-              :maxlength="10"
-              :on-input="
-                () =>
-                  (formModel.activeCode = formModel.activeCode.toUpperCase())
-              "
-              placeholder="关注公众号或微信群不定时发放兑换码"></n-input>
-            <n-button
-              type="primary"
-              @click="onUseAciveCode">
-              兑换
-            </n-button>
-          </n-input-group>
-        </n-form-item>
-      </n-form>
+      <div class="active-code-container">
+        <n-form
+          ref="form"
+          label-placement="left"
+          label-width="80px"
+          :model="formModel"
+          :rules="formRules"
+          :show-require-mark="false">
+          <n-form-item
+            label="兑换码:"
+            path="activeCode">
+            <n-input-group>
+              <n-input
+                v-model:value="formModel.activeCode"
+                :maxlength="10"
+                :on-input="
+                  () =>
+                    (formModel.activeCode = formModel.activeCode.toUpperCase())
+                "
+                placeholder="关注公众号或微信群不定时发放兑换码"></n-input>
+              <n-button
+                type="primary"
+                @click="onUseAciveCode">
+                兑换
+              </n-button>
+            </n-input-group>
+          </n-form-item>
+        </n-form>
+      </div>
+      <div
+        v-if="products.length"
+        class="payment-container">
+        <n-grid
+          :cols="3"
+          :x-gap="12"
+          :y-gap="12">
+          <n-grid-item
+            v-for="product in products"
+            :key="product.id">
+            <n-card>
+              <div class="text-center space-y-2 p-5 rounded">
+                <div class="font-bold">{{ product.title }}</div>
+                <div class="space-x-2 pb-5">
+                  <span class="text-2xl font-bold">
+                    {{ product.value }}
+                    {{ product.type === ProductType.Count ? '次' : '天' }}
+                  </span>
+                  <span>/</span>
+                  <span class="price">
+                    {{ (product.price / 100).toFixed(2) }}元
+                  </span>
+                </div>
+                <n-button
+                  type="primary"
+                  @click="() => onSubmitOrder(product.id)">
+                  立即订购
+                </n-button>
+              </div>
+            </n-card>
+          </n-grid-item>
+        </n-grid>
+      </div>
     </n-card>
+
+    <n-modal
+      v-model:show="showPayment"
+      class="desktop:w-500px mobile:w-80% text-center"
+      :mask-closable="false"
+      preset="card">
+      <div v-if="order">
+        <div class="font-blod text-2xl">{{ order?.title }}</div>
+        <div class="price pt-2">{{ order?.price / 100 }}</div>
+        <div class="qrcode-image text-center">
+          <img
+            class="w-50%"
+            :src="order?.qrcode" />
+        </div>
+        <img
+          src="/wechat-pay.png"
+          style="height: 30px" />
+      </div>
+    </n-modal>
   </div>
 </template>
 
 <style lang="less">
 .user-recharge-container {
   width: v-bind(width);
+}
+
+.price {
+  font-size: 16px;
+  &::before {
+    content: '¥';
+    padding-right: 5px;
+  }
 }
 </style>
 
@@ -58,21 +120,26 @@ import { useRequest } from 'virtual:request'
 import dayjs from 'dayjs'
 import minMax from 'dayjs/plugin/minMax'
 import { useStore } from '@/store'
-import { ProductType } from '@/config/enum.config'
+import { OrderState, ProductType } from '@/config/enum.config'
+import type { Product } from '@/http/models/Product'
+import type { SubmitOrderResponse } from '@/http/models/SubmitOrderResponse'
 
-const emits = defineEmits(['close'])
 dayjs.extend(minMax)
 const store = useStore()
 const form = $(templateRef<FormInst>('form'))
 const width = computed(() => (store.app.desktop ? '50%' : '90%'))
 
+const orderService = useRequest((service) => service.OrderService)
 const activeCodeService = useRequest((service) => service.ActiveCodeService)
 const balanceService = useRequest((service) => service.BalanceService)
+const productService = useRequest((service) => service.ProductService)
 const messageEventBus = useEventBus<{
   type: 'success' | 'error' | 'warning' | 'info'
   content: string
 }>('message')
 
+let order = $ref<SubmitOrderResponse>()
+let showPayment = $ref(false)
 const formModel = reactive({
   activeCode: '',
 })
@@ -90,6 +157,13 @@ const balance = reactive({
   time: 0,
   count: 0,
 })
+
+let products = $ref<Product[]>([])
+
+const { pause: pauseQueryPayment, resume: startQueryPayment } = useIntervalFn(
+  requestPaymentState,
+  2000,
+)
 
 async function onUseAciveCode() {
   await form.validate()
@@ -131,7 +205,42 @@ async function getUserBalance() {
   }
 }
 
+function getProducts() {
+  productService.getProducts().then((data) => {
+    products = data
+  })
+}
+
+function onSubmitOrder(productId: string) {
+  orderService.submitOrder({ productId }).then((data) => {
+    order = data
+    showPayment = true
+    startQueryPayment()
+  })
+}
+
+function requestPaymentState() {
+  if (order) {
+    orderService.queryPaymentState(order.orderId).then(({ state }) => {
+      if (state === OrderState.Paid) {
+        // 暂停轮训
+        pauseQueryPayment()
+        showPayment = false
+        messageEventBus.emit({
+          type: 'success',
+          content: '支付成功',
+        })
+        // 更新余额次数
+        getUserBalance()
+      }
+    })
+  } else {
+    pauseQueryPayment()
+  }
+}
+
 onMounted(() => {
   getUserBalance()
+  getProducts()
 })
 </script>

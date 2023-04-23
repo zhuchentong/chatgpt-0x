@@ -64,35 +64,6 @@ export class BalanceService {
     return this.balanceRepository.save(balance)
   }
 
-  /**
-   * 通过订单创建
-   * @param order
-   * @returns
-   */
-  createByOrder(order: Order) {
-    const product = order.product
-    const balance = this.balanceRepository.create({
-      origin: BalanceOrigin.Code,
-      type: product.type,
-    })
-
-    switch (product.type) {
-      case ProductType.Time:
-        balance.startTime = dayjs().toDate()
-        balance.endTime = dayjs().add(product.value, 'day').toDate()
-        break
-      case ProductType.Count:
-        balance.startCount = product.value
-        balance.currentCount = product.value
-        break
-    }
-
-    balance.order = order
-    balance.user = order.user
-
-    return this.balanceRepository.save(balance)
-  }
-
   async getUserBalanceFromCache(userId) {
     const balance = await this.cacheManager.get<Balance>(`BALANCE:${userId}`)
 

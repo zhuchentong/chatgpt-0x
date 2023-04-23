@@ -46,6 +46,13 @@ export default () => ({
     token: process.env.WXMP_TOKEN,
     aeskey: process.env.WXMP_AESKEY,
   },
+  wxpay: {
+    appId: process.env.WECHAT_PEY_APPID,
+    mchId: process.env.WECHAT_PAY_MCHID,
+    serialNo: process.env.WECHAT_PAY_SERIAL,
+    keyPath: process.env.WECHAT_PAY_KEYPATH,
+    privateKey: process.env.WECHAT_PAY_PRIVATE_KEY,
+  },
   email: {
     service: process.env.EMAIL_SERVICE,
     username: process.env.EMAIL_USERNAME,

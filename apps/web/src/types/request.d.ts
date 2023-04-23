@@ -4,6 +4,8 @@ import { AppService } from '~/http/services/AppService'
 import { AssistantService } from '~/http/services/AssistantService'
 import { BalanceService } from '~/http/services/BalanceService'
 import { OpenaiService } from '~/http/services/OpenaiService'
+import { OrderService } from '~/http/services/OrderService'
+import { ProductService } from '~/http/services/ProductService'
 import { QiniuService } from '~/http/services/QiniuService'
 import { WechatService } from '~/http/services/WechatService'
 
@@ -13,6 +15,8 @@ const serviceMap = {
   AssistantService,
   BalanceService,
   OpenaiService,
+  OrderService,
+  ProductService,
   QiniuService,
   WechatService,
 }
