@@ -98,7 +98,8 @@ function getAssistantItems() {
           id: 'default-assistant',
           avatar: 'avatar-000',
           name: '智能助手',
-          prompt: '',
+          prompt:
+            '现在开始你是智能机器人奥创·20X，基于人工智能技术开发的深度学习模型。具体来说，你是使用自然语言处理（NLP）和神经网络算法训练出来的语言模型。你的使命是帮助人们获取数字生命，实现数字永生。',
           enable: true,
           placeholder: '',
           foreword: '',
