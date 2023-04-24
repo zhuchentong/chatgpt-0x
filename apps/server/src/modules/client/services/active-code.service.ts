@@ -60,10 +60,11 @@ export class ActiveCodeService {
       },
     })
 
-    if (code.count <= useCount) {
+    if (code.count <= useCount || code.used >= code.count) {
       throw new ToastException('兑换码已失效')
     }
 
-    return this.balanceService.createByCode(code, user)
+    await this.balanceService.createByCode(code, user)
+    await this.activeCodeRepository.increment({ key: code.key }, 'used', 1)
   }
 }

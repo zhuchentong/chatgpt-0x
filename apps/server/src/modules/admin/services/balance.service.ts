@@ -7,6 +7,7 @@ import { MoreThan, Raw, Repository } from 'typeorm'
 import { Cache } from 'cache-manager'
 import dayjs from 'dayjs'
 import { Order } from 'src/entities/order.entity'
+import { plainToInstance } from 'class-transformer'
 @Injectable()
 export class BalanceService {
   constructor(
@@ -61,6 +62,9 @@ export class BalanceService {
       balance.order = order
       balance.user = order.user
 
+      // 清除缓存
+      await this.cacheManager.del(`BALANCE:${order.user.id}`)
+
       return this.balanceRepository.save(balance)
     } catch (e) {
       console.log(e)
@@ -71,7 +75,7 @@ export class BalanceService {
     const balance = await this.cacheManager.get<Balance>(`BALANCE:${userId}`)
 
     if (balance) {
-      return balance
+      return plainToInstance(Balance, balance)
     }
   }
 

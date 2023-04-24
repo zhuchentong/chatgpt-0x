@@ -5,10 +5,10 @@ import { ActiveCode } from 'src/entities/active-code.entity'
 import { Balance } from 'src/entities/balance.entity'
 import { MoreThan, Raw, Repository } from 'typeorm'
 import * as dayjs from 'dayjs'
-import { Order } from 'src/entities/order.entity'
 import { User } from 'src/entities/user.entity'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
+import { plainToInstance } from 'class-transformer'
 
 @Injectable()
 export class BalanceService {
@@ -27,7 +27,7 @@ export class BalanceService {
       .andWhere('balance.enable = true')
       .andWhere('balance.type = :type', { type: ProductType.Time })
       .getRawOne()
-    console.log(endTime)
+
     return endTime ? dayjs(endTime) : dayjs()
   }
 
@@ -61,6 +61,9 @@ export class BalanceService {
     balance.code = code
     balance.user = user
 
+    // 清除缓存
+    await this.cacheManager.del(`BALANCE:${user.id}`)
+
     return this.balanceRepository.save(balance)
   }
 
@@ -68,7 +71,7 @@ export class BalanceService {
     const balance = await this.cacheManager.get<Balance>(`BALANCE:${userId}`)
 
     if (balance) {
-      return balance
+      return plainToInstance(Balance, balance)
     }
   }
 
@@ -133,20 +136,30 @@ export class BalanceService {
   async consumeUserBalance(userId: string) {
     const balance = await this.getUserBalanceFromCache(userId)
 
-    if (balance.type === ProductType.Time) {
-      return
-    }
+    switch (balance.type) {
+      case ProductType.Count: {
+        // 消耗1次
+        balance.currentCount -= 1
+        // 更新缓存
+        this.cacheManager.set(`BALANCE:${userId}`, balance)
+        // 更新数据库
+        this.balanceRepository.decrement({ id: balance.id }, 'currentCount', 1)
 
-    // 消耗1次
-    balance.currentCount -= 1
-    // 更新缓存
-    this.cacheManager.set(`BALANCE:${userId}`, balance)
-    // 更新数据库
-    this.balanceRepository.decrement({ id: balance.id }, 'currentCount', 1)
+        // 余额为0时删除缓存
+        if (balance.currentCount <= 0) {
+          this.cacheManager.del(`BALANCE:${userId}`)
+        }
 
-    // 余额为0时删除缓存
-    if (balance.currentCount <= 0) {
-      this.cacheManager.del(`BALANCE:${userId}`)
+        break
+      }
+      case ProductType.Time: {
+        // 余额为0时删除缓存
+        if (balance.endTime.getTime() < Date.now()) {
+          this.cacheManager.del(`BALANCE:${userId}`)
+        }
+
+        break
+      }
     }
   }
 }

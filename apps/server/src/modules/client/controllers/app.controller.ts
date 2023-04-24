@@ -10,7 +10,6 @@ import {
 import {
   ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'

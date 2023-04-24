@@ -131,6 +131,11 @@ const columns: TableColumnsOptions<ActiveCode> = [
     key: 'count',
     title: '数量',
   },
+
+  {
+    key: 'used',
+    title: '已兑换',
+  },
   {
     key: 'enable',
     title: '状态',

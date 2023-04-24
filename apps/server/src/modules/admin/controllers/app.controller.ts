@@ -71,7 +71,7 @@ export class AppController {
           message: '系统需要进行初始化配置',
           ready: false,
         },
-        HttpStatus.EXPECTATION_FAILED,
+        444,
       )
     }
 

@@ -221,7 +221,7 @@ export class ActiveCodeService {
 
 namespace RequestQueryParams {
   export type FindActiveCodes = {
-    code?: string;
+    key?: string;
     enable?: boolean;
     /**
      * 兑换类型

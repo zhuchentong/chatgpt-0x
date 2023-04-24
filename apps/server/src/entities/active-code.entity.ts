@@ -8,7 +8,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger'
 import { customAlphabet } from 'nanoid'
 import { ProductType } from 'src/config/enum.config'
-import { Balance } from './balance.entity'
+import { Type } from 'class-transformer'
 
 @Entity('active_code')
 export class ActiveCode extends pipe(
@@ -19,6 +19,7 @@ export class ActiveCode extends pipe(
   @PrimaryColumn()
   key: string
 
+  @Type(() => Date)
   @ApiProperty({ description: '激活码' })
   @Column({
     name: 'start_time',
@@ -27,6 +28,7 @@ export class ActiveCode extends pipe(
   })
   startTime: Date
 
+  @Type(() => Date)
   @ApiProperty({ description: '激活码' })
   @Column({
     name: 'end_time',
@@ -53,9 +55,9 @@ export class ActiveCode extends pipe(
   @Column({ nullable: true })
   remark: string
 
-  @ApiProperty({ description: '使用记录' })
-  @OneToMany(() => Balance, (balance) => balance.code)
-  balances: Balance[]
+  @ApiProperty({ description: '兑换数' })
+  @Column({ default: 0 })
+  used: number
 
   @BeforeInsert()
   generateCode() {

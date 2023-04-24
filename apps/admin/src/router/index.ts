@@ -1,6 +1,6 @@
-import generatedRoutes from '~pages'
 import { setupLayouts } from 'virtual:generated-layouts'
 import type { RouteRecordRaw } from 'vue-router'
+import generatedRoutes from '~pages'
 
 // 自定义路由
 const routes: RouteRecordRaw[] = [

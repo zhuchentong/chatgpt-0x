@@ -6,7 +6,9 @@ import { OrderState } from 'src/config/enum.config'
 import { BalanceService } from '../services/balance.service'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import type { Cache } from 'cache-manager'
+import { ApiExcludeController } from '@nestjs/swagger'
 
+@ApiExcludeController()
 @Controller('payment')
 export class PaymentController {
   constructor(

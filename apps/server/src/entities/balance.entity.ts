@@ -11,6 +11,7 @@ import { BalanceOrigin, ProductType } from 'src/config/enum.config'
 import { ActiveCode } from './active-code.entity'
 import { Order } from './order.entity'
 import { User } from './user.entity'
+import { Type } from 'class-transformer'
 
 @Entity('balance')
 export class Balance extends pipe(
@@ -27,7 +28,7 @@ export class Balance extends pipe(
   type: ProductType
 
   @ApiProperty({ description: '激活码' })
-  @ManyToOne(() => ActiveCode, (code) => code.balances, {
+  @ManyToOne(() => ActiveCode, {
     nullable: true,
   })
   @JoinColumn({ name: 'code' })
@@ -53,6 +54,7 @@ export class Balance extends pipe(
   })
   currentCount: number
 
+  @Type(() => Date)
   @ApiProperty({ description: '开始时间' })
   @Column({
     nullable: true,
@@ -61,6 +63,7 @@ export class Balance extends pipe(
   })
   startTime: Date
 
+  @Type(() => Date)
   @ApiProperty({ description: '结束时间' })
   @Column({
     nullable: true,

@@ -44,7 +44,7 @@ export type ActiveCode = {
    */
   remark: string;
   /**
-   * 使用记录
+   * 兑换数
    */
-  balances: string[];
+  used: number;
 }

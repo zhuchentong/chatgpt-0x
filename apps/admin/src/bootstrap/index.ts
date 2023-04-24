@@ -12,7 +12,7 @@ export const bootstrap = async ({
   router: Router
 }) => {
   // 系统基础功能配置
-  setup(app)
+  setup(app, router)
   // 系统初始化逻辑
   appLaunch(router)
   // 用户初始化逻辑
