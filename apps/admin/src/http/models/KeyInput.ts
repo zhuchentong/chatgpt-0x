@@ -2,4 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type AppInitInput = {}
+export type KeyInput = {
+  key: string
+}

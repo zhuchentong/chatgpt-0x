@@ -299,10 +299,10 @@ namespace RequestQueryParams {
     /**
      * 姓名(模糊查询)
      */
-    realname?: string
+    realname: string
     /**
      * 用户名(模糊查询)
      */
-    username?: string
+    username: string
   }
 }

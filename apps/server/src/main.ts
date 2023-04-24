@@ -13,6 +13,7 @@ import { QiniuModule } from './shared/qiniu/qiniu.module'
 import { WechatModule } from './shared/wechat/wechat.module'
 import { RequestContextMiddleware } from './middlewaves/request-context.middlewave'
 import { ExceptionsFilter } from './filters/exceptions.filter'
+import { OpenAIModule } from './shared/openai/openai.module'
 /**
  * 配置Swagger
  * @param app
@@ -37,13 +38,14 @@ function setupSwagger(app: NestFastifyApplication) {
       .addTag('qiniu', '七牛')
       .addTag('wechat', '微信')
       .addTag('assistant', '助手')
+      .addTag('key', 'OpenAI Key')
       .build()
 
     const adminDocument = SwaggerModule.createDocument(
       app,
       adminDocumentConfig,
       {
-        include: [AdminModule, QiniuModule, WechatModule],
+        include: [AdminModule, QiniuModule, WechatModule, OpenAIModule],
       },
     )
 

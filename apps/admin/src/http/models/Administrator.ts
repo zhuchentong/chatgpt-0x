@@ -27,5 +27,4 @@ export type Administrator = {
    * 姓名
    */
   realname: string
-  password: string
 }

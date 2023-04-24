@@ -14,7 +14,6 @@ import { WeChat } from '@tnwx/wxmp'
 import { ApiConfigKit } from 'tnwx'
 import { FastifyRequest } from 'fastify'
 import { WXMPMessageService } from '../services/wxmp-message.service'
-import { WXMPService } from '../services/wxmp.service'
 import { Logger } from 'src/core/logger/services/logger.service'
 
 @ApiTags('wechat')

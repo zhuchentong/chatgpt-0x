@@ -22,3 +22,8 @@ export enum FileType {
 }
 
 // #endregion
+
+export enum OpenAIKeyState {
+  Valid = 'VALID',
+  Invalid = 'INVALID',
+}

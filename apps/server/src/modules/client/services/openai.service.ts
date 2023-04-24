@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 // import { ChatGPTAPI, SendMessageOptions } from 'chatgpt'
 import { Logger } from 'src/core/logger/services/logger.service'
+import { KeyService } from 'src/shared/openai/services/key.service'
 
 export const importDynamic = new Function(
   'modulePath',
@@ -53,7 +54,13 @@ export class OpenAIService {
       abortSignal?: AbortSignal
       completionParams?: any
     },
+    key?: string,
   ) {
+    if (key) {
+      this.chatgptAPI._apiKey = key
+      this.logger.info(`use key: ${key}`)
+    }
+
     return this.chatgptAPI.sendMessage(message, options)
   }
 }

@@ -77,3 +77,11 @@ export enum PaymentOrderState {
   Expired = 'EXPIRED', // 已过期
   Refunded = 'REFUNDED', // 已退款
 }
+
+/**
+ * OpenAIKEY状态
+ */
+export enum OpenAIKeyState {
+  Valid = 'VALID',
+  Invalid = 'INVALID',
+}

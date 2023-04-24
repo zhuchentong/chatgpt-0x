@@ -13,6 +13,7 @@ import { WechatModule } from 'src/shared/wechat/wechat.module'
 import { AssistantService } from './services/assistant.service'
 import { Assistant } from 'src/entities/assistant.entity'
 import { AssistantController } from './controllers/assistant.controller'
+import { OpenAIModule } from 'src/shared/openai/openai.module'
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AssistantController } from './controllers/assistant.controller'
     AuthModule,
     WechatModule,
     TypeOrmModule.forFeature([User, Assistant]),
+    OpenAIModule,
   ],
   controllers: [AppController, OpenaiController, AssistantController],
   providers: [
