@@ -25,12 +25,14 @@ import { ActiveCode } from 'src/entities/active-code.entity'
 import { Balance } from 'src/entities/balance.entity'
 import { Order } from 'src/entities/order.entity'
 import { Product } from 'src/entities/product.entity'
+import { OpenAIModule } from 'src/shared/openai/openai.module'
 
 @Module({
   imports: [
     HttpModule,
     AuthModule,
     WechatModule,
+    OpenAIModule,
     TypeOrmModule.forFeature([
       User,
       Assistant,

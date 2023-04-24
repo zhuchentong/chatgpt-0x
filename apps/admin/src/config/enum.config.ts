@@ -42,3 +42,8 @@ export enum BalanceOrigin {
 }
 
 // #endregion
+
+export enum OpenAIKeyState {
+  Valid = 'VALID',
+  Invalid = 'INVALID',
+}

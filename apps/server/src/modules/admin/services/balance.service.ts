@@ -8,6 +8,7 @@ import { Cache } from 'cache-manager'
 import dayjs from 'dayjs'
 import { Order } from 'src/entities/order.entity'
 import { plainToInstance } from 'class-transformer'
+import { CACHE_BALANCE } from 'src/config/constants'
 @Injectable()
 export class BalanceService {
   constructor(
@@ -63,7 +64,7 @@ export class BalanceService {
       balance.user = order.user
 
       // 清除缓存
-      await this.cacheManager.del(`BALANCE:${order.user.id}`)
+      await this.cacheManager.del(`${CACHE_BALANCE}:${order.user.id}`)
 
       return this.balanceRepository.save(balance)
     } catch (e) {
@@ -72,7 +73,9 @@ export class BalanceService {
   }
 
   private async getUserBalanceFromCache(userId) {
-    const balance = await this.cacheManager.get<Balance>(`BALANCE:${userId}`)
+    const balance = await this.cacheManager.get<Balance>(
+      `${CACHE_BALANCE}:${userId}`,
+    )
 
     if (balance) {
       return plainToInstance(Balance, balance)
@@ -104,7 +107,7 @@ export class BalanceService {
       balances.find((balance) => balance.type === ProductType.Count)
 
     if (balance) {
-      this.cacheManager.set(`BALANCE:${userId}`, balance)
+      this.cacheManager.set(`${CACHE_BALANCE}:${userId}`, balance)
     }
 
     return balance

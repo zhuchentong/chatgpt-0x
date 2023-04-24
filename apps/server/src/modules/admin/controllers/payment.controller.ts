@@ -7,6 +7,7 @@ import { BalanceService } from '../services/balance.service'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import type { Cache } from 'cache-manager'
 import { ApiExcludeController } from '@nestjs/swagger'
+import { CACHE_WXPAY } from 'src/config/constants'
 
 @ApiExcludeController()
 @Controller('payment')
@@ -48,7 +49,9 @@ export class PaymentController {
       await order.save({ reload: true })
 
       // 更新订单状态缓存
-      this.cacheManager.set(`WXPAY:${orderId}`, order.state, { ttl: 10 })
+      this.cacheManager.set(`${CACHE_WXPAY}:${orderId}`, order.state, {
+        ttl: 10,
+      })
 
       // 更新用户余额
       await this.balanceService.createByOrder(order)

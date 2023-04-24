@@ -7,6 +7,7 @@ import { Product } from 'src/entities/product.entity'
 import { User } from 'src/entities/user.entity'
 import { Repository } from 'typeorm'
 import type { Cache } from 'cache-manager'
+import { CACHE_WXPAY } from 'src/config/constants'
 
 @Injectable()
 export class OrderService {
@@ -39,7 +40,9 @@ export class OrderService {
    * @param orderId
    */
   async queryPaymentState(orderId: string): Promise<OrderState> {
-    const state = await this.cacheManager.get<OrderState>(`WXPAY:${orderId}`)
+    const state = await this.cacheManager.get<OrderState>(
+      `${CACHE_WXPAY}:${orderId}`,
+    )
 
     if (state) {
       return state
@@ -49,7 +52,9 @@ export class OrderService {
         select: ['state'],
       })
 
-      this.cacheManager.set(`WXPAY:${orderId}`, order.state, { ttl: 10 })
+      this.cacheManager.set(`${CACHE_WXPAY}:${orderId}`, order.state, {
+        ttl: 10,
+      })
 
       return order.state
     }

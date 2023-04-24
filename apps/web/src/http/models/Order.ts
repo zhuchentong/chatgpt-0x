@@ -26,10 +26,6 @@ export type Order = {
    */
   creator: string;
   /**
-   * 操作人
-   */
-  operator: string;
-  /**
    * 订单状态
    */
   state: 'PENDING' | 'PAID' | 'EXPIRED' | 'REFUNDED';

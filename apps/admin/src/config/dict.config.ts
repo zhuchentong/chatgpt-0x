@@ -1,4 +1,4 @@
-import { ProductType, TabAction } from './enum.config'
+import { OpenAIKeyState, ProductType, TabAction } from './enum.config'
 
 export const TabActionDict = new Map<TabAction | string, string>([
   [TabAction.CLOSE_OTHER, '关闭其他'],
@@ -13,4 +13,9 @@ export const ProductTypeDict = new Map<ProductType | string, string>([
 export const EnableStateDict = new Map<boolean, string>([
   [true, '启用'],
   [false, '停用'],
+])
+
+export const OpenAIKeyStateDict = new Map<OpenAIKeyState | string, string>([
+  [OpenAIKeyState.Valid, '正常'],
+  [OpenAIKeyState.Invalid, '失效'],
 ])

@@ -9,6 +9,7 @@ import { User } from 'src/entities/user.entity'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
 import { plainToInstance } from 'class-transformer'
+import { CACHE_BALANCE } from 'src/config/constants'
 
 @Injectable()
 export class BalanceService {
@@ -62,13 +63,15 @@ export class BalanceService {
     balance.user = user
 
     // 清除缓存
-    await this.cacheManager.del(`BALANCE:${user.id}`)
+    await this.cacheManager.del(`${CACHE_BALANCE}:${user.id}`)
 
     return this.balanceRepository.save(balance)
   }
 
   async getUserBalanceFromCache(userId) {
-    const balance = await this.cacheManager.get<Balance>(`BALANCE:${userId}`)
+    const balance = await this.cacheManager.get<Balance>(
+      `${CACHE_BALANCE}:${userId}`,
+    )
 
     if (balance) {
       return plainToInstance(Balance, balance)
@@ -98,7 +101,7 @@ export class BalanceService {
       balances.find((balance) => balance.type === ProductType.Count)
 
     if (balance) {
-      this.cacheManager.set(`BALANCE:${userId}`, balance)
+      this.cacheManager.set(`${CACHE_BALANCE}:${userId}`, balance)
     }
 
     return balance
@@ -141,13 +144,13 @@ export class BalanceService {
         // 消耗1次
         balance.currentCount -= 1
         // 更新缓存
-        this.cacheManager.set(`BALANCE:${userId}`, balance)
+        this.cacheManager.set(`${CACHE_BALANCE}:${userId}`, balance)
         // 更新数据库
         this.balanceRepository.decrement({ id: balance.id }, 'currentCount', 1)
 
         // 余额为0时删除缓存
         if (balance.currentCount <= 0) {
-          this.cacheManager.del(`BALANCE:${userId}`)
+          this.cacheManager.del(`${CACHE_BALANCE}:${userId}`)
         }
 
         break
@@ -155,7 +158,7 @@ export class BalanceService {
       case ProductType.Time: {
         // 余额为0时删除缓存
         if (balance.endTime.getTime() < Date.now()) {
-          this.cacheManager.del(`BALANCE:${userId}`)
+          this.cacheManager.del(`${CACHE_BALANCE}:${userId}`)
         }
 
         break

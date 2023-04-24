@@ -13,6 +13,8 @@ import { QiniuModule } from './shared/qiniu/qiniu.module'
 import { WechatModule } from './shared/wechat/wechat.module'
 import { ErrorInterceptor } from './interceptors/error.interceptor'
 import { join } from 'node:path'
+import { OpenAIModule } from './shared/openai/openai.module'
+import { ScheduleModule } from '@nestjs/schedule'
 
 const environment = process.env.NODE_ENV || 'development'
 @Module({
@@ -25,6 +27,7 @@ const environment = process.env.NODE_ENV || 'development'
       envFilePath: [`.env.${environment}.local`],
       load: [configuration],
     }),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     RedisModule,
     AuthModule,
@@ -33,6 +36,7 @@ const environment = process.env.NODE_ENV || 'development'
     AdminModule,
     QiniuModule,
     WechatModule,
+    OpenAIModule,
     RouterModule.register([
       {
         path: 'admin',
@@ -49,6 +53,10 @@ const environment = process.env.NODE_ENV || 'development'
       {
         path: 'wechat',
         module: WechatModule,
+      },
+      {
+        path: 'openai',
+        module: OpenAIModule,
       },
     ]),
   ],

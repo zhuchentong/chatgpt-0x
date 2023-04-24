@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type ActiveCode = {
+export type OpenAIKey = {
   /**
    * 启用状态
    */
@@ -16,35 +16,27 @@ export type ActiveCode = {
    */
   updatedAt: string;
   /**
-   * 激活码
+   * Key
    */
   key: string;
   /**
-   * 激活码
+   * 总额度
    */
-  startTime: string;
+  limit: number;
   /**
-   * 激活码
+   * 使用量
    */
-  endTime: string;
+  usage: number;
   /**
-   * 总量
+   * 调用次数
    */
   count: number;
   /**
-   * 兑换类型
+   * 到期时间
    */
-  type: string;
+  expireAt: string;
   /**
-   * 兑换数值
+   * 状态
    */
-  value: number;
-  /**
-   * 备注
-   */
-  remark: string;
-  /**
-   * 兑换数
-   */
-  used: number;
+  state: string;
 }

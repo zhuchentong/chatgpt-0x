@@ -78,3 +78,11 @@ export enum BalanceOrigin {
   Code = 'CODE',
   Order = 'ORDER',
 }
+
+/**
+ * OpenAIKEY状态
+ */
+export enum OpenAIKeyState {
+  Valid = 'VALID',
+  Invalid = 'INVALID',
+}
