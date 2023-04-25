@@ -144,5 +144,4 @@ meta:
   menu:
     key: openai-keys
     title: Key管理
-    index: 0
 </route>

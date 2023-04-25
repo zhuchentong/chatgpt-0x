@@ -7,6 +7,7 @@ import {
   EntityWithUUID,
 } from '../common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
+import { Balance } from './balance.entity'
 
 @Entity('user')
 export class User extends pipe(
@@ -40,4 +41,8 @@ export class User extends pipe(
   @ApiProperty({ description: '用户头像' })
   @Column({ nullable: true })
   avatar: string
+
+  @ApiProperty({ description: '用户额度', type: () => Balance, isArray: true })
+  @OneToMany(() => Balance, (balance) => balance.user)
+  balances: Balance[]
 }

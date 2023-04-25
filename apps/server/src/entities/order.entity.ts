@@ -34,7 +34,7 @@ export class Order extends pipe(
   @JoinColumn({ name: 'product_id' })
   product: Product
 
-  @ApiProperty({ description: '用户' })
+  @ApiProperty({ description: '用户', type: () => User })
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User

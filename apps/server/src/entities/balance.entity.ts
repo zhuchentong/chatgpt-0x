@@ -72,8 +72,8 @@ export class Balance extends pipe(
   })
   endTime: Date
 
-  @ApiProperty({ description: '用户' })
-  @ManyToOne(() => User)
+  @ApiProperty({ description: '用户', type: () => User })
+  @ManyToOne(() => User, (user) => user.balances)
   @JoinColumn({ name: 'user_id' })
   user: User
 }

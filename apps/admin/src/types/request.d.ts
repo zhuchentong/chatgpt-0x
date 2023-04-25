@@ -6,6 +6,7 @@ import { AssistantService } from '~/http/services/AssistantService'
 import { KeyService } from '~/http/services/KeyService'
 import { ProductService } from '~/http/services/ProductService'
 import { QiniuService } from '~/http/services/QiniuService'
+import { UserService } from '~/http/services/UserService'
 import { WechatService } from '~/http/services/WechatService'
 
 const serviceMap = {
@@ -16,6 +17,7 @@ const serviceMap = {
   KeyService,
   ProductService,
   QiniuService,
+  UserService,
   WechatService,
 }
 

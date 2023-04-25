@@ -44,8 +44,8 @@ importers:
         specifier: 0.1.16
         version: 0.1.16
       '@gopowerteam/vue-dynamic-table':
-        specifier: ~0.0.51
-        version: 0.0.51(vue@3.2.47)
+        specifier: ~0.0.53
+        version: 0.0.53(vue@3.2.47)
       '@gopowerteam/vue-modal':
         specifier: 0.1.12
         version: 0.1.12(vue@3.2.47)
@@ -2178,8 +2178,8 @@ packages:
       xe-utils: 3.5.7
     dev: false
 
-  /@gopowerteam/vue-dynamic-table@0.0.51(vue@3.2.47):
-    resolution: {integrity: sha512-3Vk5KgXvbLDhkfuTcef7jsYMjqW/8l+DSoKFfX5JRVfmJ5amhWhL/At+9ZowdnXpW1wznGnh8og62C3R5DWGDg==}
+  /@gopowerteam/vue-dynamic-table@0.0.53(vue@3.2.47):
+    resolution: {integrity: sha512-k5oSAORRZB4C0rlRgcOpUyQXka+3s4jlljEhrHSvoURAA1mPUPx9P+LUQZc5NqfEfK4ekO8wdK3OX14FqM3f4A==}
     peerDependencies:
       vue: 3.1.0
     dependencies:
