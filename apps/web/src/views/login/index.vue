@@ -55,12 +55,16 @@ let code: string
  * 请求登录二维码
  */
 const { pause: pauseRequestLoginQrcode, resume: startRequestLoginQrcode } =
-  useIntervalFn(() => {
-    appService.qrcodeLogin().then((data) => {
-      qrcode = data.qrcode
-      code = data.code
-    })
-  }, 1000 * 60 * 5)
+  useIntervalFn(
+    () => {
+      appService.qrcodeLogin().then((data) => {
+        qrcode = data.qrcode
+        code = data.code
+      })
+    },
+    1000 * 60 * 5,
+    { immediate: false, immediateCallback: true },
+  )
 
 /**
  * 请求登录二维码状态
@@ -68,30 +72,34 @@ const { pause: pauseRequestLoginQrcode, resume: startRequestLoginQrcode } =
 const {
   pause: pasueRequestLoginQrcodeStatus,
   resume: startRequestLoginQrcodeStatus,
-} = useIntervalFn(() => {
-  if (!code || !qrcode) {
-    return
-  }
+} = useIntervalFn(
+  () => {
+    if (!code || !qrcode) {
+      return
+    }
 
-  appService
-    .qrcodeLoginStatus(code)
-    .then(({ status, access_token, refresh_token }) => {
-      if (!status) {
-        return
-      }
+    appService
+      .qrcodeLoginStatus(code)
+      .then(({ status, access_token, refresh_token }) => {
+        if (!status) {
+          return
+        }
 
-      pasueRequestLoginQrcodeStatus()
-      pauseRequestLoginQrcode()
+        pasueRequestLoginQrcodeStatus()
+        pauseRequestLoginQrcode()
 
-      store.user.updateToken({
-        accessToken: access_token,
-        refreshToken: refresh_token,
+        store.user.updateToken({
+          accessToken: access_token,
+          refreshToken: refresh_token,
+        })
+
+        message.success('登录成功')
+        router.push('/')
       })
-
-      message.success('登录成功')
-      router.push('/')
-    })
-}, 1000 * 2)
+  },
+  1000 * 2,
+  { immediate: false, immediateCallback: true },
+)
 
 function requestLoginWechat() {
   const openid = route.query.openid as string
