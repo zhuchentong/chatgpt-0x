@@ -61,6 +61,7 @@ export class WXMPMessageService implements MsgAdapter {
         // const { text } = await this.openAIService.sendMessage(content, {
         //   stream: false,
         // })
+        // 暂停使用CHATGPT回复
         outTextMsg.setContent(
           '请访问 [https://ai.1zhizu.com] 获得更好的对话体验. 可以添加微信号(jwdstef)进入交流群哦.',
         )
