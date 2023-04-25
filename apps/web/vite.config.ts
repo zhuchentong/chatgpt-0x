@@ -8,6 +8,9 @@ import { defineViteResolve } from './.vite/resolve'
 import { defineViteCSS } from './.vite/css'
 
 export default defineConfig({
+  server: {
+    host: '0.0.0.0',
+  },
   ...defineViteResolve(),
   ...defineViteCSS(),
   ...defineVitePlugins([

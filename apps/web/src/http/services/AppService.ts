@@ -169,6 +169,40 @@ export class AppService {
   }
   
   /**
+   * 微信登录
+   */
+  public wechatLogin(
+    requestQuery: RequestQueryParams.WechatLogin,
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
+  ): string
+  public wechatLogin(
+    requestQuery: RequestQueryParams.WechatLogin,
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<TokenResponse>
+  public wechatLogin(
+    requestQuery: RequestQueryParams.WechatLogin,
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<TokenResponse> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/client/app/wechat-login',
+      method: 'post',
+      paramsQuery: requestQuery,
+    }
+  
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions
+    )
+  
+  
+  }
+  
+  /**
    * 二维码登录状态查询
    */
   public qrcodeLoginStatus(
@@ -336,4 +370,10 @@ export class AppService {
 
 
 namespace RequestQueryParams {
+  export type WechatLogin = {
+    /**
+     * 用户openid
+     */
+    openid: string;
+  }
 }

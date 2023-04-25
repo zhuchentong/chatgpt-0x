@@ -22,7 +22,7 @@ export type User = {
   /**
    * 用户邮箱
    */
-  email?: string;
+  email: string;
   /**
    * 用户昵称
    */
@@ -43,5 +43,4 @@ export type User = {
    * 用户头像
    */
   avatar: string;
-  password?: string;
 }

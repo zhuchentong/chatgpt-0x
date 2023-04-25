@@ -5,12 +5,12 @@ import {
   Inject,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import {
   ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'
@@ -33,6 +33,7 @@ import {
   QrcodeLoginStatusInput,
   SendRegisterCodeInput,
   WeappLoginInput,
+  WechatLoginInput,
 } from '../dtos/app.dto'
 import { UserPasswordAuthGuard } from 'src/core/auth/guards/user-password.guard'
 import { nanoid } from 'nanoid'
@@ -114,6 +115,27 @@ export class AppController {
       qrcode,
       code,
     }
+  }
+
+  @Public()
+  @Post('wechat-login')
+  @ApiOkResponse({ type: TokenResponse })
+  @ApiOperation({
+    operationId: 'wechatLogin',
+    summary: '微信登录',
+  })
+  async wechatLogin(@Query() { openid }: WechatLoginInput) {
+    const user = await this.userService.findOneBy({ openid }).then((user) => {
+      if (user) {
+        return user
+      } else {
+        return this.userService.createByOpenID(openid)
+      }
+    })
+
+    const token = await this.authService.userSign(user, AppOrigin.Web)
+
+    return token
   }
 
   @Public()
