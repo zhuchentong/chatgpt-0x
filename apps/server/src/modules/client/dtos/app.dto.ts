@@ -45,3 +45,9 @@ export class QrcodeLoginStatusInput {
   @IsString()
   code: string
 }
+
+export class WechatLoginInput {
+  @ApiProperty({ description: '用户openid' })
+  @IsString()
+  openid: string
+}

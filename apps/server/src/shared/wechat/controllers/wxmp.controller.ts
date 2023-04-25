@@ -3,18 +3,27 @@ import {
   Get,
   Header,
   HttpCode,
+  Inject,
   Post,
   Query,
   RawBodyRequest,
+  Redirect,
   Req,
 } from '@nestjs/common'
-import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger'
+import {
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger'
 import { Public } from 'src/decorators/public.decorator'
-import { WeChat } from '@tnwx/wxmp'
-import { ApiConfigKit } from 'tnwx'
+import { SnsAccessTokenApi, WeChat } from '@tnwx/wxmp'
+import { ApiConfigKit, ScopeEnum } from 'tnwx'
 import { FastifyRequest } from 'fastify'
 import { WXMPMessageService } from '../services/wxmp-message.service'
 import { Logger } from 'src/core/logger/services/logger.service'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { Cache } from 'cache-manager'
 
 @ApiTags('wechat')
 @Controller()
@@ -23,6 +32,7 @@ export class WXMPController {
   constructor(
     private readonly wxmpMessageService: WXMPMessageService,
     private readonly logger: Logger,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   @Public()
@@ -66,5 +76,54 @@ export class WXMPController {
       this.logger.error(ex)
       return 'success'
     }
+  }
+
+  @Public()
+  @Get('redirect-authorize')
+  @ApiOperation({
+    operationId: 'redirectAuthorize',
+    description: '重定向授权',
+  })
+  @Redirect()
+  async authorize(@Req() req: FastifyRequest) {
+    const host = req.headers.host
+    const referer = req.headers.referer
+    console.log(`https://${host}/wechat/authorize`)
+    const url = SnsAccessTokenApi.getAuthorizeUrl(
+      `https://${host}/api/wechat/authorize`,
+      ScopeEnum.SNSAPI_BASE,
+      encodeURIComponent(
+        JSON.stringify({
+          referer,
+        }),
+      ),
+    )
+    return { url }
+  }
+
+  @Public()
+  @Get('authorize')
+  @Redirect()
+  @ApiExcludeEndpoint()
+  async authorization(
+    @Query('code') code: string,
+    @Query('state') state: string,
+  ) {
+    const { referer } = JSON.parse(decodeURIComponent(state))
+
+    const openid = await SnsAccessTokenApi.getSnsAccessToken(code).then(
+      async (data) => {
+        const { openid, errcode } = data
+        // 判断 access_token 是否获取成功
+        if (errcode) {
+          // access_token 获取失败
+          throw new Error(`access_token 获取失败:${errcode}`)
+        }
+
+        return openid
+      },
+    )
+
+    return { url: `${referer.replace(/\/$/, '')}/login?openid=${openid}` }
   }
 }

@@ -58,10 +58,14 @@ export class WXMPMessageService implements MsgAdapter {
     switch (true) {
       case !!content:
         const outTextMsg = new OutTextMsg(inTextMsg)
-        const { text } = await this.openAIService.sendMessage(content, {
-          stream: false,
-        })
-        outTextMsg.setContent(text)
+
+        // const { text } = await this.openAIService.sendMessage(content, {
+        //   stream: false,
+        // })
+        // 暂停使用CHATGPT回复
+        outTextMsg.setContent(
+          '请访问 [https://ai.1zhizu.com] 获得更好的对话体验. 可以添加微信号(jwdstef)进入交流群哦.',
+        )
         return outTextMsg
     }
     // let content = 'IJPay 让支付触手可及 \n\nhttps://gitee.com/javen205/IJPay'

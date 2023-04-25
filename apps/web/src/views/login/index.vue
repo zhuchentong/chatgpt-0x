@@ -36,34 +36,43 @@
 <script lang="ts" setup>
 import { useRequest } from 'virtual:request'
 import { useMessage } from 'naive-ui'
+import { RequestGenerateType } from '@gopowerteam/request'
 import { useStore } from '@/store'
 
+const route = useRoute()
+
 const appService = useRequest((service) => service.AppService)
+const wechatService = useRequest((service) => service.WechatService)
 
 const message = useMessage()
 const store = useStore()
 const router = useRouter()
+
 let qrcode = $ref('')
 let code: string
 
 /**
  * 请求登录二维码
  */
-const { pause: pauseRequestLoginQrcode } = useIntervalFn(
-  () => {
-    appService.qrcodeLogin().then((data) => {
-      qrcode = data.qrcode
-      code = data.code
-    })
-  },
-  1000 * 60 * 5,
-  { immediateCallback: true },
-)
+const { pause: pauseRequestLoginQrcode, resume: startRequestLoginQrcode } =
+  useIntervalFn(
+    () => {
+      appService.qrcodeLogin().then((data) => {
+        qrcode = data.qrcode
+        code = data.code
+      })
+    },
+    1000 * 60 * 5,
+    { immediate: false, immediateCallback: true },
+  )
 
 /**
  * 请求登录二维码状态
  */
-const { pause: pasueRequestLoginQrcodeStatus } = useIntervalFn(
+const {
+  pause: pasueRequestLoginQrcodeStatus,
+  resume: startRequestLoginQrcodeStatus,
+} = useIntervalFn(
   () => {
     if (!code || !qrcode) {
       return
@@ -89,12 +98,52 @@ const { pause: pasueRequestLoginQrcodeStatus } = useIntervalFn(
       })
   },
   1000 * 2,
-  { immediateCallback: true },
+  { immediate: false, immediateCallback: true },
 )
+
+function requestLoginWechat() {
+  const openid = route.query.openid as string
+
+  if (!openid) {
+    // redirect
+    window.location.href = wechatService.redirectAuthorize([], {
+      type: RequestGenerateType.URL,
+    })
+
+    return
+  }
+
+  // login
+  appService.wechatLogin({ openid }).then(({ access_token, refresh_token }) => {
+    store.user.updateToken({
+      accessToken: access_token,
+      refreshToken: refresh_token,
+    })
+
+    message.success('登录成功')
+    router.push('/')
+  })
+}
 
 onBeforeUnmount(() => {
   pasueRequestLoginQrcodeStatus()
   pauseRequestLoginQrcode()
+})
+
+onBeforeMount(() => {
+  const isWechat = /MicroMessenger/i.test(window.navigator.userAgent)
+
+  if (store.user.refreshToken) {
+    router.replace('/')
+    return
+  }
+
+  if (isWechat) {
+    requestLoginWechat()
+  } else {
+    startRequestLoginQrcode()
+    startRequestLoginQrcodeStatus()
+  }
 })
 </script>
 
