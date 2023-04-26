@@ -112,6 +112,9 @@ const props = defineProps<{
   content: string
   role: ChatRole
 }>()
+
+const clipboard = useClipboard({ legacy: true })
+
 const el = useCurrentElement()
 const message = useMessage()
 const theme = useColorMode()
@@ -156,8 +159,8 @@ onMounted(() => {
 })
 
 function copyText(text: string) {
-  if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(text)
+  if (clipboard.isSupported) {
+    clipboard.copy(text)
     message.info('已复制到粘贴板')
   }
 }
