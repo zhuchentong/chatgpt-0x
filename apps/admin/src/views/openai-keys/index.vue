@@ -1,5 +1,5 @@
 <template>
-  <PageContainer title="Key管理">
+  <PageContainer title="密钥管理">
     <template #action>
       <ASpace>
         <AButton
@@ -143,5 +143,5 @@ meta:
   requireAuth: true
   menu:
     key: openai-keys
-    title: Key管理
+    title: 密钥管理
 </route>

@@ -1,14 +1,22 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { BalanceOrigin, ProductType } from 'src/config/enum.config'
+import {
+  BalanceOrigin,
+  PaginatorMode,
+  ProductType,
+} from 'src/config/enum.config'
 import { Balance } from 'src/entities/balance.entity'
 import { MoreThan, Raw, Repository } from 'typeorm'
 import { Cache } from 'cache-manager'
 import dayjs from 'dayjs'
-import { Order } from 'src/entities/order.entity'
 import { plainToInstance } from 'class-transformer'
 import { CACHE_BALANCE } from 'src/config/constants'
+import { QueryInputParam } from 'src/common/typeorm/interfaces'
+import { buildPaginator } from 'src/common/typeorm/query/paginator'
+import { User } from 'src/entities/user.entity'
+import { Order } from 'src/entities/order.entity'
+import { Order as OrderType } from 'src/config/enum.config'
 @Injectable()
 export class BalanceService {
   constructor(
@@ -17,6 +25,27 @@ export class BalanceService {
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
   ) {}
+
+  async findAll({ buildWhereQuery, page, order }: QueryInputParam<User>) {
+    const builder = this.balanceRepository.createQueryBuilder('balance')
+
+    builder
+      .andWhere(buildWhereQuery())
+      .addSelect('balance.created_at', 'created_at')
+      .leftJoinAndSelect('balance.user', 'user', 'user.id = balance.user_id')
+
+    const paginator = buildPaginator({
+      mode: PaginatorMode.Index,
+      entity: Balance,
+      query: {
+        order: { created_at: OrderType.DESC, ...order },
+        skip: page.skip,
+        limit: page.limit,
+      },
+    })
+
+    return paginator.paginate(builder)
+  }
 
   async getUserBalanceEndTime(userId: string) {
     const { endTime } = await this.balanceRepository
