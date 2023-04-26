@@ -9,7 +9,7 @@ import { ChatRole } from '@/config/enum.config'
 
 function appendUserMessage(chat: Chat, message: string) {
   chat.records.push({
-    id: nanoid(),
+    id: `chatuser-${nanoid()}`,
     role: ChatRole.User,
     content: message,
     datetime: Date.now(),
