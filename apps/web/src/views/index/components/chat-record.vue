@@ -7,7 +7,13 @@
   </div>
   <div
     class="chat-record flex items-center"
-    :class="record.role">
+    :class="record.role"
+    :data-id="record.id">
+    <div
+      v-if="store.chat.selectChatRecords"
+      class="record-select self-start">
+      <n-checkbox :on-update:checked="onUpdateCheck"></n-checkbox>
+    </div>
     <div class="record-avatar self-start">
       <n-avatar
         v-if="record.role === 'assistant'"
@@ -33,32 +39,20 @@
     <div
       v-if="!loading"
       class="flex items-center space-x-2 actions">
-      <n-button
-        size="tiny"
-        text
-        @click="onDelete">
-        <template #icon>
-          <icon-park-outline:delete></icon-park-outline:delete>
-        </template>
-      </n-button>
-      <n-button
-        v-if="record.role === ChatRole.Assistant"
-        size="tiny"
-        text
-        @click="onCopy">
-        <template #icon>
-          <icon-park-outline:copy></icon-park-outline:copy>
-        </template>
-      </n-button>
-      <n-button
-        v-if="record.role === ChatRole.Assistant"
-        size="tiny"
-        text
-        @click="onRedo">
-        <template #icon>
-          <icon-park-outline:redo></icon-park-outline:redo>
-        </template>
-      </n-button>
+      <n-dropdown
+        :options="options"
+        :placement="record.role === ChatRole.Assistant ? 'right-start' : 'left'"
+        trigger="click"
+        @select="onSelectAction">
+        <n-button
+          :focusable="false"
+          size="small"
+          text>
+          <template #icon>
+            <icon-park-outline:more-one></icon-park-outline:more-one>
+          </template>
+        </n-button>
+      </n-dropdown>
     </div>
 
     <!-- <div class="m-0! delete inline-block"></div> -->
@@ -77,6 +71,11 @@
 
   .record-avatar {
     margin-top: 15px;
+  }
+
+  .record-select {
+    padding: 0px 10px;
+    margin-top: 20px;
   }
   .record-content {
     border-radius: 10px;
@@ -107,20 +106,27 @@
     .record-avatar {
       order: 2;
     }
+    .record-select {
+      order: 3;
+    }
   }
 }
 </style>
 
-<script setup lang="ts">
+<script setup lang="tsx">
 import dayjs from 'dayjs'
 import isToday from 'dayjs/plugin/isToday'
-import { useDialog, useMessage } from 'naive-ui'
+import { type DropdownOption, useDialog, useMessage } from 'naive-ui'
 import ChatMessage from './chat-message.vue'
 import ChatLoading from './chat-loading.vue'
 import { useStore } from '@/store'
 import type { ChatRecord } from '@/interfaces'
 import { ChatRole } from '@/config/enum.config'
 import { useChat } from '@/composables/use-chat'
+import RawIconParkDelete from '~icons/icon-park-outline/delete?raw&width=1em&height=1em'
+import RawIconParkCopy from '~icons/icon-park-outline/copy?raw&width=1em&height=1em'
+import RawIconParkRedo from '~icons/icon-park-outline/redo?raw&width=1em&height=1em'
+import RawIconParkListCheckBox from '~icons/icon-park-outline/list-checkbox?raw&width=1em&height=1em'
 
 const props = defineProps<{
   index?: number
@@ -137,6 +143,64 @@ const clipboard = useClipboard({ legacy: true })
 const message = useMessage()
 const dialog = useDialog()
 const { sendChatMessage } = useChat()
+
+const options: DropdownOption[] = [
+  {
+    label: '删除',
+    key: 'delete',
+    icon: () => (
+      <span
+        class="contents"
+        v-html={RawIconParkDelete}></span>
+    ),
+  },
+  {
+    label: '复制',
+    key: 'copy',
+    show: props.record.role === ChatRole.Assistant,
+    icon: () => (
+      <span
+        class="contents"
+        v-html={RawIconParkCopy}></span>
+    ),
+  },
+  {
+    label: '重试',
+    key: 'redo',
+    show: props.record.role === ChatRole.Assistant,
+    icon: () => (
+      <span
+        class="contents"
+        v-html={RawIconParkRedo}></span>
+    ),
+  },
+  {
+    label: '多选',
+    key: 'multiple',
+    icon: () => (
+      <span
+        class="contents"
+        v-html={RawIconParkListCheckBox}></span>
+    ),
+  },
+]
+
+function onSelectAction(action: string) {
+  switch (action) {
+    case 'delete':
+      onDelete()
+      break
+    case 'copy':
+      onCopy()
+      break
+    case 'redo':
+      onRedo()
+      break
+    case 'multiple':
+      onMultiple()
+      break
+  }
+}
 
 const messageDate = computed(() => {
   if (props.index === undefined || !props.record.datetime) {
@@ -173,6 +237,10 @@ function onCopy() {
   }
 }
 
+function onMultiple() {
+  store.chat.updateSelectChatRecordState(true)
+}
+
 function onDelete() {
   dialog.warning({
     title: '删除消息',
@@ -198,5 +266,9 @@ function onRedo() {
   if (record) {
     sendChatMessage(record.content)
   }
+}
+
+function onUpdateCheck() {
+  store.chat.toggleSelectChatRecord(props.record.id)
 }
 </script>
