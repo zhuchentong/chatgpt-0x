@@ -5,8 +5,8 @@ export class SubmitOrderResponse {
   @ApiProperty({ description: '微信支付二维码' })
   qrcode: string
 
-  @ApiProperty({ description: '商品标题' })
-  title: string
+  @ApiProperty({ description: '商品名称' })
+  name: string
 
   @ApiProperty({ description: '价格' })
   price: number

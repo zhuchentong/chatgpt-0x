@@ -56,7 +56,7 @@
             :key="product.id">
             <n-card>
               <div class="text-center space-y-2 p-5 rounded">
-                <div class="font-bold">{{ product.title }}</div>
+                <div class="font-bold">{{ product.name }}</div>
                 <div class="space-x-2 pb-5">
                   <span class="text-2xl font-bold">
                     {{ product.value }}
@@ -85,7 +85,7 @@
       :mask-closable="false"
       preset="card">
       <div v-if="order">
-        <div class="font-blod text-2xl">{{ order?.title }}</div>
+        <div class="font-blod text-2xl">{{ order?.name }}</div>
         <div class="price pt-2">{{ order?.price / 100 }}</div>
         <div class="qrcode-image text-center">
           <img

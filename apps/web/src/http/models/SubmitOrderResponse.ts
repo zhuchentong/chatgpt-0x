@@ -8,9 +8,9 @@ export type SubmitOrderResponse = {
    */
   qrcode: string;
   /**
-   * 商品标题
+   * 商品名称
    */
-  title: string;
+  name: string;
   /**
    * 价格
    */

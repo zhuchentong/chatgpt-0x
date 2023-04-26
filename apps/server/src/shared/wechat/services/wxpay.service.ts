@@ -42,6 +42,46 @@ export class WXPayService {
     }
   }
 
+  submitRefund({
+    orderNumber,
+    refundNumber,
+    orderAmount,
+    refundAmount,
+    description,
+  }: {
+    orderNumber: string
+    refundNumber: string
+    orderAmount: number
+    refundAmount: number
+    description: string
+  }) {
+    const wxpay = this.config.get('wxpay')
+    const host = RequestContext.currentContext.host
+
+    return this.callAPI(RequestMethod.POST, WX_API_TYPE.REFUND, {
+      data: {
+        appid: wxpay.appId,
+        mchid: wxpay.mchId,
+        out_trade_no: orderNumber,
+        out_refund_no: refundNumber,
+        reason: description,
+        notify_url: `https://${host}/api/admin/refund/wxpay-notify`,
+        amount: {
+          refund: refundAmount,
+          total: orderAmount,
+          currency: 'CNY',
+        },
+      },
+    }).then((response) => {
+      if (response.status !== 200) {
+        this.logger.error(response.data)
+        throw new Error(response?.data)
+      }
+
+      return response.data
+    })
+  }
+
   /**
    * 提交支付订单
    */

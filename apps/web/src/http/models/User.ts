@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Balance } from './Balance';
 
 export type User = {
   /**
@@ -43,4 +44,8 @@ export type User = {
    * 用户头像
    */
   avatar: string;
+  /**
+   * 用户额度
+   */
+  balances: Balance[];
 }

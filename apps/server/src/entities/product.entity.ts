@@ -21,9 +21,9 @@ export class Product extends pipe(
   EntityWithCreator,
   EntityWithOperator,
 )(EntityClass) {
-  @ApiProperty({ description: '标题' })
+  @ApiProperty({ description: '名称' })
   @Column()
-  title: string
+  name: string
 
   @ApiProperty({ description: '类型' })
   @Column({ enum: ProductType })

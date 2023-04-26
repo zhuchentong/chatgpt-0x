@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { take } from 'ramda'
 import { QueryInputParam } from 'src/common/typeorm/interfaces'
 import { buildPaginator } from 'src/common/typeorm/query/paginator'
-import { Order, PaginatorMode } from 'src/config/enum.config'
-import { Balance } from 'src/entities/balance.entity'
+import { OrderMode, PaginatorMode } from 'src/config/enum.config'
 import { User } from 'src/entities/user.entity'
 import { Repository } from 'typeorm'
 
@@ -30,7 +28,7 @@ export class UserService {
       mode: PaginatorMode.Index,
       entity: User,
       query: {
-        order: { created_at: Order.DESC },
+        order: { created_at: OrderMode.DESC, ...order },
         skip: page.skip,
         limit: page.limit,
       },

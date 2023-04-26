@@ -32,9 +32,9 @@ export type Product = {
    */
   operator: string;
   /**
-   * 标题
+   * 名称
    */
-  title: string;
+  name: string;
   /**
    * 类型
    */

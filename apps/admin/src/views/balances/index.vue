@@ -1,17 +1,13 @@
 <template>
   <PageContainer title="余额管理">
-    <template #action>
-      <ASpace>
-        <AButton type="primary">创建</AButton>
-      </ASpace>
-    </template>
     <DataTable
       ref="table"
       action-align="right"
       :columns="columns"
       :load-data="loadData"
       :pagination="pageService"
-      row-key="username"></DataTable>
+      row-key="username"
+      :search-forms="searchForms"></DataTable>
   </PageContainer>
 </template>
 
@@ -19,6 +15,7 @@
 
 <script setup lang="ts">
 import {
+  type FormItemsOptions,
   type LoadDataParams,
   type TableColumnsOptions,
   useTable,
@@ -27,80 +24,90 @@ import { useRequest } from 'virtual:request'
 import dayjs from 'dayjs'
 import minMax from 'dayjs/plugin/minMax'
 import { PageService } from '@/http/extends/page.service'
-import { EnableStateDict } from '@/config/dict.config'
-import type { User } from '@/http/models/User'
+import { BalanceOriginDict, ProductTypeDict } from '@/config/dict.config'
+import type { Balance } from '@/http/models/Balance'
 import { ProductType } from '@/config/enum.config'
 
 dayjs.extend(minMax)
 const pageService = new PageService()
 const table = $(useTable('table'))
 
-const [productService, userService] = useRequest(
-  (service) => service.ProductService,
-  (service) => service.UserService,
-)
+const balanceService = useRequest((service) => service.BalanceService)
 
-function loadData({ update }: LoadDataParams) {
-  userService.findUsers([pageService]).then(({ data }) => {
+function loadData({ search, update }: LoadDataParams) {
+  balanceService.findBalances(search, [pageService]).then(({ data }) => {
     update(data)
   })
 }
 
-const columns: TableColumnsOptions<User> = [
+const searchForms: FormItemsOptions = [
   {
-    key: 'id',
-    title: 'ID',
+    key: 'userId',
+    title: '用户ID',
+    render: (r) => r.input(),
   },
   {
-    key: 'email',
-    title: '邮箱',
+    key: 'origin',
+    title: '余额来源',
+    render: (r) => r.select({ options: BalanceOriginDict, clearable: true }),
   },
   {
-    key: 'mobile',
-    title: '手机号',
+    key: 'type',
+    title: '余额类型',
+    render: (r) => r.select({ options: ProductTypeDict, clearable: true }),
   },
-  {
-    key: 'openid',
-    title: 'openid',
-  },
-  {
-    key: 'balanceCount',
-    title: '次数余额',
-    render: (r) =>
-      r.text({
-        text: (record) =>
-          `${record.balances
-            .filter((x) => x.type === ProductType.Count)
-            .reduce((r, v) => (r += v.currentCount), 0)
-            .toString()}`,
-      }),
-  },
-  {
-    key: 'balanceTime',
-    title: '时间余额',
-    render: (r) =>
-      r.text({
-        text: (record) => {
-          const endTime = dayjs.max(
-            record.balances
-              .filter((x) => x.type === ProductType.Time)
-              .map((x) => dayjs(x.endTime)),
-          )
+]
 
-          if (endTime) {
-            return endTime.diff(dayjs()).toString()
-          } else {
-            return '0'
-          }
-        },
-      }),
+const columns: TableColumnsOptions<Balance> = [
+  {
+    key: 'user.id',
+    title: '用户ID',
+    width: '200px',
+    align: 'left',
+  },
+  {
+    key: 'origin',
+    title: '来源',
+    render: (r) => r.dict({ dict: BalanceOriginDict }),
+  },
+  {
+    key: 'type',
+    title: '类型',
+    render: (r) => r.dict({ dict: ProductTypeDict }),
+  },
+  {
+    key: 'startCount',
+    title: '初始额度',
+  },
+  {
+    key: 'currentCount',
+    title: '当前额度',
+  },
+  {
+    key: 'startDate',
+    title: '开始时间',
+  },
+  {
+    key: 'endDate',
+    title: '结束时间',
   },
   {
     key: 'enable',
     title: '状态',
     render: (r) =>
-      r.dict({
-        dict: EnableStateDict,
+      r.text({
+        text: (record) => {
+          const getState = () => {
+            switch (record.type) {
+              case ProductType.Count:
+                return record.startCount >= record.currentCount
+              case ProductType.Time:
+                return dayjs().isAfter(record.endTime)
+            }
+          }
+
+          return getState() ? '可用' : '不可用'
+        },
       }),
   },
   {

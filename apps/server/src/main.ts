@@ -41,6 +41,7 @@ function setupSwagger(app: NestFastifyApplication) {
       .addTag('product', '产品')
       .addTag('active-code', '激活码')
       .addTag('order', '订单')
+      .addTag('refund', '退款')
       .addTag('balance', '余额')
       .addTag('key', 'OpenAI Key')
       .build()

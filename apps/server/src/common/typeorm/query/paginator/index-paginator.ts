@@ -1,11 +1,11 @@
-import { Order, PaginatorMode } from 'src/config/enum.config'
+import { OrderMode, PaginatorMode } from 'src/config/enum.config'
 import { toUnderscore } from 'src/common/utils'
 import { ObjectType, SelectQueryBuilder } from 'typeorm'
 
 export interface IndexPagingQuery {
   skip: number
   limit: number
-  order?: Record<string, Order>
+  order?: Record<string, OrderMode>
 }
 
 export interface IndexPaginationOptions<Entity> {
@@ -25,7 +25,7 @@ export interface IndexPagingResult<Entity> {
 export class IndexPaginator<Entity> {
   private limit = 20
   private skip = 0
-  private order: Record<string, Order>
+  private order: Record<string, OrderMode>
 
   public constructor(private entity: ObjectType<Entity>) {}
 
@@ -37,7 +37,7 @@ export class IndexPaginator<Entity> {
     this.skip = skip
   }
 
-  public setOrder(order: Record<string, Order>) {
+  public setOrder(order: Record<string, OrderMode>) {
     this.order = order
   }
 

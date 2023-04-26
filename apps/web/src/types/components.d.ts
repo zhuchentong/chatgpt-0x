@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
     'IconParkOutline:calendar': typeof import('~icons/icon-park-outline/calendar')['default']
     'IconParkOutline:check': typeof import('~icons/icon-park-outline/check')['default']
     'IconParkOutline:clear': typeof import('~icons/icon-park-outline/clear')['default']
+    'IconParkOutline:closeOne': typeof import('~icons/icon-park-outline/close-one')['default']
     'IconParkOutline:copy': typeof import('~icons/icon-park-outline/copy')['default']
     'IconParkOutline:dashboard': typeof import('~icons/icon-park-outline/dashboard')['default']
     'IconParkOutline:delete': typeof import('~icons/icon-park-outline/delete')['default']

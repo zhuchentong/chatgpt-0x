@@ -17,7 +17,7 @@ export class BalanceController {
   constructor(private balanceService: BalanceService) {}
 
   @Get()
-  @ApiOperation({ operationId: 'findUsers', summary: '查找余额列表' })
+  @ApiOperation({ operationId: 'findBalances', summary: '查找余额列表' })
   @ApiOkResponse({ type: toPageResponse(Balance) })
   findAll(@Query() input: FindBalanceInput) {
     return this.balanceService.findAll(input.params)

@@ -16,7 +16,7 @@ import { QueryInputParam } from 'src/common/typeorm/interfaces'
 import { buildPaginator } from 'src/common/typeorm/query/paginator'
 import { User } from 'src/entities/user.entity'
 import { Order } from 'src/entities/order.entity'
-import { Order as OrderType } from 'src/config/enum.config'
+import { OrderMode } from 'src/config/enum.config'
 @Injectable()
 export class BalanceService {
   constructor(
@@ -38,7 +38,7 @@ export class BalanceService {
       mode: PaginatorMode.Index,
       entity: Balance,
       query: {
-        order: { created_at: OrderType.DESC, ...order },
+        order: { created_at: OrderMode.DESC, ...order },
         skip: page.skip,
         limit: page.limit,
       },

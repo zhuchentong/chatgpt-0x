@@ -4,9 +4,6 @@ import { CreateProductInput, UpdateProductInput } from '../dtos/product.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { QueryInputParam } from 'src/common/typeorm/interfaces'
-import { buildPaginator } from 'src/common/typeorm/query/paginator'
-import { PaginatorMode, Order } from 'src/config/enum.config'
-import { Assistant } from 'src/entities/assistant.entity'
 
 @Injectable()
 export class ProductService {

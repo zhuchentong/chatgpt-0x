@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { QueryInputParam } from 'src/common/typeorm/interfaces'
 import { buildPaginator } from 'src/common/typeorm/query/paginator'
-import { PaginatorMode, Order } from 'src/config/enum.config'
+import { PaginatorMode, OrderMode } from 'src/config/enum.config'
 import { ActiveCode } from 'src/entities/active-code.entity'
 import { Repository } from 'typeorm'
 import {
@@ -32,7 +32,7 @@ export class ActiveCodeService {
       mode: PaginatorMode.Index,
       entity: ActiveCode,
       query: {
-        order: { createdAt: Order.DESC, ...order },
+        order: { createdAt: OrderMode.DESC, ...order },
         skip: page.skip,
         limit: page.limit,
       },

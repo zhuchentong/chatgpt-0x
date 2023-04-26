@@ -35,10 +35,7 @@ dayjs.extend(minMax)
 const pageService = new PageService()
 const table = $(useTable('table'))
 
-const [productService, userService] = useRequest(
-  (service) => service.ProductService,
-  (service) => service.UserService,
-)
+const userService = useRequest((service) => service.UserService)
 
 function loadData({ update }: LoadDataParams) {
   userService.findUsers([pageService]).then(({ data }) => {

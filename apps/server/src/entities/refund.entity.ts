@@ -8,29 +8,29 @@ import {
 } from 'src/common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
 import { EntityWithCreator } from 'src/common/typeorm/entity/entity-with-creator'
-import { OrderState } from 'src/config/enum.config'
-import { Product } from './product.entity'
+import { RefundState } from 'src/config/enum.config'
 import { User } from './user.entity'
+import { Order } from './order.entity'
 
-@Entity('order')
-export class Order extends pipe(
+@Entity('refund')
+export class Refund extends pipe(
   EntityWithNanoID,
   EntityWithTime,
   EntityWithDelete,
   EntityWithCreator,
 )(EntityClass) {
-  @ApiProperty({ description: '订单状态', enum: OrderState })
-  @Column({ enum: OrderState })
-  state: OrderState
+  @ApiProperty({ description: '退款状态', enum: RefundState })
+  @Column({ enum: RefundState })
+  state: RefundState
 
-  @ApiProperty({ description: '订单金额' })
+  @ApiProperty({ description: '退款金额' })
   @Column()
-  price: number
+  amount: number
 
-  @ApiProperty({ description: '产品', type: () => Product })
-  @ManyToOne(() => Product)
-  @JoinColumn({ name: 'product_id' })
-  product: Product
+  @ApiProperty({ description: '订单', type: () => Order })
+  @ManyToOne(() => Order)
+  @JoinColumn({ name: 'order_id' })
+  order: Order
 
   @ApiProperty({ description: '用户', type: () => User })
   @ManyToOne(() => User)
@@ -38,17 +38,17 @@ export class Order extends pipe(
   user: User
 
   @Column({
-    name: 'transaction_id',
+    name: 'wx_refund_id',
     nullable: true,
   })
-  @ApiProperty({ description: '微信支付交易号' })
-  public transactionId: string
+  @ApiProperty({ description: '微信退款交易号' })
+  public wxRefundId: string
 
   @Column({
-    name: 'paid_time',
+    name: 'refund_time',
     type: 'timestamp without time zone',
     nullable: true,
   })
-  @ApiProperty({ description: '支付时间', type: 'string' })
-  public paidTime: Date
+  @ApiProperty({ description: '退款成功时间', type: 'string' })
+  public refundTime: Date
 }

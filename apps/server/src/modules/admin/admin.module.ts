@@ -26,6 +26,9 @@ import { Balance } from 'src/entities/balance.entity'
 import { Order } from 'src/entities/order.entity'
 import { WechatModule } from 'src/shared/wechat/wechat.module'
 import { PaymentController } from './controllers/payment.controller'
+import { RefundController } from './controllers/refund.controller'
+import { RefundService } from './services/refund.service'
+import { Refund } from 'src/entities/refund.entity'
 
 @Module({
   imports: [
@@ -39,6 +42,7 @@ import { PaymentController } from './controllers/payment.controller'
       Product,
       Balance,
       Order,
+      Refund,
       ActiveCode,
     ]),
   ],
@@ -50,6 +54,7 @@ import { PaymentController } from './controllers/payment.controller'
     BalanceService,
     OrderService,
     ActiveCodeService,
+    RefundService,
   ],
   controllers: [
     AdministratorController,
@@ -61,6 +66,7 @@ import { PaymentController } from './controllers/payment.controller'
     OrderController,
     BalanceController,
     PaymentController,
+    RefundController,
   ],
 })
 export class AdminModule {}

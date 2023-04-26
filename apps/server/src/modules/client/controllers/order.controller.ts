@@ -49,7 +49,7 @@ export class OrderController {
     const url = await this.wxpayService.submitNativeOrder({
       orderNumber: order.id,
       amount: product.price,
-      description: product.title,
+      description: product.name,
     })
 
     if (!url) {
@@ -60,7 +60,7 @@ export class OrderController {
 
     return {
       orderId: order.id,
-      title: product.title,
+      name: product.name,
       qrcode: data,
       price: product.price,
     }

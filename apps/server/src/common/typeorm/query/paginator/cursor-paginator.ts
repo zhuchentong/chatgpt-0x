@@ -1,4 +1,4 @@
-import { Order, PaginatorMode } from 'src/config/enum.config'
+import { OrderMode, PaginatorMode } from 'src/config/enum.config'
 import { toUnderscore } from 'src/common/utils'
 import {
   Brackets,
@@ -10,7 +10,7 @@ import {
 export interface CursorPagingQuery {
   cursor?: string
   limit?: number
-  order?: Record<string, Order>
+  order?: Record<string, OrderMode>
 }
 
 export interface CursorPaginationOptions<Entity> {
@@ -34,7 +34,7 @@ export class CursorPaginator<Entity> {
 
   private limit = 10
 
-  private order: Record<string, Order>
+  private order: Record<string, OrderMode>
 
   public constructor(
     private entity: ObjectType<Entity>,
@@ -46,7 +46,7 @@ export class CursorPaginator<Entity> {
     this.limit = limit
   }
 
-  public setOrder(order: Record<string, Order>): void {
+  public setOrder(order: Record<string, OrderMode>): void {
     this.order = order
   }
 
@@ -106,7 +106,7 @@ export class CursorPaginator<Entity> {
     builder: SelectQueryBuilder<Entity>,
   ): SelectQueryBuilder<Entity> {
     const order = this.order || {
-      [this.orderKey]: Order.DESC,
+      [this.orderKey]: OrderMode.DESC,
     }
 
     Object.entries(order).forEach(([key, order]) => {
@@ -158,9 +158,9 @@ export class CursorPaginator<Entity> {
    */
   private getOperator(): string {
     switch ((this.order || {})?.[this.orderKey]) {
-      case Order.ASC:
+      case OrderMode.ASC:
         return '>'
-      case Order.DESC:
+      case OrderMode.DESC:
         return '<'
       // 默认处理
       default:
