@@ -40,6 +40,7 @@
               <n-button
                 v-if="store.chat.currentChat.inputing"
                 class="stop-btn"
+                :focusable="false"
                 size="tiny"
                 text
                 type="warning"
@@ -67,12 +68,14 @@
               <icon-park-outline:edit-two></icon-park-outline:edit-two>
             </n-button>
             <n-button
+              :focusable="false"
               size="tiny"
               text
               @click="onExport">
               <icon-park-outline:export></icon-park-outline:export>
             </n-button>
             <n-button
+              :focusable="false"
               size="tiny"
               text
               @click="onClear">
@@ -80,10 +83,11 @@
             </n-button>
             <n-button
               :disabled="chats.length <= 1"
+              :focusable="false"
               size="tiny"
               text
               @click="onDelete">
-              <icon-park-outline:delete></icon-park-outline:delete>
+              <icon-park-outline:close-one></icon-park-outline:close-one>
             </n-button>
           </div>
           <n-divider vertical></n-divider>
@@ -233,7 +237,7 @@ function onExport() {
 function onDelete() {
   dialog.warning({
     title: '删除',
-    content: '确定删除对话？',
+    content: '确定关闭当前对话？',
     positiveText: '确定',
     negativeText: '取消',
     maskClosable: false,
