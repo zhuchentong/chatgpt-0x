@@ -1,7 +1,6 @@
 import type { ChatRole } from '@/config/enum.config'
 
 export interface AssistantChatRecord extends ChatRecord {
-  id: string
   model: string
   parentMessageId?: string
 }
@@ -11,6 +10,7 @@ export interface UserChatRecord extends ChatRecord {
 }
 
 export interface ChatRecord {
+  id: string
   role: ChatRole
   content: string
   datetime?: number

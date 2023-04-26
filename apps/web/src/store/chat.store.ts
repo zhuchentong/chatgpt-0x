@@ -16,6 +16,8 @@ interface State {
   activeChat: string
   // 是否保持上下文
   keepContext: boolean
+  // 选择的对话
+  selectChatRecords: string[] | undefined
 }
 
 const initialState: State = {
@@ -35,6 +37,7 @@ const initialState: State = {
   activeAssistant: 'default-assistant',
   activeChat: 'default-chat',
   keepContext: true,
+  selectChatRecords: undefined,
 }
 
 export const useChatStore = defineStore('chat', {
@@ -91,7 +94,7 @@ export const useChatStore = defineStore('chat', {
       }
 
       this.chats.push(chat)
-      this.activeChat = id
+      this.changeChat(id)
 
       if (assistant.foreword?.trim()) {
         // nextTick(() => {
@@ -108,7 +111,7 @@ export const useChatStore = defineStore('chat', {
 
       const index = chats.findIndex((x) => x.id === chat.id)
 
-      this.activeChat = chats[index === 0 ? 1 : index - 1].id
+      this.changeChat(chats[index === 0 ? 1 : index - 1].id)
 
       this.chats.splice(
         this.chats.findIndex((x) => x.id === chat.id),
@@ -120,6 +123,7 @@ export const useChatStore = defineStore('chat', {
     },
     changeChat(id: string) {
       this.activeChat = id
+      this.updateSelectChatRecordState(false)
     },
     changeAssistant(id: string) {
       const assistant = this.assistants.find((x) => x.id === id)
@@ -127,7 +131,7 @@ export const useChatStore = defineStore('chat', {
 
       if (chat) {
         this.activeAssistant = id
-        this.activeChat = chat.id
+        this.changeChat(chat.id)
       }
     },
     appendAssistenItems(items: Assistant[]) {
@@ -135,6 +139,24 @@ export const useChatStore = defineStore('chat', {
     },
     toggleKeepContext() {
       this.keepContext = !this.keepContext
+    },
+    updateSelectChatRecordState(state: boolean) {
+      if (state) {
+        this.selectChatRecords = []
+      } else {
+        this.selectChatRecords = undefined
+      }
+    },
+    toggleSelectChatRecord(id: string) {
+      if (!this.selectChatRecords) {
+        this.selectChatRecords = []
+      }
+
+      if (this.selectChatRecords.includes(id)) {
+        this.selectChatRecords.splice(this.selectChatRecords.indexOf(id), 1)
+      } else {
+        this.selectChatRecords.push(id)
+      }
     },
   },
   persist: {

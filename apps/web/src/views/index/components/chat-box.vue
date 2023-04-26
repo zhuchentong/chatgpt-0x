@@ -6,20 +6,23 @@
     <div class="chat-record-container flex-auto relative">
       <div
         ref="record-list"
-        class="chat-record-list absolute inset-0 overflow-auto space-y-2">
-        <ClientOnly>
-          <div id="chat-content">
-            <ChatRecord
-              v-for="(record, index) in records"
-              :key="index"
-              :index="index"
-              :record="record"></ChatRecord>
-            <ChatRecord
-              v-if="chat.waiting"
-              loading
-              :record="{ role: ChatRole.Assistant, content: '' }"></ChatRecord>
-          </div>
-        </ClientOnly>
+        class="chat-record-list absolute inset-0 overflow-auto space-y-2"
+        @click.self="() => store.chat.updateSelectChatRecordState(false)">
+        <div id="chat-content">
+          <ChatRecord
+            v-for="(record, index) in records"
+            :key="index"
+            :index="index"
+            :record="record"></ChatRecord>
+          <ChatRecord
+            v-if="chat.waiting"
+            loading
+            :record="{
+              role: ChatRole.Assistant,
+              content: '',
+              id: 'waiting',
+            }"></ChatRecord>
+        </div>
       </div>
     </div>
 
