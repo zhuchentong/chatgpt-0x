@@ -1,7 +1,7 @@
-import type { User } from '@/http/models/User'
 import { defineStore } from 'pinia'
+import type { User } from '@/http/models/User'
 
-type State = {
+interface State {
   accessToken: string
   refreshToken: string
   current?: User
