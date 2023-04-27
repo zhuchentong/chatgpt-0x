@@ -61,6 +61,15 @@
         </template>
         会员充值
       </NButton>
+      <NButton
+        block
+        :focusable="false"
+        @click="onInvite">
+        <template #icon>
+          <icon-park-outline:share-two></icon-park-outline:share-two>
+        </template>
+        邀请好友
+      </NButton>
     </div>
     <n-divider />
 
@@ -127,18 +136,30 @@
 </style>
 
 <script setup lang="ts">
-import { useModal } from '@gopowerteam/vue-modal'
+import { useMessage } from 'naive-ui'
 import { useStore } from '@/store'
 import SystemSetting from '@/components/system-setting.vue'
 import UserRecharge from '@/components/user-recharge.vue'
 
-const modal = useModal()
 const store = useStore()
 const showSystemSetting = ref(false)
 const showUserRecharge = ref(false)
 const colorMode = useColorMode()
 
+const message = useMessage()
+const clipboard = useClipboard({ legacy: true })
+
 function onChangeAssistant(id: string) {
   store.chat.changeAssistant(id)
+}
+
+function onInvite() {
+  if (clipboard.isSupported) {
+    clipboard
+      .copy(`${location.origin}?inviter=${store.user.current?.id}`)
+      .then(() => {
+        message.success('邀请链接已复制到粘贴板,邀请好友注册有奖励哦~')
+      })
+  }
 }
 </script>

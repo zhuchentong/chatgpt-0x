@@ -10,6 +10,9 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
 import { plainToInstance } from 'class-transformer'
 import { CACHE_BALANCE } from 'src/config/constants'
+import { ConfigService } from '@nestjs/config'
+import { Logger } from 'src/core/logger/services/logger.service'
+import { UserService } from './user.service'
 
 @Injectable()
 export class BalanceService {
@@ -18,8 +21,16 @@ export class BalanceService {
     private balanceRepository: Repository<Balance>,
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
+    private readonly userService: UserService,
+    private readonly config: ConfigService,
+    private readonly logger: Logger,
   ) {}
 
+  /**
+   *  获取用户日期余额结束时间
+   * @param userId
+   * @returns
+   */
   async getUserBalanceEndTime(userId: string) {
     const { endTime } = await this.balanceRepository
       .createQueryBuilder('balance')
@@ -33,34 +44,59 @@ export class BalanceService {
   }
 
   /**
-   * 通过兑换码创建
-   * @param code
+   *  创建余额实体
+   * @param param0
    * @returns
    */
-  async createByCode(code: ActiveCode, user: User) {
-    const balance = this.balanceRepository.create({
-      origin: BalanceOrigin.Code,
-      type: code.type,
-    })
+  private async createBalanceEntity({
+    user,
+    origin,
+    type,
+    value,
+  }: {
+    user: User
+    origin: BalanceOrigin
+    type: ProductType
+    value: number
+  }) {
+    const balance = this.balanceRepository.create({ user, type, origin })
 
-    switch (code.type) {
+    switch (type) {
       case ProductType.Time:
         {
           const startTime = await this.getUserBalanceEndTime(user.id)
           balance.startTime = startTime.toDate()
-          balance.endTime = startTime.add(code.value, 'day').toDate()
+          balance.endTime = startTime.add(value, 'day').toDate()
         }
         break
       case ProductType.Count:
         {
-          balance.startCount = code.value
-          balance.currentCount = code.value
+          balance.startCount = value
+          balance.currentCount = value
         }
         break
     }
 
-    balance.code = code
-    balance.user = user
+    return balance
+  }
+
+  /**
+   * 通过注册创建
+   */
+  async createByRegister(user: User) {
+    const { type, value } = this.config.get('setting.balance.events.register')
+
+    if (!type || !value) {
+      this.logger.warn('注册奖励未配置')
+      return
+    }
+
+    const balance = await this.createBalanceEntity({
+      user,
+      origin: BalanceOrigin.Register,
+      type,
+      value,
+    })
 
     // 清除缓存
     await this.cacheManager.del(`${CACHE_BALANCE}:${user.id}`)
@@ -68,6 +104,65 @@ export class BalanceService {
     return this.balanceRepository.save(balance)
   }
 
+  /**
+   * 通过邀请创建
+   */
+  async createByInvite(user: User, inviterId: string) {
+    const { type, value } = this.config.get('setting.balance.events.invite')
+
+    const inviter = await this.userService.findOne(inviterId)
+
+    if (!inviter) {
+      this.logger.warn('邀请人不存在')
+      return
+    }
+
+    if (!type || !value) {
+      this.logger.warn('邀请奖励未配置')
+      return
+    }
+
+    const balance = await this.createBalanceEntity({
+      user: inviter,
+      origin: BalanceOrigin.Invite,
+      type,
+      value,
+    })
+
+    // TODO: 添加邀请记录
+
+    // 清除缓存
+    await this.cacheManager.del(`${CACHE_BALANCE}:${inviter.id}`)
+
+    return this.balanceRepository.save(balance)
+  }
+
+  /**
+   * 通过兑换码创建
+   * @param code
+   * @returns
+   */
+  async createByCode(code: ActiveCode, user: User) {
+    const balance = await this.createBalanceEntity({
+      user,
+      origin: BalanceOrigin.Code,
+      type: code.type,
+      value: code.value,
+    })
+
+    balance.code = code
+
+    // 清除缓存
+    await this.cacheManager.del(`${CACHE_BALANCE}:${user.id}`)
+
+    return this.balanceRepository.save(balance)
+  }
+
+  /**
+   *  从缓存获取用户余额
+   * @param userId
+   * @returns
+   */
   async getUserBalanceFromCache(userId) {
     const balance = await this.cacheManager.get<Balance>(
       `${CACHE_BALANCE}:${userId}`,
@@ -78,6 +173,11 @@ export class BalanceService {
     }
   }
 
+  /**
+   *  从数据库获取用户余额
+   * @param userId
+   * @returns
+   */
   async getUserBalanceFromDB(userId) {
     const balances = await this.balanceRepository.find({
       where: [
@@ -107,6 +207,11 @@ export class BalanceService {
     return balance
   }
 
+  /**
+   *  获取用户余额
+   * @param userId
+   * @returns
+   */
   async getUserBalance(userId: string) {
     const balance = await this.getUserBalanceFromCache(userId)
 
@@ -117,6 +222,11 @@ export class BalanceService {
     }
   }
 
+  /**
+   *  获取用户余额列表
+   * @param userId
+   * @returns
+   */
   async getUserBalances(userId: string) {
     return await this.balanceRepository.find({
       where: [
@@ -136,6 +246,10 @@ export class BalanceService {
     })
   }
 
+  /**
+   *  消耗用户余额
+   * @param userId
+   */
   async consumeUserBalance(userId: string) {
     const balance = await this.getUserBalanceFromCache(userId)
 

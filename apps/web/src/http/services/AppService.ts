@@ -206,27 +206,25 @@ export class AppService {
    * 二维码登录状态查询
    */
   public qrcodeLoginStatus(
-    code: string,
+    requestQuery: RequestQueryParams.QrcodeLoginStatus,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public qrcodeLoginStatus(
-    code: string,
+    requestQuery: RequestQueryParams.QrcodeLoginStatus,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<QrcodeLoginStatusResponse>
   public qrcodeLoginStatus(
-    code: string,
+    requestQuery: RequestQueryParams.QrcodeLoginStatus,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<QrcodeLoginStatusResponse> | string {
     const requestSendOptions = {
       service: this.service,
-      path: '/api/client/app/qrcode-login-status/{code}',
-      method: 'post',
-      paramsPath: {
-        code,
-      },
+      path: '/api/client/app/qrcode-login-status',
+      method: 'get',
+      paramsQuery: requestQuery,
     }
   
     return this.generateRequest(
@@ -375,5 +373,15 @@ namespace RequestQueryParams {
      * 用户openid
      */
     openid: string;
+  }
+  export type QrcodeLoginStatus = {
+    /**
+     * 用户登录码
+     */
+    code: string;
+    /**
+     * 邀请人ID
+     */
+    inviter: string;
   }
 }

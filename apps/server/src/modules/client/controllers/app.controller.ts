@@ -44,6 +44,7 @@ import { AppOrigin } from 'src/config/enum.config'
 import { WXMPService } from 'src/shared/wechat/services/wxmp.service'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { CACHE_MAIL_CODE, CACHE_QRCODE_LOGIN } from 'src/config/constants'
+import { BalanceService } from '../services/balance.service'
 @Controller('app')
 @ApiTags('app')
 @ApiSecurity('access-token')
@@ -56,6 +57,7 @@ export class AppController {
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
 
     private readonly wxmpService: WXMPService,
+    private readonly balanceService: BalanceService,
   ) {}
 
   @Public()
@@ -140,13 +142,14 @@ export class AppController {
   }
 
   @Public()
-  @Post('qrcode-login-status/:code')
+  @Get('qrcode-login-status')
   @ApiOkResponse({ type: QrcodeLoginStatusResponse })
   @ApiOperation({
     operationId: 'qrcodeLoginStatus',
     summary: '二维码登录状态查询',
   })
-  async qrcodeLoginStatus(@Param() { code }: QrcodeLoginStatusInput) {
+  async qrcodeLoginStatus(@Query() { code, inviter }: QrcodeLoginStatusInput) {
+    let isNewRegister = false
     const openid = await this.cacheManager.get<string>(
       `${CACHE_QRCODE_LOGIN}:${code}`,
     )
@@ -158,14 +161,33 @@ export class AppController {
       }
     }
 
+    //  清除缓存
     await this.cacheManager.del(`${CACHE_QRCODE_LOGIN}:${code}`)
-    const user = await this.userService.findOneBy({ openid }).then((user) => {
-      if (user) {
-        return user
-      } else {
-        return this.userService.createByOpenID(openid)
-      }
-    })
+
+    const user = await this.userService
+      .findOneBy({ openid })
+      .then((isExistUser) => {
+        // 已存在用户
+        if (!isExistUser) {
+          // 新用户注册
+          isNewRegister = true
+          return this.userService.createByOpenID(openid)
+        }
+
+        return isExistUser
+      })
+
+    // 新用户注册处理
+    if (isNewRegister) {
+      // 注册赠送余额
+      await this.balanceService.createByRegister(user)
+    }
+
+    // 邀请注册处理
+    if (isNewRegister && inviter) {
+      // 邀请注册赠送余额
+      await this.balanceService.createByInvite(user, inviter)
+    }
 
     const token = await this.authService.userSign(user, AppOrigin.Web)
 

@@ -50,7 +50,7 @@ const router = useRouter()
 
 let qrcode = $ref('')
 let code: string
-
+const inviter = route.query.inviter as string
 /**
  * 请求登录二维码
  */
@@ -79,7 +79,7 @@ const {
     }
 
     appService
-      .qrcodeLoginStatus(code)
+      .qrcodeLoginStatus({ code, inviter })
       .then(({ status, access_token, refresh_token }) => {
         if (!status) {
           return

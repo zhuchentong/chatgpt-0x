@@ -17,13 +17,17 @@ import { buildPaginator } from 'src/common/typeorm/query/paginator'
 import { User } from 'src/entities/user.entity'
 import { Order } from 'src/entities/order.entity'
 import { OrderMode } from 'src/config/enum.config'
+import { ConfigService } from '@nestjs/config'
+import { Logger } from 'src/core/logger/services/logger.service'
 @Injectable()
 export class BalanceService {
   constructor(
     @InjectRepository(Balance)
-    private balanceRepository: Repository<Balance>,
+    private readonly balanceRepository: Repository<Balance>,
     @Inject(CACHE_MANAGER)
-    private cacheManager: Cache,
+    private readonly cacheManager: Cache,
+    private readonly config: ConfigService,
+    private readonly logger: Logger,
   ) {}
 
   async findAll({ buildWhereQuery, page, order }: QueryInputParam<User>) {
@@ -65,32 +69,15 @@ export class BalanceService {
    * @returns
    */
   async createByOrder(order: Order) {
-    const product = order.product
-
     try {
-      const balance = this.balanceRepository.create({
-        origin: BalanceOrigin.Order,
-        type: product.type,
+      const balance = await this.createBalanceEntity({
+        user: order.user,
+        origin: BalanceOrigin.Register,
+        type: order.product.type,
+        value: order.product.value,
       })
 
-      switch (product.type) {
-        case ProductType.Time:
-          {
-            const startTime = await this.getUserBalanceEndTime(order.user.id)
-            balance.startTime = startTime.toDate()
-            balance.endTime = startTime.add(product.value, 'day').toDate()
-          }
-          break
-        case ProductType.Count:
-          {
-            balance.startCount = product.value
-            balance.currentCount = product.value
-          }
-          break
-      }
-
       balance.order = order
-      balance.user = order.user
 
       // 清除缓存
       await this.cacheManager.del(`${CACHE_BALANCE}:${order.user.id}`)
@@ -99,6 +86,38 @@ export class BalanceService {
     } catch (e) {
       console.log(e)
     }
+  }
+
+  private async createBalanceEntity({
+    user,
+    origin,
+    type,
+    value,
+  }: {
+    user: User
+    origin: BalanceOrigin
+    type: ProductType
+    value: number
+  }) {
+    const balance = this.balanceRepository.create({ user, type, origin })
+
+    switch (type) {
+      case ProductType.Time:
+        {
+          const startTime = await this.getUserBalanceEndTime(user.id)
+          balance.startTime = startTime.toDate()
+          balance.endTime = startTime.add(value, 'day').toDate()
+        }
+        break
+      case ProductType.Count:
+        {
+          balance.startCount = value
+          balance.currentCount = value
+        }
+        break
+    }
+
+    return balance
   }
 
   private async getUserBalanceFromCache(userId) {

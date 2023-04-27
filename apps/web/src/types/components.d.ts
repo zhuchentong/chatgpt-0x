@@ -31,6 +31,8 @@ declare module '@vue/runtime-core' {
     'IconParkOutline:search': typeof import('~icons/icon-park-outline/search')['default']
     'IconParkOutline:send': typeof import('~icons/icon-park-outline/send')['default']
     'IconParkOutline:setting': typeof import('~icons/icon-park-outline/setting')['default']
+    'IconParkOutline:share': typeof import('~icons/icon-park-outline/share')['default']
+    'IconParkOutline:shareTwo': typeof import('~icons/icon-park-outline/share-two')['default']
     ImageIcon: typeof import('./../shared/components/image-icon.vue')['default']
     ImagePreview: typeof import('./../shared/components/image-preview.vue')['default']
     MediaGallery: typeof import('./../shared/components/media-gallery.vue')['default']

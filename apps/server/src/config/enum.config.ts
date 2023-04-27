@@ -63,10 +63,14 @@ export enum FileType {
  * 支付订单状态
  */
 export enum OrderState {
-  Pending = 'PENDING', // 待支付
-  Paid = 'PAID', // 已支付
-  Expired = 'EXPIRED', // 已过期
-  Refunded = 'REFUNDED', // 已退款
+  // 待支付
+  Pending = 'PENDING',
+  // 已支付
+  Paid = 'PAID',
+  // 已过期
+  Expired = 'EXPIRED',
+  // 已退款
+  Refunded = 'REFUNDED',
 }
 
 /**
@@ -84,26 +88,40 @@ export enum RefundState {
 }
 
 export enum RefundChannel {
+  // 原路退回
   Original = 'ORIGINAL',
+  // 余额退回
   Balance = 'BALANCE',
+  // 其他余额退回
   OtherBalance = 'OTHER_BALANCE',
+  // 其他银行卡退回
   OtherBankcard = 'OTHER_BANKCARD',
 }
 
 export enum ProductType {
+  // 次数
   Count = 'COUNT',
+  // 时间
   Time = 'TIME',
 }
 
 export enum BalanceOrigin {
+  // 充值
   Code = 'CODE',
+  // 退款
   Order = 'ORDER',
+  // 注册
+  Register = 'REGISTER',
+  // 邀请
+  Invite = 'INVITE',
 }
 
 /**
  * OpenAIKEY状态
  */
 export enum OpenAIKeyState {
+  // 有效
   Valid = 'VALID',
+  // 无效
   Invalid = 'INVALID',
 }

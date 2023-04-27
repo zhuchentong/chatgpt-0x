@@ -39,6 +39,9 @@ export class ExceptionsFilter implements ExceptionFilter {
         case typeof exception?.response?.message === 'string':
           body.message = exception?.response?.message
           break
+        case Array.isArray(exception?.response?.message):
+          body.message = exception?.response?.message
+          break
       }
 
       if (exception?.response?.toast) {

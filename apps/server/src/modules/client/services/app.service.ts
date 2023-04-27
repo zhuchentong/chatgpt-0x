@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable } from '@nestjs/common'
-import { nanoid } from 'nanoid'
 import { WXMPService } from 'src/shared/wechat/services/wxmp.service'
 
 const WEAPP_API = {

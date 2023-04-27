@@ -1,3 +1,5 @@
+import { ProductType } from './enum.config'
+
 export default () => ({
   app: {
     port: process.env.APP_PORT,
@@ -62,5 +64,21 @@ export default () => ({
   openai: {
     apiurl: process.env.OPENAI_APIURL,
     apikey: process.env.OPENAI_APIKEY,
+  },
+  // TODO: 迁移到配置中心
+  setting: {
+    balance: {
+      enable: true,
+      events: {
+        register: {
+          type: ProductType.Count,
+          value: 5,
+        },
+        invite: {
+          type: ProductType.Count,
+          value: 5,
+        },
+      },
+    },
   },
 })

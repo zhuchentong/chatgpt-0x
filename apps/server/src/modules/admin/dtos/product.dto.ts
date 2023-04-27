@@ -12,7 +12,7 @@ import { Product } from 'src/entities/product.entity'
 export class CreateProductInput {
   @ApiProperty()
   @IsString()
-  title: string
+  name: string
 
   @ApiProperty({ enum: ProductType })
   @IsEnum(ProductType)

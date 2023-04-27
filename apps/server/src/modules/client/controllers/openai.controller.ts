@@ -8,6 +8,7 @@ import { RequestUser } from 'src/decorators/request-user.decorator'
 import { User } from 'src/entities/user.entity'
 import { KeyService } from 'src/shared/openai/services/key.service'
 import { OpenAIKeyState } from 'src/config/enum.config'
+import { Logger } from 'src/core/logger/services/logger.service'
 
 @Controller('openai')
 @ApiTags('openai')
@@ -17,6 +18,7 @@ export class OpenaiController {
     private readonly openai: OpenAIService,
     private readonly balanceService: BalanceService,
     private readonly keyService: KeyService,
+    private readonly logger: Logger,
   ) {}
 
   /**
@@ -60,6 +62,9 @@ export class OpenaiController {
   ): Promise<Observable<MessageEvent>> {
     // 获取用户余额
     const balance = await this.balanceService.getUserBalance(user.id)
+
+    // 输入余额日志
+    this.logger.debug(balance)
 
     if (!balance) {
       return from([{ data: '[ERROR]余额不足' } as MessageEvent])

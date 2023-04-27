@@ -48,7 +48,7 @@
         v-if="products.length"
         class="payment-container">
         <n-grid
-          :cols="store.app.desktop ? 3 : 1"
+          :cols="store.app.desktop ? 2 : 1"
           :x-gap="12"
           :y-gap="12">
           <n-grid-item
