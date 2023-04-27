@@ -16,6 +16,7 @@
         class="w-50px h-35px"
         size="large"
         text
+        title="发送消息"
         @click="onSubmit">
         <template #icon>
           <icon-park-outline:send></icon-park-outline:send>
