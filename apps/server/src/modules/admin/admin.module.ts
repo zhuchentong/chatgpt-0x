@@ -25,7 +25,6 @@ import { ActiveCode } from 'src/entities/active-code.entity'
 import { Balance } from 'src/entities/balance.entity'
 import { Order } from 'src/entities/order.entity'
 import { WechatModule } from 'src/shared/wechat/wechat.module'
-import { PaymentController } from './controllers/payment.controller'
 import { RefundController } from './controllers/refund.controller'
 import { RefundService } from './services/refund.service'
 import { Refund } from 'src/entities/refund.entity'
@@ -65,7 +64,6 @@ import { Refund } from 'src/entities/refund.entity'
     ActiveCodeController,
     OrderController,
     BalanceController,
-    PaymentController,
     RefundController,
   ],
 })

@@ -81,21 +81,20 @@ export class RefundController {
     }
 
     try {
-      const response = JSON.parse(
-        this.wxpayService.decrypt({
-          ciphertext: resource.ciphertext,
-          nonce: resource.nonce,
-          associatedData: resource.associated_data,
-        }),
-      )
+      const response = this.wxpayService.decrypt({
+        ciphertext: resource.ciphertext,
+        nonce: resource.nonce,
+        associatedData: resource.associated_data,
+      })
 
+      // 打印日志
       this.logger.debug(response)
 
       const { out_refund_no, out_trade_no, refund_status, success_time } =
         response
 
       if (refund_status === 'SUCCESS') {
-        await this.onRefundSuccess({
+        await this.refundService.onRefundSuccess({
           out_refund_no,
           out_trade_no,
           refund_status,
@@ -108,28 +107,5 @@ export class RefundController {
         message: '失败',
       }
     }
-  }
-
-  private async onRefundSuccess({
-    out_refund_no,
-    out_trade_no,
-    refund_status,
-    success_time,
-  }: {
-    out_refund_no: string
-    out_trade_no: string
-    refund_status: RefundState
-    success_time: string
-  }) {
-    // 更新退款单状态
-    await this.refundService.update(out_refund_no, {
-      state: refund_status,
-      refundTime: new Date(success_time),
-    })
-
-    // 更新订单状态
-    await this.orderService.update(out_trade_no, {
-      state: OrderState.Refunded,
-    })
   }
 }

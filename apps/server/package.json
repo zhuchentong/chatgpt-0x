@@ -43,7 +43,6 @@
     "@tnwx/commons": "^2.5.6",
     "@tnwx/kits": "^2.5.6",
     "@tnwx/wxmp": "^2.5.6",
-    "@tnwx/wxpay": "^2.5.6",
     "bcrypt": "5.0.1",
     "cache-manager": "4.1.0",
     "cache-manager-redis-store": "2.0.0",

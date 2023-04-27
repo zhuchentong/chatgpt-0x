@@ -1,59 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Logger } from 'src/core/logger/services/logger.service'
-import { PayKit, RequestMethod, WX_API_TYPE, WX_DOMAIN } from 'tnwx'
-import * as fs from 'node:fs'
 import { RequestContext } from 'src/middlewaves/request-context.middlewave'
 import WxPay from 'wechatpay-node-v3'
 import { WECHAT_PAY_MANAGER } from 'nest-wechatpay-node-v3'
 import { ToastException } from 'src/exceptions/toast.exception'
-import { RefundState } from 'src/config/enum.config'
 
 @Injectable()
 export class WXPayService {
   constructor(
     private readonly logger: Logger,
-    private readonly config: ConfigService,
     @Inject(WECHAT_PAY_MANAGER) private wxpay: WxPay,
   ) {}
-
-  /**
-   * 调用微信支付API
-   * @param method
-   * @param type
-   * @param options
-   * @returns
-   */
-  private callAPI(
-    method: RequestMethod,
-    type: WX_API_TYPE,
-    { data = {}, params = {} }: { data?: any; params?: Record<string, string> },
-  ) {
-    const wxpay = this.config.get('wxpay')
-
-    console.log(
-      method,
-      WX_DOMAIN.CHINA,
-      type,
-      wxpay.mchId,
-      wxpay.serialNo,
-      JSON.stringify(data),
-    )
-    try {
-      return PayKit.v3(
-        method,
-        WX_DOMAIN.CHINA,
-        type,
-        wxpay.mchId,
-        wxpay.serialNo,
-        fs.readFileSync(wxpay.keyPath),
-        JSON.stringify(data),
-        new Map(Object.entries(params)),
-      )
-    } catch (ex) {
-      this.logger.error(ex)
-    }
-  }
 
   submitRefund({
     orderNumber,
@@ -84,8 +41,9 @@ export class WXPayService {
       })
       .then((response) => {
         // 输出日志
+        this.logger.debug(response)
+
         if (response.status >= 400 && response.status <= 500) {
-          this.logger.error(response)
           throw new ToastException(response.message)
         }
 
@@ -105,29 +63,26 @@ export class WXPayService {
     description: string
     amount: number
   }): Promise<string> {
-    const wxpay = this.config.get('wxpay')
     const host = RequestContext.currentContext.host
 
-    return this.callAPI(RequestMethod.POST, WX_API_TYPE.NATIVE_PAY, {
-      data: {
-        appid: wxpay.appId,
-        mchid: wxpay.mchId,
+    return this.wxpay
+      .transactions_native({
         description,
         out_trade_no: orderNumber,
-        notify_url: `https://${host}/api/admin/payment/wxpay-native-notify`,
+        notify_url: `https://${host}/api/admin/order/wxpay-notify`,
         amount: {
           total: amount,
           currency: 'CNY',
         },
-      },
-    }).then((response) => {
-      if (response.status !== 200) {
-        this.logger.error(response.data)
-        throw new Error(response?.data)
-      }
+      })
+      .then((response) => {
+        if (response.status !== 200) {
+          this.logger.error(response)
+          throw new Error('支付失败')
+        }
 
-      return response.data.code_url
-    })
+        return response.code_url
+      })
   }
 
   /**
@@ -144,13 +99,6 @@ export class WXPayService {
     associatedData: string
     nonce: string
   }) {
-    const wxpay = this.config.get('wxpay')
-
-    return PayKit.aes256gcmDecrypt(
-      wxpay.privateKey,
-      nonce,
-      associatedData,
-      ciphertext,
-    )
+    return this.wxpay.decipher_gcm(ciphertext, associatedData, nonce) as any
   }
 }

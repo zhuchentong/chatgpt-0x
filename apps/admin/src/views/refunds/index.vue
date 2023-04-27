@@ -88,7 +88,7 @@ const columns: TableColumnsOptions<Refund> = [
   },
   {
     key: 'refundTime',
-    title: '时间',
+    title: '退款时间',
     render: (r) => r.date(),
   },
   {
