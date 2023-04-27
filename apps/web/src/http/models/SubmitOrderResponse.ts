@@ -14,7 +14,7 @@ export type SubmitOrderResponse = {
   /**
    * 价格
    */
-  price: number;
+  amount: number;
   /**
    * 订单ID
    */

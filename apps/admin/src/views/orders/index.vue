@@ -23,6 +23,7 @@ import {
 import { useRequest } from 'virtual:request'
 import dayjs from 'dayjs'
 import minMax from 'dayjs/plugin/minMax'
+import { Message } from '@arco-design/web-vue'
 import { PageService } from '@/http/extends/page.service'
 import {
   OrderStateDict,
@@ -30,6 +31,7 @@ import {
   ProductUnitDict,
 } from '@/config/dict.config'
 import type { Order } from '@/http/models/Order'
+import { OrderState } from '@/config/enum.config'
 
 dayjs.extend(minMax)
 const pageService = new PageService()
@@ -77,6 +79,12 @@ const columns: TableColumnsOptions<Order> = [
     align: 'left',
   },
   {
+    key: 'amount',
+    title: '订单金额',
+    render: (r) =>
+      r.text({ text: (record) => `${(record.amount / 100).toFixed(2)}元` }),
+  },
+  {
     key: 'product.name',
     title: '产品名称',
   },
@@ -120,10 +128,12 @@ const columns: TableColumnsOptions<Order> = [
       r.button({
         text: '退款',
         confirm: true,
+        show: (record) => record.state === OrderState.Paid,
         confirmText: '是否确认进行退款操作？',
         callback: (record) => {
           refundService.submitRefund({ orderId: record.id }).then(() => {
             table.reload()
+            Message.success('提交退款成功,请稍候在退款记录页面查看')
           })
         },
       }),

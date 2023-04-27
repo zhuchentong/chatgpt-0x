@@ -48,4 +48,8 @@ export class OrderService {
 
     return paginator.paginate(builder)
   }
+
+  update(id: string, input: Partial<Order>) {
+    return this.orderRepository.update(id, input)
+  }
 }

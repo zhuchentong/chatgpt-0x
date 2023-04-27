@@ -9,7 +9,7 @@ export class SubmitOrderResponse {
   name: string
 
   @ApiProperty({ description: '价格' })
-  price: number
+  amount: number
 
   @ApiProperty({ description: '订单ID' })
   orderId

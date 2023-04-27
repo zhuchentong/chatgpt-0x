@@ -31,6 +31,27 @@ export enum OrderState {
   Refunded = 'REFUNDED', // 已退款
 }
 
+/**
+ * 支付订单状态
+ */
+export enum RefundState {
+  // 退款处理中
+  Processing = 'PROCESSING',
+  // 退款异常
+  Abnormal = 'ABNORMAL',
+  // 退款成功
+  Success = 'SUCCESS',
+  // 退款关闭
+  Closed = 'CLOSED',
+}
+
+export enum RefundChannel {
+  Original = 'ORIGINAL',
+  Balance = 'BALANCE',
+  OtherBalance = 'OTHER_BALANCE',
+  OtherBankcard = 'OTHER_BANKCARD',
+}
+
 export enum ProductType {
   Count = 'COUNT',
   Time = 'TIME',

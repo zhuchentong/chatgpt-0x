@@ -31,27 +31,27 @@ export class Logger implements LoggerService {
     return this._logger
   }
 
-  info(message: string, ...args) {
+  info(message: any, ...args) {
     this.logger.info(message, ...args)
   }
 
-  log(message: string, ...args) {
+  log(message: any, ...args) {
     this.logger.info(message, ...args)
   }
 
-  error(message: string, ...args) {
+  error(message: any, ...args) {
     this.logger.error(message, ...args)
   }
 
-  warn(message: string, ...args) {
+  warn(message: any, ...args) {
     this.logger.warn(message, ...args)
   }
 
-  debug(message: string, ...args) {
+  debug(message: any, ...args) {
     this.logger.debug(message, ...args)
   }
 
-  verbose(message: string, ...args) {
+  verbose(message: any, ...args) {
     this.logger.info(message, ...args)
   }
 }

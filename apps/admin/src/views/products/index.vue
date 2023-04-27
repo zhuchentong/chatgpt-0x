@@ -33,6 +33,7 @@ import { useRequest } from 'virtual:request'
 import { PageService } from '@/http/extends/page.service'
 import { EnableStateDict, ProductTypeDict } from '@/config/dict.config'
 import type { Product } from '@/http/models/Product'
+import type { ProductType } from '@/config/enum.config'
 
 const pageService = new PageService()
 const table = $(useTable('table'))
@@ -44,7 +45,7 @@ function onCreate() {
     title: '创建',
     columns: 1,
     record: {
-      title: '',
+      name: '',
       type: '',
       value: '',
       price: '',
@@ -72,7 +73,7 @@ function loadData({ search, update }: LoadDataParams) {
 
 const editsForms: FormItemsOptions = [
   {
-    key: 'title',
+    key: 'name',
     title: '名称',
     rules: [{ required: true, message: '请输入名称' }],
     render: (r) => r.input(),
@@ -100,7 +101,7 @@ const editsForms: FormItemsOptions = [
 
 const columns: TableColumnsOptions<Product> = [
   {
-    key: 'title',
+    key: 'name',
     title: '产品名称',
   },
   {
@@ -124,7 +125,7 @@ const columns: TableColumnsOptions<Product> = [
     key: 'price',
     title: '价格',
     formatter: (record) => record.price / 100,
-    render: (r) => r.text({ text: (record) => `¥ ${record.price}` }),
+    render: (r) => r.text({ text: (record) => `${record.price.toFixed(2)}元` }),
   },
   {
     key: 'action',
@@ -168,6 +169,7 @@ const columns: TableColumnsOptions<Product> = [
                   productService
                     .updateProduct(record.id, {
                       ...data,
+                      type: data.type as ProductType,
                       value: +data.value,
                       price: data.price * 100,
                     })

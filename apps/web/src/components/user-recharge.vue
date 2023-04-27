@@ -86,7 +86,7 @@
       preset="card">
       <div v-if="order">
         <div class="font-blod text-2xl">{{ order?.name }}</div>
-        <div class="price pt-2">{{ order?.price / 100 }}</div>
+        <div class="price pt-2">{{ order?.amount / 100 }}</div>
         <div class="qrcode-image text-center">
           <img
             class="w-50%"

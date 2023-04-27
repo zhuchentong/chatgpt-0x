@@ -3,6 +3,7 @@ import {
   OpenAIKeyState,
   OrderState,
   ProductType,
+  RefundState,
   TabAction,
 } from './enum.config'
 
@@ -41,4 +42,18 @@ export const EnableStateDict = new Map<boolean, string>([
 export const OpenAIKeyStateDict = new Map<OpenAIKeyState | string, string>([
   [OpenAIKeyState.Valid, '正常'],
   [OpenAIKeyState.Invalid, '失效'],
+])
+
+export const RefundStateDict = new Map<RefundState | string, string>([
+  [RefundState.Processing, '退款处理中'],
+  [RefundState.Abnormal, '退款异常'],
+  [RefundState.Success, '退款成功'],
+  [RefundState.Closed, '退款关闭'],
+])
+
+export const RefundChannelDict = new Map<string, string>([
+  ['ORIGINAL', '原路退回'],
+  ['BALANCE', '退回余额'],
+  ['OTHER_BALANCE', '退回其他余额'],
+  ['OTHER_BANKCARD', '退回其他银行卡'],
 ])

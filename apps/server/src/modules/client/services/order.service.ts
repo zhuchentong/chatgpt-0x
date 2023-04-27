@@ -27,7 +27,7 @@ export class OrderService {
   createOrder(product: Product, user: User) {
     const order = this.orderRepository.create({
       state: OrderState.Pending,
-      price: product.price,
+      amount: product.price,
       product,
       user,
     })

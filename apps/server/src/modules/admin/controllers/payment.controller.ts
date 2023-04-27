@@ -37,7 +37,7 @@ export class PaymentController {
 
     if (
       order.id === orderId &&
-      order.price === orderAmount &&
+      order.amount === orderAmount &&
       order.state === OrderState.Pending
     ) {
       // 订单支付成功

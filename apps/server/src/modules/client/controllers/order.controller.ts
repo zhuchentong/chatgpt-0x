@@ -37,7 +37,7 @@ export class OrderController {
   async submitOrder(
     @RequestUser() user: User,
     @Body() { productId }: SubmitOrderInput,
-  ) {
+  ): Promise<SubmitOrderResponse> {
     const product = await this.productService.findOne(productId)
 
     if (!product) {
@@ -62,7 +62,7 @@ export class OrderController {
       orderId: order.id,
       name: product.name,
       qrcode: data,
-      price: product.price,
+      amount: product.price,
     }
   }
 

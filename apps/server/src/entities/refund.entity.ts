@@ -1,4 +1,4 @@
-import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm'
+import { Entity, Column, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 import { pipe } from 'ramda'
 import {
   EntityWithTime,
@@ -8,20 +8,31 @@ import {
 } from 'src/common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
 import { EntityWithCreator } from 'src/common/typeorm/entity/entity-with-creator'
-import { RefundState } from 'src/config/enum.config'
+import { RefundChannel, RefundState } from 'src/config/enum.config'
 import { User } from './user.entity'
 import { Order } from './order.entity'
 
 @Entity('refund')
 export class Refund extends pipe(
-  EntityWithNanoID,
   EntityWithTime,
   EntityWithDelete,
   EntityWithCreator,
 )(EntityClass) {
+  @ApiProperty({ description: '退款ID', type: 'string' })
+  @PrimaryColumn({ type: 'char', length: 24 })
+  id: string
+
   @ApiProperty({ description: '退款状态', enum: RefundState })
-  @Column({ enum: RefundState })
+  @Column({ enum: RefundState, nullable: true })
   state: RefundState
+
+  @ApiProperty({ description: '退款渠道', enum: RefundChannel })
+  @Column({ enum: RefundChannel, nullable: true })
+  channel: RefundChannel
+
+  @ApiProperty({ description: '收款帐号' })
+  @Column({ nullable: true, name: 'received_account' })
+  receivedAccount: string
 
   @ApiProperty({ description: '退款金额' })
   @Column()

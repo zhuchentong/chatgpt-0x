@@ -1,15 +1,20 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Logger } from 'src/core/logger/services/logger.service'
 import { PayKit, RequestMethod, WX_API_TYPE, WX_DOMAIN } from 'tnwx'
 import * as fs from 'node:fs'
 import { RequestContext } from 'src/middlewaves/request-context.middlewave'
+import WxPay from 'wechatpay-node-v3'
+import { WECHAT_PAY_MANAGER } from 'nest-wechatpay-node-v3'
+import { ToastException } from 'src/exceptions/toast.exception'
+import { RefundState } from 'src/config/enum.config'
 
 @Injectable()
 export class WXPayService {
   constructor(
     private readonly logger: Logger,
     private readonly config: ConfigService,
+    @Inject(WECHAT_PAY_MANAGER) private wxpay: WxPay,
   ) {}
 
   /**
@@ -26,6 +31,14 @@ export class WXPayService {
   ) {
     const wxpay = this.config.get('wxpay')
 
+    console.log(
+      method,
+      WX_DOMAIN.CHINA,
+      type,
+      wxpay.mchId,
+      wxpay.serialNo,
+      JSON.stringify(data),
+    )
     try {
       return PayKit.v3(
         method,
@@ -55,13 +68,10 @@ export class WXPayService {
     refundAmount: number
     description: string
   }) {
-    const wxpay = this.config.get('wxpay')
     const host = RequestContext.currentContext.host
 
-    return this.callAPI(RequestMethod.POST, WX_API_TYPE.REFUND, {
-      data: {
-        appid: wxpay.appId,
-        mchid: wxpay.mchId,
+    return this.wxpay
+      .refunds({
         out_trade_no: orderNumber,
         out_refund_no: refundNumber,
         reason: description,
@@ -71,15 +81,16 @@ export class WXPayService {
           total: orderAmount,
           currency: 'CNY',
         },
-      },
-    }).then((response) => {
-      if (response.status !== 200) {
-        this.logger.error(response.data)
-        throw new Error(response?.data)
-      }
+      })
+      .then((response) => {
+        // 输出日志
+        if (response.status >= 400 && response.status <= 500) {
+          this.logger.error(response)
+          throw new ToastException(response.message)
+        }
 
-      return response.data
-    })
+        return response
+      })
   }
 
   /**

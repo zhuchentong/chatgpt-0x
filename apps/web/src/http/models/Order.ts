@@ -32,7 +32,7 @@ export type Order = {
   /**
    * 订单金额
    */
-  price: number;
+  amount: number;
   /**
    * 产品
    */
