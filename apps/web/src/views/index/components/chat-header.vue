@@ -40,8 +40,10 @@
               <n-button
                 v-if="store.chat.currentChat.inputing"
                 class="stop-btn"
+                :focusable="false"
                 size="tiny"
                 text
+                title="停止输入"
                 type="warning"
                 @click="onStop">
                 <icon-park-outline:pause-one></icon-park-outline:pause-one>
@@ -57,37 +59,47 @@
               ghost
               size="tiny"
               text
+              title="保持上下文"
               @click="store.chat.toggleKeepContext">
               <icon-park-outline:history></icon-park-outline:history>
             </div>
             <n-button
               size="tiny"
               text
+              title="编辑对话标题"
               @click="() => (chatEditing = true)">
               <icon-park-outline:edit-two></icon-park-outline:edit-two>
             </n-button>
             <n-button
+              :focusable="false"
               size="tiny"
               text
+              title="导出对话"
               @click="onExport">
               <icon-park-outline:export></icon-park-outline:export>
             </n-button>
             <n-button
+              :focusable="false"
               size="tiny"
               text
+              title="清空对话"
               @click="onClear">
               <icon-park-outline:clear></icon-park-outline:clear>
             </n-button>
             <n-button
               :disabled="chats.length <= 1"
+              :focusable="false"
               size="tiny"
               text
+              title="关闭对话"
               @click="onDelete">
-              <icon-park-outline:delete></icon-park-outline:delete>
+              <icon-park-outline:close-one></icon-park-outline:close-one>
             </n-button>
           </div>
           <n-divider vertical></n-divider>
-          <div class="flex items-center text-xs">
+          <div
+            class="flex items-center text-xs"
+            title="更多设置">
             <div>
               {{ store.chat.currentAssistant.name }}
             </div>
@@ -233,7 +245,7 @@ function onExport() {
 function onDelete() {
   dialog.warning({
     title: '删除',
-    content: '确定删除对话？',
+    content: '确定关闭当前对话？',
     positiveText: '确定',
     negativeText: '取消',
     maskClosable: false,

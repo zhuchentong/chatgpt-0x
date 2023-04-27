@@ -2,7 +2,7 @@
 <template>
   <div
     v-if="messageDate"
-    class="text-center message-date">
+    class="text-center chat-date">
     {{ messageDate }}
   </div>
   <div
@@ -60,7 +60,7 @@
 </template>
 
 <style lang="less" scoped>
-.message-date {
+.chat-date {
   font-size: 12px;
   color: #7f7f7f;
   padding: 5px;
