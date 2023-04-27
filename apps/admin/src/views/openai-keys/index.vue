@@ -38,6 +38,7 @@ import { useRequest } from 'virtual:request'
 import { PageService } from '@/http/extends/page.service'
 import type { OpenAIKey } from '@/http/models/OpenAIKey'
 import { OpenAIKeyStateDict } from '@/config/dict.config'
+import { OpenAIKeyState } from '@/config/enum.config'
 
 const pageService = new PageService()
 const table = $(useTable('table'))
@@ -116,6 +117,7 @@ const columns: TableColumnsOptions<OpenAIKey> = [
   },
   {
     key: 'action',
+    width: '200px',
     title: '操作',
     render: (r) =>
       r.button({
@@ -128,6 +130,18 @@ const columns: TableColumnsOptions<OpenAIKey> = [
               keyService.removeKey(record.key).then(() => {
                 table.reload()
               })
+            },
+          },
+          {
+            text: '重置状态',
+            confirm: true,
+            confirmText: '是否确认执行该操作?',
+            callback: (record) => {
+              keyService
+                .updateKey(record.key, { state: OpenAIKeyState.Valid })
+                .then(() => {
+                  table.reload()
+                })
             },
           },
         ],

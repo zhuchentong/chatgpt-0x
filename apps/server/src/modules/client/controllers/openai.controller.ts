@@ -7,6 +7,7 @@ import { RequestUser } from 'src/decorators/request-user.decorator'
 import { User } from 'src/entities/user.entity'
 import { KeyService } from 'src/shared/openai/services/key.service'
 import { OpenAIKeyState } from 'src/config/enum.config'
+import { Logger } from 'src/core/logger/services/logger.service'
 
 @Controller('openai')
 @ApiTags('openai')
@@ -14,7 +15,8 @@ import { OpenAIKeyState } from 'src/config/enum.config'
 export class OpenaiController {
   constructor(
     private readonly openai: OpenAIService,
-    private keyService: KeyService,
+    private readonly keyService: KeyService,
+    private readonly logger: Logger,
   ) {}
 
   @ApiOperation({ operationId: 'message', summary: '发送消息' })
@@ -46,16 +48,17 @@ export class OpenaiController {
             subscriber.next({ data: '[DONE]' } as MessageEvent)
             subscriber.complete()
           })
-          .catch(async () => {
+          .catch(async (ex) => {
             if (retryCount > 2) {
               subscriber.next({ data: '[DONE]' } as MessageEvent)
               subscriber.complete()
               return
             }
 
+            this.logger.error('消息发送错误:', ex)
             // 设置key为无效
             await keyService.update(key, { state: OpenAIKeyState.Invalid })
-
+            // 重试
             retryCount += 1
             // 更新key
             send()

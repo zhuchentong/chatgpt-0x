@@ -92,6 +92,33 @@ export class WechatService {
       requestGenerateOptions,
     )
   }
+
+  public redirectAuthorize(
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & {
+      type: RequestGenerateType.URL
+    },
+  ): string
+  public redirectAuthorize(
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions,
+  ): Promise<void>
+  public redirectAuthorize(
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions,
+  ): Promise<void> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/wechat/redirect-authorize',
+      method: 'get',
+    }
+
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions,
+    )
+  }
 }
 
 namespace RequestQueryParams {

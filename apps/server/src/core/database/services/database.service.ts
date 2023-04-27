@@ -12,14 +12,12 @@ export class DatabaseService implements TypeOrmOptionsFactory {
 
     return {
       ...options,
-      // 开启数据库日志
-      logger: true,
       // 自动加载实体
       autoLoadEntities: true,
       // 同步表结构
       synchronize: true,
       // 记录sql
-      logging: 'all',
+      logging: process.env.NODE_ENV === 'development' ? 'all' : 'error',
     }
   }
 }

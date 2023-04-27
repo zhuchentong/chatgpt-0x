@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type { OpenAIKey } from '../models/OpenAIKey'
 import type { KeyInput } from '../models/KeyInput'
+import type { UpdateOpenAIKeyInput } from '../models/UpdateOpenAIKeyInput'
 import {
   RequestService,
   RequestGenerateType,
@@ -93,6 +94,7 @@ export class KeyService {
 
   public updateKey(
     key: string,
+    requestBody: UpdateOpenAIKeyInput,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & {
       type: RequestGenerateType.URL
@@ -100,11 +102,13 @@ export class KeyService {
   ): string
   public updateKey(
     key: string,
+    requestBody: UpdateOpenAIKeyInput,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions,
   ): Promise<void>
   public updateKey(
     key: string,
+    requestBody: UpdateOpenAIKeyInput,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions,
   ): Promise<void> | string {
@@ -115,6 +119,7 @@ export class KeyService {
       paramsPath: {
         key,
       },
+      paramsBody: requestBody,
     }
 
     return this.generateRequest(

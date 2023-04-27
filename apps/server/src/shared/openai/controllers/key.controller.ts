@@ -14,10 +14,9 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger'
 import { KeyInput } from 'src/common/typeorm/dto/key.input'
-import { Public } from 'src/decorators/public.decorator'
 import { KeyService } from '../services/key.service'
 import { OpenAIKey } from 'src/entities/openai-key.entity'
-import { OpenAIKeyState } from 'src/config/enum.config'
+import { UpdateOpenAIKeyInput } from '../dtos/openai-key.dto'
 
 @ApiTags('key')
 @Controller('key')
@@ -46,8 +45,11 @@ export class KeyController {
     description: '更新OpenAIKey',
   })
   @Patch(':key')
-  async updateKey(@Param() { key }: KeyInput) {
-    // return this.openAIService.createKey(key)
+  async updateKey(
+    @Param() { key }: KeyInput,
+    @Body() openAIKey: UpdateOpenAIKeyInput,
+  ) {
+    return this.keyService.update(key, openAIKey)
   }
 
   @ApiOperation({
