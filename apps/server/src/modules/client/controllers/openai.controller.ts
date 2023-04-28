@@ -28,6 +28,7 @@ export class OpenaiController {
     let retryCount = 0
     const keyService = this.keyService
     const openai = this.openai
+    const logger = this.logger
     return new Observable((subscriber) => {
       async function send() {
         const key = await keyService.getOpenAIKey()
@@ -55,7 +56,7 @@ export class OpenaiController {
               return
             }
 
-            this.logger.error('消息发送错误:', ex)
+            logger.error('消息发送错误:', ex)
             // 设置key为无效
             await keyService.update(key, { state: OpenAIKeyState.Invalid })
             // 重试
