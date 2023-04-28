@@ -71,30 +71,12 @@
         邀请好友
       </NButton>
     </div>
-    <n-divider />
-
-    <n-popover trigger="hover">
-      <template #trigger>
-        <div
-          class="contact flex flex-row space-x-3 justify-center cursor-pointer">
-          <div>
-            <NAvatar
-              round
-              size="large"
-              src="/avatar.jpg"></NAvatar>
-          </div>
-          <div class="space-y-1">
-            <div class="text-bold text-sm">Jwdstef</div>
-            <div class="text-gray text-xs">添加微信加入交流群</div>
-          </div>
-        </div>
-      </template>
-      <div>
-        <img
-          class="w-300px"
-          src="/contact.jpg" />
-      </div>
-    </n-popover>
+    <n-divider class="m-5px!" />
+    <div class="image-container m-auto">
+      <img
+        class="w-200px"
+        src="/contact.jpg" />
+    </div>
   </div>
   <n-drawer
     v-model:show="showSystemSetting"

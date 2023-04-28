@@ -67,7 +67,11 @@ export class OpenaiController {
     this.logger.debug(balance)
 
     if (!balance) {
-      return from([{ data: '[ERROR]余额不足' } as MessageEvent])
+      return from([
+        {
+          data: '[ERROR]余额不足,添加微信群可以领取更多免费额度哦~',
+        } as MessageEvent,
+      ])
     }
 
     // 获取key
@@ -76,15 +80,19 @@ export class OpenaiController {
     let retryCount = 0
 
     return new Observable((subscriber) => {
-      this.trySendMessage(input, subscriber, key, user).catch(async () => {
+      this.trySendMessage(input, subscriber, key, user).catch(async (ex) => {
         // 增加重试次数
         retryCount += 1
         // 监测最大重试次数
         if (retryCount > 2) {
-          subscriber.next({ data: '[ERROR]对话失败' } as MessageEvent)
+          subscriber.next({
+            data: '[ERROR]对话失败,请稍候重新尝试',
+          } as MessageEvent)
           subscriber.complete()
           return
         }
+
+        this.logger.error('消息发送错误:', ex)
         // 设置key为无效
         await this.keyService.update(key, { state: OpenAIKeyState.Invalid })
         //  获取新的Key

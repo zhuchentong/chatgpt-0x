@@ -12,6 +12,7 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import type { Cache } from 'cache-manager'
 import { CACHE_OPENAI_KEYS } from 'src/config/constants'
+import { Logger } from 'src/core/logger/services/logger.service'
 
 @Injectable()
 export class KeyService {
@@ -22,6 +23,7 @@ export class KeyService {
     private openAIKeyRepository: Repository<OpenAIKey>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+    private readonly logger: Logger,
   ) {}
 
   async create(key: string) {
@@ -45,6 +47,9 @@ export class KeyService {
   findAll(where = {}) {
     return this.openAIKeyRepository.find({
       where: { enable: true, ...where },
+      order: {
+        createdAt: 'DESC',
+      },
     })
   }
 
@@ -160,12 +165,16 @@ export class KeyService {
           const { expireAt, usage, limitUsd } = await this.getKeyBalance(
             openAIKey.key,
           )
-          console.log(expireAt, usage, limitUsd)
           openAIKey.expireAt = new Date(expireAt)
           openAIKey.usage = usage
           openAIKey.limit = limitUsd
         } catch (ex) {
-          openAIKey.state = OpenAIKeyState.Valid
+          this.logger.error(
+            '同步余额失败:',
+            openAIKey.key,
+            ex.response?.data?.error,
+          )
+          openAIKey.state = OpenAIKeyState.Invalid
         }
 
         await openAIKey.save()

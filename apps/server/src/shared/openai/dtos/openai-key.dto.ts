@@ -1,10 +1,10 @@
-import { Optional } from '@nestjs/common'
-import { ApiProperty, PartialType } from '@nestjs/swagger'
-import { IsOptional, IsString } from 'class-validator'
-import { pipe } from 'rxjs'
-import { WhereOption } from 'src/common/typeorm/decorators'
-import { OrderInput } from 'src/common/typeorm/query/inputs/order.input'
-import { PageInput } from 'src/common/typeorm/query/inputs/page.input'
-import { QueryInput } from 'src/common/typeorm/query/inputs/query.input'
-import { WhereOperator } from 'src/config/enum.config'
-import { Assistant } from 'src/entities/assistant.entity'
+import { ApiProperty } from '@nestjs/swagger'
+import { IsEnum, IsOptional } from 'class-validator'
+import { OpenAIKeyState } from 'src/config/enum.config'
+
+export class UpdateOpenAIKeyInput {
+  @ApiProperty({ description: '状态', required: false })
+  @IsEnum(OpenAIKeyState)
+  @IsOptional()
+  state?: OpenAIKeyState
+}

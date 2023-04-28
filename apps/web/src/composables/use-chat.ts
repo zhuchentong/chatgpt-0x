@@ -92,9 +92,14 @@ function sendChatMessage(message: string) {
           const messageEventBus = useEventBus<{
             type: 'success' | 'error' | 'warning' | 'info'
             content: string
+            duration: number
           }>('message')
 
-          messageEventBus.emit({ type: 'error', content: errorMsg })
+          messageEventBus.emit({
+            type: 'error',
+            content: errorMsg,
+            duration: 5000,
+          })
           return closeEvent()
         }
         case data === '[DONE]':

@@ -1,9 +1,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { OpenAIKey } from '../models/OpenAIKey';
-import type { KeyInput } from '../models/KeyInput';
-import { RequestService, RequestGenerateType, type RequestSendOptions, type RequestPlugin, type RequestGenerateOptions } from '@gopowerteam/request';
+import type { OpenAIKey } from '../models/OpenAIKey'
+import type { KeyInput } from '../models/KeyInput'
+import type { UpdateOpenAIKeyInput } from '../models/UpdateOpenAIKeyInput'
+import {
+  RequestService,
+  RequestGenerateType,
+  type RequestSendOptions,
+  type RequestPlugin,
+  type RequestGenerateOptions,
+} from '@gopowerteam/request'
 export class KeyService {
   // 请求实例
   private request = RequestService.getInstance();
@@ -50,16 +57,16 @@ export class KeyService {
       path: '/api/openai/key',
       method: 'get',
     }
-  
+
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
       requestGenerateOptions
     )
-  
-  
+
+
   }
-  
+
   public createKey(
     requestBody: KeyInput,
     requestPlugins: RequestPlugin[],
@@ -81,28 +88,31 @@ export class KeyService {
       method: 'post',
       paramsBody: requestBody,
     }
-  
+
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
       requestGenerateOptions
     )
-  
-  
+
+
   }
-  
+
   public updateKey(
     key: string,
+    requestBody: UpdateOpenAIKeyInput,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public updateKey(
     key: string,
+    requestBody: UpdateOpenAIKeyInput,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void>
   public updateKey(
     key: string,
+    requestBody: UpdateOpenAIKeyInput,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void> | string {
@@ -113,17 +123,18 @@ export class KeyService {
       paramsPath: {
         key,
       },
+      paramsBody: requestBody,
     }
-  
+
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
       requestGenerateOptions
     )
-  
-  
+
+
   }
-  
+
   public removeKey(
     key: string,
     requestPlugins: RequestPlugin[],
@@ -147,16 +158,16 @@ export class KeyService {
         key,
       },
     }
-  
+
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
       requestGenerateOptions
     )
-  
-  
+
+
   }
-  
+
   public syncBalances(
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
@@ -174,16 +185,16 @@ export class KeyService {
       path: '/api/openai/key/sync-balances',
       method: 'get',
     }
-  
+
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
       requestGenerateOptions
     )
-  
-  
+
+
   }
-  
+
 }
 
 

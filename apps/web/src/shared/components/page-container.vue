@@ -123,11 +123,13 @@ onBeforeMount(() => {
 function messageEventHander({
   type,
   content,
+  duration = 3000,
 }: {
   type: 'success' | 'error' | 'warning' | 'info'
   content: string
+  duration?: number
 }) {
-  message[type](content)
+  message[type](content, { duration })
 }
 
 function addMessageEventBusListener() {
