@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AButton: typeof import('@arco-design/web-vue')['Button']
     'IconParkOutline:arrowCircleLeft': typeof import('~icons/icon-park-outline/arrow-circle-left')['default']
     'IconParkOutline:calendar': typeof import('~icons/icon-park-outline/calendar')['default']
     'IconParkOutline:check': typeof import('~icons/icon-park-outline/check')['default']
@@ -33,6 +34,7 @@ declare module '@vue/runtime-core' {
     'IconParkOutline:setting': typeof import('~icons/icon-park-outline/setting')['default']
     'IconParkOutline:share': typeof import('~icons/icon-park-outline/share')['default']
     'IconParkOutline:shareTwo': typeof import('~icons/icon-park-outline/share-two')['default']
+    'IconParkOutline:wechat': typeof import('~icons/icon-park-outline/wechat')['default']
     ImageIcon: typeof import('./../shared/components/image-icon.vue')['default']
     ImagePreview: typeof import('./../shared/components/image-preview.vue')['default']
     MediaGallery: typeof import('./../shared/components/media-gallery.vue')['default']

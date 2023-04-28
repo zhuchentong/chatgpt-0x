@@ -42,6 +42,7 @@
       </NGrid>
     </div>
     <n-divider />
+
     <div class="actions flex flex-col items-start space-y-2 px-5">
       <NButton
         block
@@ -71,12 +72,29 @@
         邀请好友
       </NButton>
     </div>
-    <n-divider class="m-5px!" />
-    <div class="image-container m-auto">
-      <img
-        class="w-200px"
-        src="/contact.jpg" />
-    </div>
+    <n-divider class="m-5!" />
+    <n-popover trigger="hover">
+      <template #trigger>
+        <div
+          class="contact flex flex-row space-x-3 justify-center cursor-pointer m-auto">
+          <div>
+            <NAvatar
+              round
+              size="large"
+              src="/avatar.jpg"></NAvatar>
+          </div>
+          <div class="space-y-1">
+            <div class="text-bold text-sm">Jwdstef</div>
+            <div class="text-gray text-xs">添加微信加入交流群</div>
+          </div>
+        </div>
+      </template>
+      <div>
+        <img
+          class="w-300px"
+          :src="ContactImage" />
+      </div>
+    </n-popover>
   </div>
   <n-drawer
     v-model:show="showSystemSetting"
@@ -122,6 +140,7 @@ import { useMessage } from 'naive-ui'
 import { useStore } from '@/store'
 import SystemSetting from '@/components/system-setting.vue'
 import UserRecharge from '@/components/user-recharge.vue'
+import ContactImage from '@/assets/image/contact.jpg'
 
 const store = useStore()
 const showSystemSetting = ref(false)

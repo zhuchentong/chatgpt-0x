@@ -78,7 +78,6 @@ export class OpenaiController {
     let key = await this.keyService.getOpenAIKey()
     // 重置次数
     let retryCount = 0
-
     return new Observable((subscriber) => {
       this.trySendMessage(input, subscriber, key, user).catch(async (ex) => {
         // 增加重试次数
