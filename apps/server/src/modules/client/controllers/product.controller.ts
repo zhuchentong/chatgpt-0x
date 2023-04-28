@@ -1,21 +1,10 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common'
+import { Controller, Get } from '@nestjs/common'
 import {
   ApiTags,
   ApiSecurity,
   ApiOperation,
   ApiOkResponse,
 } from '@nestjs/swagger'
-import { UUIDInput } from 'src/common/typeorm/dto/uuid.input'
-import { Assistant } from 'src/entities/assistant.entity'
 import { Product } from 'src/entities/product.entity'
 import { ProductService } from '../services/product.service'
 

@@ -26,6 +26,9 @@ import { Balance } from 'src/entities/balance.entity'
 import { Order } from 'src/entities/order.entity'
 import { Product } from 'src/entities/product.entity'
 import { OpenAIModule } from 'src/shared/openai/openai.module'
+import { Invite } from 'src/entities/invite.entity'
+import { InviteService } from './services/invite.service'
+import { InviteController } from './controllers/invite.controller'
 
 @Module({
   imports: [
@@ -40,6 +43,7 @@ import { OpenAIModule } from 'src/shared/openai/openai.module'
       Balance,
       Order,
       Product,
+      Invite,
     ]),
   ],
   controllers: [
@@ -50,17 +54,19 @@ import { OpenAIModule } from 'src/shared/openai/openai.module'
     ActiveCodeController,
     OrderController,
     ProductController,
+    InviteController,
   ],
   providers: [
     AppService,
     EmailService,
+    BalanceService,
     UserService,
     OpenAIService,
     AssistantService,
     ActiveCodeService,
     OrderService,
     ProductService,
-    BalanceService,
+    InviteService,
   ],
   exports: [OpenAIService],
 })

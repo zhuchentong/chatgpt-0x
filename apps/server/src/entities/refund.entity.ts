@@ -4,7 +4,6 @@ import {
   EntityWithTime,
   EntityClass,
   EntityWithDelete,
-  EntityWithNanoID,
 } from 'src/common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
 import { EntityWithCreator } from 'src/common/typeorm/entity/entity-with-creator'

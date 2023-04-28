@@ -17,8 +17,7 @@ import { buildPaginator } from 'src/common/typeorm/query/paginator'
 import { User } from 'src/entities/user.entity'
 import { Order } from 'src/entities/order.entity'
 import { OrderMode } from 'src/config/enum.config'
-import { ConfigService } from '@nestjs/config'
-import { Logger } from 'src/core/logger/services/logger.service'
+
 @Injectable()
 export class BalanceService {
   constructor(

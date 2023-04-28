@@ -34,6 +34,7 @@ export enum AppOrigin {
   Weapp = 'weapp',
   App = 'app',
   Web = 'web',
+  Api = 'api',
 }
 
 /**

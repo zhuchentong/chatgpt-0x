@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Inject,
-  Param,
   Post,
   Query,
   UseGuards,
@@ -44,7 +43,6 @@ import { AppOrigin } from 'src/config/enum.config'
 import { WXMPService } from 'src/shared/wechat/services/wxmp.service'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { CACHE_MAIL_CODE, CACHE_QRCODE_LOGIN } from 'src/config/constants'
-import { BalanceService } from '../services/balance.service'
 @Controller('app')
 @ApiTags('app')
 @ApiSecurity('access-token')
@@ -55,9 +53,7 @@ export class AppController {
     private readonly emailService: EmailService,
     private readonly userService: UserService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
-
     private readonly wxmpService: WXMPService,
-    private readonly balanceService: BalanceService,
   ) {}
 
   @Public()
@@ -127,15 +123,14 @@ export class AppController {
     operationId: 'wechatLogin',
     summary: '微信登录',
   })
-  async wechatLogin(@Query() { openid }: WechatLoginInput) {
-    const user = await this.userService.findOneBy({ openid }).then((user) => {
-      if (user) {
-        return user
-      } else {
-        return this.userService.createByOpenID(openid)
-      }
-    })
+  async wechatLogin(@Query() { openid, inviter }: WechatLoginInput) {
+    // 用户登录
+    const { user, isNewRegister } = await this.userService.login({ openid })
 
+    // 发放用户奖励
+    await this.userService.sendUserReward(user, { inviter, isNewRegister })
+
+    // 生成Token
     const token = await this.authService.userSign(user, AppOrigin.Web)
 
     return token
@@ -149,7 +144,6 @@ export class AppController {
     summary: '二维码登录状态查询',
   })
   async qrcodeLoginStatus(@Query() { code, inviter }: QrcodeLoginStatusInput) {
-    let isNewRegister = false
     const openid = await this.cacheManager.get<string>(
       `${CACHE_QRCODE_LOGIN}:${code}`,
     )
@@ -164,31 +158,13 @@ export class AppController {
     //  清除缓存
     await this.cacheManager.del(`${CACHE_QRCODE_LOGIN}:${code}`)
 
-    const user = await this.userService
-      .findOneBy({ openid })
-      .then((isExistUser) => {
-        // 已存在用户
-        if (!isExistUser) {
-          // 新用户注册
-          isNewRegister = true
-          return this.userService.createByOpenID(openid)
-        }
+    // 用户登录
+    const { user, isNewRegister } = await this.userService.login({ openid })
 
-        return isExistUser
-      })
+    // 发放用户奖励
+    await this.userService.sendUserReward(user, { inviter, isNewRegister })
 
-    // 新用户注册处理
-    if (isNewRegister) {
-      // 注册赠送余额
-      await this.balanceService.createByRegister(user)
-    }
-
-    // 邀请注册处理
-    if (isNewRegister && inviter) {
-      // 邀请注册赠送余额
-      await this.balanceService.createByInvite(user, inviter)
-    }
-
+    // 生成Token
     const token = await this.authService.userSign(user, AppOrigin.Web)
 
     return {
@@ -262,6 +238,22 @@ export class AppController {
   token(@RequestUser() user: User) {
     if (user) {
       return this.authService.userSign(user, AppOrigin.Web)
+    }
+  }
+
+  @Public()
+  @Get('api-refresh-token')
+  @ApiOperation({ operationId: 'apiToken', summary: 'API刷新Token' })
+  @ApiOkResponse({ type: TokenResponse })
+  @UseGuards(RefreshTokenGuard)
+  apiToken(@RequestUser() user: User) {
+    if (user) {
+      return this.authService.userSign(
+        user,
+        AppOrigin.Web,
+        60 * 60 * 24 * 30 * 12,
+        60 * 60 * 24 * 30 * 12,
+      )
     }
   }
 }

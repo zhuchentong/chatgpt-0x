@@ -28,6 +28,9 @@ import { WechatModule } from 'src/shared/wechat/wechat.module'
 import { RefundController } from './controllers/refund.controller'
 import { RefundService } from './services/refund.service'
 import { Refund } from 'src/entities/refund.entity'
+import { Invite } from 'src/entities/invite.entity'
+import { InviteService } from './services/invite.service'
+import { InviteController } from './controllers/invite.controller'
 
 @Module({
   imports: [
@@ -43,6 +46,7 @@ import { Refund } from 'src/entities/refund.entity'
       Order,
       Refund,
       ActiveCode,
+      Invite,
     ]),
   ],
   providers: [
@@ -54,6 +58,7 @@ import { Refund } from 'src/entities/refund.entity'
     OrderService,
     ActiveCodeService,
     RefundService,
+    InviteService,
   ],
   controllers: [
     AdministratorController,
@@ -65,6 +70,7 @@ import { Refund } from 'src/entities/refund.entity'
     OrderController,
     BalanceController,
     RefundController,
+    InviteController,
   ],
 })
 export class AdminModule {}

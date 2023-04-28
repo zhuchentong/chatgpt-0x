@@ -66,6 +66,33 @@ export class OrderService {
   
   }
   
+  public OrderController_onWXPayNativeNotify(
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
+  ): string
+  public OrderController_onWXPayNativeNotify(
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<void>
+  public OrderController_onWXPayNativeNotify(
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<void> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/admin/order/wxpay-notify',
+      method: 'post',
+    }
+  
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions
+    )
+  
+  
+  }
+  
 }
 
 

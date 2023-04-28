@@ -72,11 +72,15 @@ export default () => ({
       events: {
         register: {
           type: ProductType.Count,
-          value: 5,
+          value: 3,
         },
-        invite: {
+        inviter: {
           type: ProductType.Count,
           value: 5,
+        },
+        invitee: {
+          type: ProductType.Count,
+          value: 2,
         },
       },
     },

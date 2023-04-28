@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, forwardRef } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { BalanceOrigin, ProductType } from 'src/config/enum.config'
 import { ActiveCode } from 'src/entities/active-code.entity'
@@ -13,6 +13,7 @@ import { CACHE_BALANCE } from 'src/config/constants'
 import { ConfigService } from '@nestjs/config'
 import { Logger } from 'src/core/logger/services/logger.service'
 import { UserService } from './user.service'
+import { InviteService } from './invite.service'
 
 @Injectable()
 export class BalanceService {
@@ -21,7 +22,9 @@ export class BalanceService {
     private balanceRepository: Repository<Balance>,
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
+    private readonly inviteService: InviteService,
     private readonly config: ConfigService,
     private readonly logger: Logger,
   ) {}
@@ -107,8 +110,9 @@ export class BalanceService {
   /**
    * 通过邀请创建
    */
-  async createByInvite(user: User, inviterId: string) {
-    const { type, value } = this.config.get('setting.balance.events.invite')
+  async createByInvite(invitee: User, inviterId: string) {
+    const inviterReward = this.config.get('setting.balance.events.inviter')
+    const inviteeReward = this.config.get('setting.balance.events.invitee')
 
     const inviter = await this.userService.findOne(inviterId)
 
@@ -117,31 +121,42 @@ export class BalanceService {
       return
     }
 
-    if (!type || !value) {
+    if (!inviterReward || !inviteeReward) {
       this.logger.warn('邀请奖励未配置')
       return
     }
 
-    const userBalance = await this.createBalanceEntity({
-      user,
+    // 创建邀请人余额奖励
+    const inviteeBalance = await this.createBalanceEntity({
+      user: invitee,
       origin: BalanceOrigin.Invite,
-      type,
-      value,
+      type: inviteeReward.type,
+      value: inviteeReward.value,
     })
 
-    const inviteBalance = await this.createBalanceEntity({
+    // 创建被邀请人奖励
+    const inviterBalance = await this.createBalanceEntity({
       user: inviter,
       origin: BalanceOrigin.Invite,
-      type,
-      value,
+      type: inviterReward.type,
+      value: inviterReward.value,
     })
-
-    // TODO: 添加邀请记录
 
     // 清除缓存
     await this.cacheManager.del(`${CACHE_BALANCE}:${inviter.id}`)
 
-    return this.balanceRepository.save([userBalance, inviteBalance])
+    // 添加余额奖励
+    await this.balanceRepository.save([inviteeBalance, inviterBalance], {
+      reload: true,
+    })
+
+    // 创建邀请记录
+    await this.inviteService.create({
+      inviter,
+      invitee,
+      inviteeReward: inviteeBalance,
+      inviterReward: inviterBalance,
+    })
   }
 
   /**

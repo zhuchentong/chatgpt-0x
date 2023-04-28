@@ -373,6 +373,10 @@ namespace RequestQueryParams {
      * 用户openid
      */
     openid: string;
+    /**
+     * 邀请人ID
+     */
+    inviter: string;
   }
   export type QrcodeLoginStatus = {
     /**

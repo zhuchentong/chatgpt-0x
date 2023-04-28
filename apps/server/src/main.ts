@@ -34,6 +34,7 @@ function setupSwagger(app: NestFastifyApplication) {
         'access-token',
       )
       .addTag('app', '系统')
+      .addTag('user', '用户')
       .addTag('administrator', '管理员')
       .addTag('qiniu', '七牛')
       .addTag('wechat', '微信')
@@ -44,6 +45,7 @@ function setupSwagger(app: NestFastifyApplication) {
       .addTag('refund', '退款')
       .addTag('balance', '余额')
       .addTag('key', 'OpenAI Key')
+      .addTag('invite', '邀请')
       .build()
 
     const adminDocument = SwaggerModule.createDocument(
@@ -86,6 +88,7 @@ function setupSwagger(app: NestFastifyApplication) {
       .addTag('active-code', '激活码')
       .addTag('order', '订单')
       .addTag('balance', '余额')
+      .addTag('invite', '邀请')
       .build()
 
     const clientDocument = SwaggerModule.createDocument(

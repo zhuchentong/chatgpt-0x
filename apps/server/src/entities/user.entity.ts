@@ -8,6 +8,8 @@ import {
 } from '../common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
 import { Balance } from './balance.entity'
+import { Invite } from './invite.entity'
+import { Type } from 'class-transformer'
 
 @Entity('user')
 export class User extends pipe(

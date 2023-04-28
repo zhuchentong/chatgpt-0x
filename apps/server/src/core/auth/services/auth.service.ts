@@ -212,8 +212,17 @@ export class AuthService {
    * @param admin
    * @returns
    */
-  async userSign(user: User, origin: AppOrigin) {
+  async userSign(
+    user: User,
+    origin: AppOrigin,
+    reAccessTokenExpiresIn?: number,
+    reRefreshTokenExpiresIn?: number,
+  ) {
     const jwtOrigin = origin
+    const tokenExpiresIn = {
+      accessTokenExpiresIn: reAccessTokenExpiresIn || accessTokenExpiresIn,
+      refreshTokenExpiresIn: reRefreshTokenExpiresIn || refreshTokenExpiresIn,
+    }
 
     const payload = {
       id: user.id,
@@ -223,23 +232,27 @@ export class AuthService {
     // 获取AccessToken
     const accessToken = this.jwtService.sign(payload, {
       secret: this.config.get('jwt.accessTokenSecret'),
-      expiresIn: accessTokenExpiresIn,
+      expiresIn: tokenExpiresIn.accessTokenExpiresIn,
     })
 
     // 获取AccessToken
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.config.get('jwt.refreshTokenSecret'),
-      expiresIn: refreshTokenExpiresIn,
+      expiresIn: tokenExpiresIn.refreshTokenExpiresIn,
     })
 
     // 缓存AccessToken
-    await this.cacheManager.set(user.id, refreshToken, refreshTokenExpiresIn)
+    await this.cacheManager.set(
+      user.id,
+      refreshToken,
+      tokenExpiresIn.refreshTokenExpiresIn,
+    )
 
     // 返回认证信息
     return {
       access_token: accessToken,
       refresh_token: refreshToken,
-      expires_in: accessTokenExpiresIn,
+      expires_in: tokenExpiresIn.accessTokenExpiresIn,
       token_origin: jwtOrigin,
     }
   }

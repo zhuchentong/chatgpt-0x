@@ -139,7 +139,10 @@ export default function userLaunch(router: Router) {
 
     // 未登录用户进行登录
     if (!store.user.current) {
-      return next('/login')
+      return next({
+        path: '/login',
+        query: to.query,
+      })
     }
 
     resetChatState()

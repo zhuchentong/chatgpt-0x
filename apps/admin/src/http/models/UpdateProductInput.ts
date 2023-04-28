@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 export type UpdateProductInput = {
-  title?: string;
+  name?: string;
   type?: 'COUNT' | 'TIME';
   value?: number;
   price?: number;

@@ -114,15 +114,17 @@ function requestLoginWechat() {
   }
 
   // login
-  appService.wechatLogin({ openid }).then(({ access_token, refresh_token }) => {
-    store.user.updateToken({
-      accessToken: access_token,
-      refreshToken: refresh_token,
-    })
+  appService
+    .wechatLogin({ openid, inviter })
+    .then(({ access_token, refresh_token }) => {
+      store.user.updateToken({
+        accessToken: access_token,
+        refreshToken: refresh_token,
+      })
 
-    message.success('登录成功')
-    router.push('/')
-  })
+      message.success('登录成功')
+      router.push('/')
+    })
 }
 
 onBeforeUnmount(() => {

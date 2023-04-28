@@ -54,4 +54,8 @@ export class WechatLoginInput {
   @ApiProperty({ description: '用户openid' })
   @IsString()
   openid: string
+
+  @ApiProperty({ description: '邀请人ID', required: true, nullable: true })
+  @IsOptional()
+  inviter?: string
 }

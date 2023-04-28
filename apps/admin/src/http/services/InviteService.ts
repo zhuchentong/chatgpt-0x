@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { PageUser } from '../models/PageUser';
+import type { PageInvite } from '../models/PageInvite';
 import { RequestService, RequestGenerateType, type RequestSendOptions, type RequestPlugin, type RequestGenerateOptions } from '@gopowerteam/request';
-export class UserService {
+export class InviteService {
   // 请求实例
   private request = RequestService.getInstance();
   private service = ''
@@ -33,24 +33,24 @@ export class UserService {
   }
 
   /**
-   * 查找用户列表
+   * 查找邀请记录列表
    */
-  public findUsers(
+  public findInvites(
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
-  public findUsers(
+  public findInvites(
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions
-  ): Promise<PageUser>
-  public findUsers(
+  ): Promise<PageInvite>
+  public findInvites(
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions
-  ): Promise<PageUser> | string {
+  ): Promise<PageInvite> | string {
     const requestSendOptions = {
       service: this.service,
-      path: '/api/admin/user',
-      method: 'post',
+      path: '/api/admin/invite',
+      method: 'get',
     }
   
     return this.generateRequest(
