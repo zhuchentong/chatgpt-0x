@@ -32,6 +32,7 @@ declare module '@vue/runtime-core' {
     'IconParkOutline:search': typeof import('~icons/icon-park-outline/search')['default']
     'IconParkOutline:send': typeof import('~icons/icon-park-outline/send')['default']
     'IconParkOutline:setting': typeof import('~icons/icon-park-outline/setting')['default']
+    'IconParkOutline:wechat': typeof import('~icons/icon-park-outline/wechat')['default']
     ImageIcon: typeof import('./../shared/components/image-icon.vue')['default']
     ImagePreview: typeof import('./../shared/components/image-preview.vue')['default']
     MediaGallery: typeof import('./../shared/components/media-gallery.vue')['default']
