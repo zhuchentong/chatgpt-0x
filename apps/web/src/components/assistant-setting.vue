@@ -35,6 +35,7 @@
 
           <n-button
             block
+            :disabled="assistant.id === 'default-assistant'"
             type="error"
             @click="onDelete">
             删除

@@ -41,6 +41,9 @@
           <template #unchecked>关闭</template>
         </n-switch>
       </n-form-item>
+      <n-form-item label="系统重置">
+        <n-button @click="onResetSystem">重置</n-button>
+      </n-form-item>
     </n-form>
   </n-card>
 </template>
@@ -48,35 +51,34 @@
 <style lang="less"></style>
 
 <script setup lang="ts">
-import type { FormInst } from 'naive-ui'
+import { type FormInst, useDialog } from 'naive-ui'
 import { useStore } from '@/store'
 
+const dialog = useDialog()
 const store = useStore()
 
 const form = $(templateRef<FormInst>('form'))
 const colorMode = useColorMode()
 
-// const models = [
-//   'gpt-3.5-turbo',
-//   'gpt-3.5-turbo-0301',
-//   'gpt-4',
-//   'gpt-4-0314',
-//   'gpt-4-32k',
-// ].map((v) => ({
-//   label: v,
-//   value: v,
-// }))
-
-// function onChangeModel(value: string) {
-//   store.chat.updateAPIMODEL(value)
-// }
-
-// function onChangeLimit(value: unknown) {
-//   if (value == 0 || (value as number) >= 1000) {
-//     store.chat.updateTokenLimit(value as number)
-//   }
-// }
 function changeColorMode(value: 'dark' | 'light' | 'auto') {
   colorMode.value = value
+}
+
+/**
+ * 系统重置
+ */
+function onResetSystem() {
+  dialog.warning({
+    title: '系统重置',
+    content: '是否进行系统重置? (重置后需要重新进行登录)',
+    positiveText: '确定',
+    negativeText: '取消',
+    maskClosable: false,
+    onPositiveClick: () => {
+      localStorage.clear()
+      store.user.logout()
+      location.reload()
+    },
+  })
 }
 </script>
