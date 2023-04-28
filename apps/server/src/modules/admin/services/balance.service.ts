@@ -26,8 +26,6 @@ export class BalanceService {
     private readonly balanceRepository: Repository<Balance>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
-    private readonly config: ConfigService,
-    private readonly logger: Logger,
   ) {}
 
   async findAll({ buildWhereQuery, page, order }: QueryInputParam<User>) {

@@ -122,7 +122,14 @@ export class BalanceService {
       return
     }
 
-    const balance = await this.createBalanceEntity({
+    const userBalance = await this.createBalanceEntity({
+      user,
+      origin: BalanceOrigin.Invite,
+      type,
+      value,
+    })
+
+    const inviteBalance = await this.createBalanceEntity({
       user: inviter,
       origin: BalanceOrigin.Invite,
       type,
@@ -134,7 +141,7 @@ export class BalanceService {
     // 清除缓存
     await this.cacheManager.del(`${CACHE_BALANCE}:${inviter.id}`)
 
-    return this.balanceRepository.save(balance)
+    return this.balanceRepository.save([userBalance, inviteBalance])
   }
 
   /**
