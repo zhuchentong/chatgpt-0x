@@ -21,9 +21,11 @@ import {
   useTable,
 } from '@gopowerteam/vue-dynamic-table'
 import { useRequest } from 'virtual:request'
+import dayjs from 'dayjs'
 import { PageService } from '@/http/extends/page.service'
 import { ProductTypeDict } from '@/config/dict.config'
 import type { Invite } from '@/http/models/Invite'
+import { ProductType } from '@/config/enum.config'
 
 const pageService = new PageService()
 const table = $(useTable('table'))
@@ -55,10 +57,25 @@ const columns: TableColumnsOptions<Invite> = [
     render: (r) => r.dict({ dict: ProductTypeDict }),
   },
   {
-    key: 'inviterReward.value',
-    title: '邀请人奖励金额',
+    key: 'inviterReward.startCount',
+    title: '邀请人奖励次数',
+  },
+  {
+    key: 'inviterRewardTime',
+    title: '邀请人奖励时长',
     render: (r) =>
-      r.text({ text: (record) => `${(record.amount / 100).toFixed(2)}元` }),
+      r.text({
+        text: (record) => {
+          if (ProductType.Time === record.inviterReward.type) {
+            return `${dayjs(record.inviterReward.endTime).diff(
+              record.inviterReward.startTime,
+              'day',
+            )}天`
+          }
+
+          return ''
+        },
+      }),
   },
   {
     key: 'inviteeReward.type',
@@ -66,10 +83,25 @@ const columns: TableColumnsOptions<Invite> = [
     render: (r) => r.dict({ dict: ProductTypeDict }),
   },
   {
-    key: 'inviteeReward.value',
-    title: '受邀人奖励金额',
+    key: 'inviteeReward.startCount',
+    title: '受邀人奖励次数',
+  },
+  {
+    key: 'inviteeRewardTime',
+    title: '受邀人奖励时长',
     render: (r) =>
-      r.text({ text: (record) => `${(record.amount / 100).toFixed(2)}元` }),
+      r.text({
+        text: (record) => {
+          if (ProductType.Time === record.inviteeReward.type) {
+            return `${dayjs(record.inviteeReward.endTime).diff(
+              record.inviteeReward.startTime,
+              'day',
+            )}天`
+          }
+
+          return ''
+        },
+      }),
   },
   {
     key: 'createdAt',
