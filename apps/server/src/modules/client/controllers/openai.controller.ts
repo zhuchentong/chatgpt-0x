@@ -56,7 +56,7 @@ export class OpenaiController {
               return
             }
 
-            logger.error('消息发送错误:', ex)
+            logger.error('消息发送错误:', { ex }, JSON.stringify(ex))
             // 设置key为无效
             await keyService.update(key, { state: OpenAIKeyState.Invalid })
             // 重试
