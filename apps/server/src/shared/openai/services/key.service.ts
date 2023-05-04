@@ -16,6 +16,8 @@ import { Logger } from 'src/core/logger/services/logger.service'
 
 @Injectable()
 export class KeyService {
+  private static keyIndex = 0
+
   constructor(
     private readonly config: ConfigService,
     private httpService: HttpService,
@@ -138,13 +140,17 @@ export class KeyService {
     // 如果缓存中没有，从数据库中获取
     if (!keys || keys.length === 0) {
       keys = await this.updateKeysCacheFormDB()
+      KeyService.keyIndex = 0
     }
     // 如果数据库中没有，使用默认的
     switch (true) {
       case keys.length === 1:
         return keys[0]
-      case keys.length > 1:
-        return keys[Math.floor(Math.random() * keys.length)]
+      case keys.length > 1: {
+        const key = keys[KeyService.keyIndex % keys.length]
+        KeyService.keyIndex = KeyService.keyIndex++ % keys.length
+        return key
+      }
       default:
         return this.config.get('openai.apikey')
     }

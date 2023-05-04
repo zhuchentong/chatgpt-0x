@@ -92,8 +92,11 @@ export class OpenaiController {
         }
 
         this.logger.error('消息发送错误:', ex)
+
         // 设置key为无效
-        await this.keyService.update(key, { state: OpenAIKeyState.Invalid })
+        if (ex?.statusCode !== 429) {
+          await this.keyService.update(key, { state: OpenAIKeyState.Invalid })
+        }
         //  获取新的Key
         key = await this.keyService.getOpenAIKey()
         // 重试通化

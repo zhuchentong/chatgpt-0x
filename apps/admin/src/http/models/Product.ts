@@ -36,6 +36,10 @@ export type Product = {
    */
   name: string;
   /**
+   * 描述
+   */
+  description: string;
+  /**
    * 类型
    */
   type: string;
@@ -43,6 +47,14 @@ export type Product = {
    * 数值
    */
   value: number;
+  /**
+   * 周期类型
+   */
+  cycleType: 'MINUTE' | 'DAY' | 'WEEK' | 'MONTH';
+  /**
+   * 周期时长
+   */
+  cycleTime: number;
   /**
    * 价格
    */

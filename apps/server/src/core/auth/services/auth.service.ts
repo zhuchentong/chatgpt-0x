@@ -12,6 +12,7 @@ import { HttpService } from '@nestjs/axios'
 import { lastValueFrom } from 'rxjs'
 import { nanoid } from 'nanoid/non-secure'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { CACHE_ADMIN, CACHE_USER } from 'src/config/constants'
 
 const WEAPP_API = {
   token: 'https://api.weixin.qq.com/cgi-bin/token',
@@ -182,7 +183,7 @@ export class AuthService {
 
     // 缓存AccessToken
     await this.cacheManager.set(
-      administrator.id,
+      `${CACHE_ADMIN}:${administrator.id}`,
       refreshToken,
       refreshTokenExpiresIn,
     )
@@ -243,7 +244,7 @@ export class AuthService {
 
     // 缓存AccessToken
     await this.cacheManager.set(
-      user.id,
+      `${CACHE_USER}:${user.id}`,
       refreshToken,
       tokenExpiresIn.refreshTokenExpiresIn,
     )

@@ -58,11 +58,9 @@
               <div class="text-center space-y-2 p-5 rounded">
                 <div class="font-bold">{{ product.name }}</div>
                 <div class="space-x-2 pb-5">
-                  <span class="text-2xl font-bold">
-                    {{ product.value }}
-                    {{ product.type === ProductType.Count ? '次' : '天' }}
-                  </span>
-                  <span>/</span>
+                  {{ product.description }}
+                </div>
+                <div class="space-x-2 pb-5">
                   <span class="price">
                     {{ (product.price / 100).toFixed(2) }}元
                   </span>
@@ -181,7 +179,8 @@ async function onUseAciveCode() {
 async function getUserBalance() {
   const balances = await balanceService.getUserBalances()
   const countBalances = balances.filter(
-    (balance) => balance.type === ProductType.Count,
+    (balance) =>
+      balance.type === ProductType.Count || balance.type === ProductType.Cycle,
   )
   const timeBalances = balances.filter(
     (balance) => balance.type === ProductType.Time,

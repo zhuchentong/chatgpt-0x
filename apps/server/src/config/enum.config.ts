@@ -104,6 +104,19 @@ export enum ProductType {
   Count = 'COUNT',
   // 时间
   Time = 'TIME',
+  // 周期
+  Cycle = 'CYCLE',
+}
+
+export enum CycleType {
+  // 分钟
+  Minute = 'MINUTE',
+  // 天
+  Day = 'DAY',
+  // 周
+  Week = 'WEEK',
+  // 月
+  Month = 'MONTH',
 }
 
 export enum BalanceOrigin {

@@ -8,9 +8,6 @@
       </div>
       <ChatBox></ChatBox>
     </div>
-    <!-- <div class="desktop:flex mobile:hidden">
-      <AssistantList></AssistantList>
-    </div> -->
   </PageContainer>
 </template>
 
@@ -20,10 +17,31 @@
 }
 </style>
 
-<script setup lang="ts">
-import { useThemeVars } from 'naive-ui'
+<script setup lang="tsx">
+import { useDialog, useThemeVars } from 'naive-ui'
 import ChatSide from './components/chat-side.vue'
 import ChatBox from './components/chat-box.vue'
+import { useStore } from '@/store'
+import Notification from '@/components/notification.vue'
 
 const theme = useThemeVars()
+const store = useStore()
+const dialog = useDialog()
+
+onMounted(() => {
+  if (store.app.firstTime === true) {
+    dialog.info({
+      title: '通知',
+      style: 'width:600px',
+      content: () => (
+        <div>
+          <Notification></Notification>
+        </div>
+      ),
+      onClose() {
+        store.app.updateFirstTime()
+      },
+    })
+  }
+})
 </script>

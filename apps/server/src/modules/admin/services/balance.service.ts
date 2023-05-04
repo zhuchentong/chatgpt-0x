@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import {
   BalanceOrigin,
+  CycleType,
   PaginatorMode,
   ProductType,
 } from 'src/config/enum.config'
@@ -17,6 +18,8 @@ import { buildPaginator } from 'src/common/typeorm/query/paginator'
 import { User } from 'src/entities/user.entity'
 import { Order } from 'src/entities/order.entity'
 import { OrderMode } from 'src/config/enum.config'
+import { Cron, CronExpression } from '@nestjs/schedule'
+import { Logger } from 'src/core/logger/services/logger.service'
 
 @Injectable()
 export class BalanceService {
@@ -25,6 +28,7 @@ export class BalanceService {
     private readonly balanceRepository: Repository<Balance>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+    private readonly logger: Logger,
   ) {}
 
   async findAll({ buildWhereQuery, page, order }: QueryInputParam<User>) {
@@ -46,6 +50,26 @@ export class BalanceService {
     })
 
     return paginator.paginate(builder)
+  }
+
+  private getNextCycleTime({
+    time,
+    cycleType,
+  }: {
+    time?: Date
+    cycleType: CycleType
+  }) {
+    return dayjs(time).add(
+      1,
+      (
+        {
+          [CycleType.Minute]: 'minute',
+          [CycleType.Day]: 'day',
+          [CycleType.Week]: 'week',
+          [CycleType.Month]: 'month',
+        } as Record<CycleType, dayjs.ManipulateType>
+      )[cycleType],
+    )
   }
 
   async getUserBalanceEndTime(userId: string) {
@@ -72,6 +96,8 @@ export class BalanceService {
         origin: BalanceOrigin.Register,
         type: order.product.type,
         value: order.product.value,
+        cycleType: order.product.cycleType,
+        cycleTime: order.product.cycleTime,
       })
 
       balance.order = order
@@ -90,11 +116,15 @@ export class BalanceService {
     origin,
     type,
     value,
+    cycleType,
+    cycleTime,
   }: {
     user: User
     origin: BalanceOrigin
     type: ProductType
     value: number
+    cycleType?: CycleType
+    cycleTime?: number
   }) {
     const balance = this.balanceRepository.create({ user, type, origin })
 
@@ -110,6 +140,18 @@ export class BalanceService {
         {
           balance.startCount = value
           balance.currentCount = value
+        }
+        break
+      case ProductType.Cycle:
+        {
+          const startTime = await this.getUserBalanceEndTime(user.id)
+          balance.startTime = startTime.toDate()
+          balance.endTime = startTime.add(cycleTime, 'day').toDate()
+
+          balance.startCount = value
+          balance.currentCount = value
+          balance.cycleType = cycleType
+          balance.nextCycleTime = this.getNextCycleTime({ cycleType }).toDate()
         }
         break
     }
@@ -139,6 +181,14 @@ export class BalanceService {
         },
         {
           enable: true,
+          type: ProductType.Cycle,
+          startTime: Raw((time) => `${time} < NOW()`),
+          endTime: Raw((time) => `${time} > NOW()`),
+          currentCount: MoreThan(0),
+          user: { id: userId },
+        },
+        {
+          enable: true,
           type: ProductType.Count,
           currentCount: MoreThan(0),
           user: { id: userId },
@@ -148,7 +198,11 @@ export class BalanceService {
     })
 
     const balance =
+      // 优先取时间
       balances.find((balance) => balance.type === ProductType.Time) ||
+      // 其次取周期
+      balances.find((balance) => balance.type === ProductType.Cycle) ||
+      // 最后取次数
       balances.find((balance) => balance.type === ProductType.Count)
 
     if (balance) {
@@ -165,6 +219,41 @@ export class BalanceService {
       return balance
     } else {
       return this.getUserBalanceFromDB(userId)
+    }
+  }
+
+  /**
+   * 更新周期余额
+   */
+  @Cron('* * 0 * * *', {
+    name: 'updateCycleBalance',
+    timeZone: 'Asia/Shanghai',
+  })
+  async updateCycleBalance() {
+    console.log('开始重置余额')
+    const balances = await this.balanceRepository.find({
+      where: {
+        enable: true,
+        type: ProductType.Cycle,
+        nextCycleTime: Raw((time) => `${time} < NOW()`),
+        endTime: Raw((time) => `${time} > NOW()`),
+      },
+    })
+
+    for (const balance of balances) {
+      const nextCycleTime = this.getNextCycleTime({
+        time: balance.nextCycleTime,
+        cycleType: balance.cycleType,
+      })
+
+      if (nextCycleTime.isBefore(balance.endTime)) {
+        this.logger.debug('开始重置余额', balance.id)
+
+        balance.currentCount = balance.startCount
+        balance.nextCycleTime = balance.nextCycleTime
+
+        await this.balanceRepository.save(balance)
+      }
     }
   }
 }

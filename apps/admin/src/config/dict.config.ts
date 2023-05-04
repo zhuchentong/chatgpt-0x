@@ -1,5 +1,6 @@
 import {
   BalanceOrigin,
+  CycleType,
   OpenAIKeyState,
   OrderState,
   ProductType,
@@ -22,6 +23,14 @@ export const OrderStateDict = new Map<OrderState | string, string>([
 export const ProductTypeDict = new Map<ProductType | string, string>([
   [ProductType.Count, '计次'],
   [ProductType.Time, '计时'],
+  [ProductType.Cycle, '周期'],
+])
+
+export const CycleTypeDict = new Map<CycleType | string, string>([
+  [CycleType.Minute, '每分钟'],
+  [CycleType.Day, '每天'],
+  [CycleType.Week, '每周'],
+  [CycleType.Month, '每月'],
 ])
 
 export const ProductUnitDict = new Map<ProductType | string, string>([

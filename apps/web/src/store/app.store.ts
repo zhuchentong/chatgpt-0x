@@ -12,6 +12,7 @@ interface State {
     enable: boolean
     dates: string[]
   }
+  firstTime: boolean
 }
 
 const initialState: State = {
@@ -23,6 +24,7 @@ const initialState: State = {
     enable: true,
     dates: [],
   },
+  firstTime: true,
 }
 
 export const useAppStore = defineStore('app', {
@@ -54,8 +56,11 @@ export const useAppStore = defineStore('app', {
     appendCareModeDate(date: string) {
       this.careMode.dates.push(date)
     },
+    updateFirstTime() {
+      this.firstTime = false
+    },
   },
   persist: {
-    paths: ['careMode'],
+    paths: ['careMode', 'firstTime'],
   },
 })

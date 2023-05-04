@@ -31,9 +31,12 @@ import {
 } from '@gopowerteam/vue-dynamic-table'
 import { useRequest } from 'virtual:request'
 import { PageService } from '@/http/extends/page.service'
-import { EnableStateDict, ProductTypeDict } from '@/config/dict.config'
+import {
+  CycleTypeDict,
+  EnableStateDict,
+  ProductTypeDict,
+} from '@/config/dict.config'
 import type { Product } from '@/http/models/Product'
-import type { ProductType } from '@/config/enum.config'
 
 const pageService = new PageService()
 const table = $(useTable('table'))
@@ -49,6 +52,9 @@ function onCreate() {
       type: '',
       value: '',
       price: '',
+      description: '',
+      cycleType: undefined,
+      cycleTime: undefined,
     },
     appendRowKey: true,
     submit: (data: any) => {
@@ -79,6 +85,10 @@ const editsForms: FormItemsOptions = [
     render: (r) => r.input(),
   },
   {
+    key: 'description',
+    title: '产品描述',
+  },
+  {
     key: 'type',
     title: '产品类型',
     rules: [{ required: true, message: '请选择产品类型' }],
@@ -88,9 +98,22 @@ const editsForms: FormItemsOptions = [
       }),
   },
   {
+    key: 'cycleType',
+    title: '周期类型',
+    render: (r) =>
+      r.select({
+        options: CycleTypeDict,
+      }),
+  },
+  {
     key: 'value',
     title: '次数/天数',
     render: (r) => r.input({ placeholder: '请输入次数/天数' }),
+  },
+  {
+    key: 'cycleTime',
+    title: '周期时长',
+    render: (r) => r.input({ placeholder: '请输入周期时长天数' }),
   },
   {
     key: 'price',
@@ -105,13 +128,26 @@ const columns: TableColumnsOptions<Product> = [
     title: '产品名称',
   },
   {
+    key: 'description',
+    title: '产品描述',
+  },
+  {
     key: 'type',
     title: '产品类型',
     render: (r) => r.dict({ dict: ProductTypeDict }),
   },
   {
+    key: 'cycleType',
+    title: '周期类型',
+    render: (r) => r.dict({ dict: CycleTypeDict }),
+  },
+  {
     key: 'value',
     title: '次数/天数',
+  },
+  {
+    key: 'cycleTime',
+    title: '周期时长(天)',
   },
   {
     key: 'enable',
@@ -169,7 +205,7 @@ const columns: TableColumnsOptions<Product> = [
                   productService
                     .updateProduct(record.id, {
                       ...data,
-                      type: data.type as ProductType,
+                      type: data.type as any,
                       value: +data.value,
                       price: data.price * 100,
                     })

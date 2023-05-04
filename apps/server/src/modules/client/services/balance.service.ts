@@ -14,6 +14,7 @@ import { ConfigService } from '@nestjs/config'
 import { Logger } from 'src/core/logger/services/logger.service'
 import { UserService } from './user.service'
 import { InviteService } from './invite.service'
+import { product } from 'ramda'
 
 @Injectable()
 export class BalanceService {
@@ -211,6 +212,13 @@ export class BalanceService {
         },
         {
           enable: true,
+          type: ProductType.Cycle,
+          endTime: Raw((time) => `${time} > NOW()`),
+          currentCount: MoreThan(0),
+          user: { id: userId },
+        },
+        {
+          enable: true,
           type: ProductType.Count,
           currentCount: MoreThan(0),
           user: { id: userId },
@@ -219,7 +227,11 @@ export class BalanceService {
     })
 
     const balance =
+      // 优先取时间
       balances.find((balance) => balance.type === ProductType.Time) ||
+      // 其次取周期
+      balances.find((balance) => balance.type === ProductType.Cycle) ||
+      // 最后取次数
       balances.find((balance) => balance.type === ProductType.Count)
 
     if (balance) {
@@ -260,6 +272,13 @@ export class BalanceService {
         },
         {
           enable: true,
+          type: ProductType.Cycle,
+          currentCount: MoreThan(0),
+          endTime: Raw((time) => `${time} > NOW()`),
+          user: { id: userId },
+        },
+        {
+          enable: true,
           type: ProductType.Count,
           currentCount: MoreThan(0),
           user: { id: userId },
@@ -275,8 +294,8 @@ export class BalanceService {
   async consumeUserBalance(userId: string) {
     const balance = await this.getUserBalanceFromCache(userId)
 
-    switch (balance.type) {
-      case ProductType.Count: {
+    switch (true) {
+      case [ProductType.Cycle, ProductType.Count].includes(balance.type): {
         // 消耗1次
         balance.currentCount -= 1
         // 更新缓存
@@ -291,7 +310,7 @@ export class BalanceService {
 
         break
       }
-      case ProductType.Time: {
+      case ProductType.Time === balance.type: {
         // 余额为0时删除缓存
         if (balance.endTime.getTime() < Date.now()) {
           this.cacheManager.del(`${CACHE_BALANCE}:${userId}`)

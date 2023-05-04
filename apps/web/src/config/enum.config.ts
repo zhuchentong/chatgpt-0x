@@ -42,9 +42,17 @@ export enum OrderState {
 export enum ProductType {
   Count = 'COUNT',
   Time = 'TIME',
+  Cycle = 'CYCLE',
 }
 
 export enum BalanceOrigin {
   Code = 'CODE',
   Order = 'ORDER',
+}
+
+export enum CycleType {
+  Minute = 'MINUTE',
+  Day = 'DAY',
+  Week = 'WEEK',
+  Month = 'MONTH',
 }

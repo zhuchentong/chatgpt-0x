@@ -8,6 +8,7 @@ import type { Cache } from 'cache-manager'
 import { Administrator } from 'src/entities/administrator.entity'
 import { User } from 'src/entities/user.entity'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { CACHE_ADMIN, CACHE_USER } from 'src/config/constants'
 
 type JwtPayload = {
   id: string
@@ -51,7 +52,10 @@ export class RefreshTokenStrategy extends PassportStrategy(
     const authorization = req.headers?.authorization || ''
     const [token] = authorization.match(/(?<=\Bearer\s)(.*)/)
 
-    if ((await this.cacheManager.get(user?.id)) !== token) {
+    const cacheHeader =
+      payload.origin === AppOrigin.Admin ? CACHE_ADMIN : CACHE_USER
+
+    if ((await this.cacheManager.get(`${cacheHeader}:${user.id}`)) !== token) {
       throw new UnauthorizedException('不存在的RefreshToken')
     }
 

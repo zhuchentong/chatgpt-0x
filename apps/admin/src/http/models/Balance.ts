@@ -55,6 +55,14 @@ export type Balance = {
    */
   endTime: string;
   /**
+   * 周期类型
+   */
+  cycleType: 'MINUTE' | 'DAY' | 'WEEK' | 'MONTH';
+  /**
+   * 下次重置周期
+   */
+  nextCycleTime: string;
+  /**
    * 用户
    */
   user: User;

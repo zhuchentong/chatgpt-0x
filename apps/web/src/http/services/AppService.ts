@@ -364,6 +364,36 @@ export class AppService {
   
   }
   
+  /**
+   * API刷新Token
+   */
+  public apiToken(
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
+  ): string
+  public apiToken(
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<TokenResponse>
+  public apiToken(
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<TokenResponse> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/client/app/api-refresh-token',
+      method: 'get',
+    }
+  
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions
+    )
+  
+  
+  }
+  
 }
 
 

@@ -7,7 +7,7 @@ import {
   EntityWithUUID,
 } from '../common/typeorm/entity'
 import { ApiProperty } from '@nestjs/swagger'
-import { BalanceOrigin, ProductType } from 'src/config/enum.config'
+import { BalanceOrigin, CycleType, ProductType } from 'src/config/enum.config'
 import { ActiveCode } from './active-code.entity'
 import { Order } from './order.entity'
 import { User } from './user.entity'
@@ -71,6 +71,18 @@ export class Balance extends pipe(
     type: 'timestamp without time zone',
   })
   endTime: Date
+
+  @ApiProperty({ description: '周期类型', enum: CycleType })
+  @Column({ enum: CycleType, name: 'cycle_type', nullable: true })
+  cycleType?: CycleType
+
+  @Type(() => Date)
+  @ApiProperty({ description: '下次重置周期' })
+  @Column({
+    nullable: true,
+    name: 'next_cycle_time',
+  })
+  nextCycleTime?: Date
 
   @ApiProperty({ description: '用户', type: () => User })
   @ManyToOne(() => User, (user) => user.balances)

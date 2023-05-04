@@ -226,6 +226,6 @@ namespace RequestQueryParams {
     /**
      * 兑换类型
      */
-    type?: 'COUNT' | 'TIME';
+    type?: 'COUNT' | 'TIME' | 'CYCLE';
   }
 }

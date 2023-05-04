@@ -55,6 +55,7 @@ export enum RefundChannel {
 export enum ProductType {
   Count = 'COUNT',
   Time = 'TIME',
+  Cycle = 'CYCLE',
 }
 
 export enum BalanceOrigin {
@@ -67,4 +68,11 @@ export enum BalanceOrigin {
 export enum OpenAIKeyState {
   Valid = 'VALID',
   Invalid = 'INVALID',
+}
+
+export enum CycleType {
+  Minute = 'MINUTE',
+  Day = 'DAY',
+  Week = 'WEEK',
+  Month = 'MONTH',
 }

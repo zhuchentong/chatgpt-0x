@@ -3,7 +3,7 @@ import { ApiProperty, PartialType } from '@nestjs/swagger'
 import { IsEnum, IsInt, IsNumber, IsString } from 'class-validator'
 import { WhereOption } from 'src/common/typeorm/decorators'
 import { QueryInput } from 'src/common/typeorm/query/inputs/query.input'
-import { ProductType, WhereOperator } from 'src/config/enum.config'
+import { CycleType, ProductType, WhereOperator } from 'src/config/enum.config'
 import { Product } from 'src/entities/product.entity'
 
 /*
@@ -14,9 +14,20 @@ export class CreateProductInput {
   @IsString()
   name: string
 
+  @ApiProperty()
+  @IsString()
+  description: string
+
   @ApiProperty({ enum: ProductType })
   @IsEnum(ProductType)
   type: ProductType
+
+  @ApiProperty({ enum: CycleType, required: false, description: '周期类型' })
+  @IsEnum(CycleType)
+  cycleType?: CycleType
+
+  @ApiProperty({ required: false, description: '周期时长' })
+  cycleTime?: number
 
   @ApiProperty()
   @IsInt()
