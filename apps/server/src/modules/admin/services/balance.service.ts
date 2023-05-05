@@ -59,7 +59,7 @@ export class BalanceService {
     time?: Date
     cycleType: CycleType
   }) {
-    return dayjs(time).add(
+    const date = dayjs(time).add(
       1,
       (
         {
@@ -70,6 +70,8 @@ export class BalanceService {
         } as Record<CycleType, dayjs.ManipulateType>
       )[cycleType],
     )
+
+    return date.startOf('date')
   }
 
   async getUserBalanceEndTime(userId: string) {
@@ -80,7 +82,7 @@ export class BalanceService {
       .andWhere('balance.enable = true')
       .andWhere('balance.type = :type', { type: ProductType.Time })
       .getRawOne()
-    console.log(endTime)
+
     return endTime ? dayjs(endTime) : dayjs()
   }
 
@@ -106,8 +108,8 @@ export class BalanceService {
       await this.cacheManager.del(`${CACHE_BALANCE}:${order.user.id}`)
 
       return this.balanceRepository.save(balance)
-    } catch (e) {
-      console.log(e)
+    } catch (ex) {
+      this.logger.error(ex)
     }
   }
 
@@ -149,14 +151,17 @@ export class BalanceService {
         break
       case ProductType.Cycle:
         {
+          // 获取时卡结束时间
           const startTime = await this.getUserBalanceEndTime(user.id)
           balance.startTime = startTime.toDate()
           balance.endTime = startTime.add(cycleTime, 'day').toDate()
-
           balance.startCount = value
           balance.currentCount = value
           balance.cycleType = cycleType
-          balance.nextCycleTime = this.getNextCycleTime({ cycleType }).toDate()
+          balance.nextCycleTime = this.getNextCycleTime({
+            cycleType,
+            time: startTime.toDate(),
+          }).toDate()
         }
         break
     }
@@ -230,12 +235,13 @@ export class BalanceService {
   /**
    * 更新周期余额
    */
-  @Cron('* * 0 * * *', {
+  @Cron('0 1 0 * * *', {
     name: 'updateCycleBalance',
     timeZone: 'Asia/Shanghai',
   })
   async updateCycleBalance() {
-    console.log('开始重置余额')
+    this.logger.info('开始重置余额:', dayjs().format('YYYY-MM-DD HH:mm:ss'))
+
     const balances = await this.balanceRepository.find({
       where: {
         enable: true,
@@ -246,19 +252,21 @@ export class BalanceService {
     })
 
     for (const balance of balances) {
+      // 生成下一个重置周期
       const nextCycleTime = this.getNextCycleTime({
         time: balance.nextCycleTime,
         cycleType: balance.cycleType,
       })
 
-      if (nextCycleTime.isBefore(balance.endTime)) {
-        this.logger.debug('开始重置余额', balance.id)
+      this.logger.debug('开始重置余额', balance)
 
-        balance.currentCount = balance.startCount
-        balance.nextCycleTime = balance.nextCycleTime
+      balance.currentCount = balance.startCount
+      // 重置下一个周期
+      balance.nextCycleTime = nextCycleTime.isBefore(balance.endTime)
+        ? balance.nextCycleTime
+        : null
 
-        await this.balanceRepository.save(balance)
-      }
+      await this.balanceRepository.save(balance)
     }
   }
 }

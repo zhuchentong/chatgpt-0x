@@ -14,7 +14,6 @@ import { ConfigService } from '@nestjs/config'
 import { Logger } from 'src/core/logger/services/logger.service'
 import { UserService } from './user.service'
 import { InviteService } from './invite.service'
-import { product } from 'ramda'
 
 @Injectable()
 export class BalanceService {
