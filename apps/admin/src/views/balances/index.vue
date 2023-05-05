@@ -102,9 +102,9 @@ const columns: TableColumnsOptions<Balance> = [
               case ProductType.Count:
                 return record.startCount >= record.currentCount
               case ProductType.Time:
-                return dayjs().isAfter(record.endTime)
+                return dayjs().isBefore(record.endTime)
               case ProductType.Cycle:
-                return dayjs().isAfter(record.endTime)
+                return dayjs().isBefore(record.endTime)
             }
           }
 
