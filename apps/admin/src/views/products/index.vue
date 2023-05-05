@@ -87,6 +87,7 @@ const editsForms: FormItemsOptions = [
   {
     key: 'description',
     title: '产品描述',
+    render: (r) => r.input(),
   },
   {
     key: 'type',
