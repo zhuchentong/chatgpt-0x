@@ -5,6 +5,7 @@ import {
   setup,
 } from '@gopowerteam/request'
 import { AxiosAdapter } from '@gopowerteam/request/adapters'
+import type { Router } from 'vue-router'
 import { appConfig } from '@/config/app.config'
 import { TokenService } from '@/http/extends/token.service'
 import { useStore } from '@/store'
@@ -29,6 +30,8 @@ class ErrorInterceptors implements ResponseInterceptor {
 }
 
 class ExceptionInterceptors implements ResponseInterceptor {
+  constructor(private readonly router: Router) {}
+
   exec(response: AdapterResponse) {
     const logger = useLogger()
     const defaultError = '系统异常,请稍候重试.'
@@ -51,20 +54,28 @@ class ExceptionInterceptors implements ResponseInterceptor {
         Message.error(errorMessage)
       }
     }
+
     switch (response.status) {
       case 401:
-        onResponse401()
+        this.onResponse401()
+        break
+      case 444:
+        this.onResponse444()
         break
     }
   }
+
+  onResponse444() {
+    this.router.replace('/welcome')
+  }
+
+  onResponse401() {
+    const store = useStore()
+    store.user.logout()
+  }
 }
 
-function onResponse401() {
-  const store = useStore()
-  store.user.logout()
-}
-
-export default function () {
+export default function (router: Router) {
   // 配置服务端信息
   setup({
     gateway: appConfig.http.gateway,
@@ -80,7 +91,7 @@ export default function () {
       status: new StatusInterceptors(),
       success: new SuccessInterceptors(),
       error: new ErrorInterceptors(),
-      exception: new ExceptionInterceptors(),
+      exception: new ExceptionInterceptors(router),
     },
     plugins: [new TokenService()],
   })

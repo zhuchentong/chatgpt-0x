@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Assistant } from 'src/entities/assistant.entity'
-import { User } from 'src/entities/user.entity'
 import { Repository } from 'typeorm'
 import {
   CreateAssistantInput,
@@ -9,7 +8,7 @@ import {
 } from '../dtos/assistant.dto'
 import { QueryInputParam } from 'src/common/typeorm/interfaces'
 import { buildPaginator } from 'src/common/typeorm/query/paginator'
-import { Order, PaginatorMode } from 'src/config/enum.config'
+import { OrderMode, PaginatorMode } from 'src/config/enum.config'
 
 @Injectable()
 export class AssistantService {
@@ -31,7 +30,7 @@ export class AssistantService {
       mode: PaginatorMode.Index,
       entity: Assistant,
       query: {
-        order: { code: Order.ASC, ...order },
+        order: { code: OrderMode.ASC, ...order },
         skip: page.skip,
         limit: page.limit,
       },

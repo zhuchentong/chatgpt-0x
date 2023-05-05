@@ -17,7 +17,7 @@ export class DatabaseService implements TypeOrmOptionsFactory {
       // 同步表结构
       synchronize: true,
       // 记录sql
-      logging: process.env.NODE_ENV === 'development' ? 'all' : 'error',
+      logging: process.env.NODE_ENV === 'production' ? 'error' : 'all',
     }
   }
 }

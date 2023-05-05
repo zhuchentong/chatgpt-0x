@@ -120,37 +120,6 @@ export class WechatService {
   
   }
   
-  public WXMPController_authorization(
-    requestQuery: RequestQueryParams.WXMPController_authorization,
-    requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
-  ): string
-  public WXMPController_authorization(
-    requestQuery: RequestQueryParams.WXMPController_authorization,
-    requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions
-  ): Promise<void>
-  public WXMPController_authorization(
-    requestQuery: RequestQueryParams.WXMPController_authorization,
-    requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions
-  ): Promise<void> | string {
-    const requestSendOptions = {
-      service: this.service,
-      path: '/api/wechat/authorize',
-      method: 'get',
-      paramsQuery: requestQuery,
-    }
-  
-    return this.generateRequest(
-      requestSendOptions,
-      requestPlugins,
-      requestGenerateOptions
-    )
-  
-  
-  }
-  
 }
 
 
@@ -167,9 +136,5 @@ namespace RequestQueryParams {
     nonce: string;
     openid: string;
     appId: string;
-  }
-  export type WXMPController_authorization = {
-    code: string;
-    state: string;
   }
 }

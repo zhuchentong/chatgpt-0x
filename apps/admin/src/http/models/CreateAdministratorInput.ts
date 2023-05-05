@@ -3,6 +3,6 @@
 /* eslint-disable */
 
 export type CreateAdministratorInput = {
-  username: string
-  password: string
+  username: string;
+  password: string;
 }

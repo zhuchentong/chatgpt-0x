@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue'
-import type { ClassName } from '@arco-design/web-vue/es/_utils/types'
+import { useMessage } from 'naive-ui'
 import { useStore } from '@/store'
 
 const props = withDefaults(
@@ -48,6 +48,7 @@ const props = withDefaults(
 )
 const store = useStore()
 const route = useRoute()
+const message = useMessage()
 /**
  * 生成外层样式
  */
@@ -98,28 +99,6 @@ const bodyStyle = computed<CSSProperties>(() => {
 })
 
 /**
- * 生成bodyClass
- */
-const bodyClass = computed<ClassName>(() => {
-  const space_direction =
-    props.layout === 'block' || props.layout === 'flex-column' ? 'y' : 'x'
-
-  const space_number = typeof props.space === 'number' ? props.space : 2
-
-  return Object.assign(
-    { [`space-${space_direction}-${space_number}`]: !!props.space },
-    props.layout === 'flex-row'
-      ? ({ flex: true, 'flex-row': true } as ClassName)
-      : {},
-    props.layout === 'flex-column'
-      ? ({ flex: true, 'flex-col': true } as ClassName)
-      : {},
-    props.layout === 'flex-center'
-      ? ({ flex: true, 'flex-center': true, 'flex-auto': true } as ClassName)
-      : {},
-  )
-})
-/**
  * 更新页面标题
  */
 function updatePageTitle() {
@@ -137,6 +116,42 @@ onBeforeMount(() => {
   if (props.title) {
     updatePageTitle()
   }
+
+  addMessageEventBusListener()
+})
+
+function messageEventHander({
+  type,
+  content,
+  duration = 3000,
+}: {
+  type: 'success' | 'error' | 'warning' | 'info'
+  content: string
+  duration?: number
+}) {
+  message[type](content, { duration })
+}
+
+function addMessageEventBusListener() {
+  const messageEventBus = useEventBus<{
+    type: 'success' | 'error' | 'warning' | 'info'
+    content: string
+  }>('message')
+
+  messageEventBus.on(messageEventHander)
+}
+
+function removeMessageEventBusListener() {
+  const messageEventBus = useEventBus<{
+    type: 'success' | 'error' | 'warning' | 'info'
+    content: string
+  }>('message')
+
+  messageEventBus.off(messageEventHander)
+}
+
+onBeforeUnmount(() => {
+  removeMessageEventBusListener()
 })
 </script>
 

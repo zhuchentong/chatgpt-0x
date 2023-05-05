@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type AppInitInput = {}
+export type AppInitInput = {
+}

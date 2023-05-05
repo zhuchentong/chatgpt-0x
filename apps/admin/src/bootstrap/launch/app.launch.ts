@@ -6,14 +6,9 @@ import { useStore } from '@/store'
 async function getAppBase(router: Router) {
   const appService = useRequest((service) => service.AppService)
 
-  appService
-    .appBase()
-    .then((data) => {
-      //
-    })
-    .catch(() => {
-      router.replace('/welcome')
-    })
+  appService.appBase().then(() => {
+    // 更新BASEDATA
+  })
 }
 
 /**

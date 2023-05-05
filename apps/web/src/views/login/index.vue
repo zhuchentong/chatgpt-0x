@@ -50,7 +50,7 @@ const router = useRouter()
 
 let qrcode = $ref('')
 let code: string
-
+const inviter = route.query.inviter as string
 /**
  * 请求登录二维码
  */
@@ -79,7 +79,7 @@ const {
     }
 
     appService
-      .qrcodeLoginStatus(code)
+      .qrcodeLoginStatus({ code, inviter })
       .then(({ status, access_token, refresh_token }) => {
         if (!status) {
           return
@@ -114,15 +114,17 @@ function requestLoginWechat() {
   }
 
   // login
-  appService.wechatLogin({ openid }).then(({ access_token, refresh_token }) => {
-    store.user.updateToken({
-      accessToken: access_token,
-      refreshToken: refresh_token,
-    })
+  appService
+    .wechatLogin({ openid, inviter })
+    .then(({ access_token, refresh_token }) => {
+      store.user.updateToken({
+        accessToken: access_token,
+        refreshToken: refresh_token,
+      })
 
-    message.success('登录成功')
-    router.push('/')
-  })
+      message.success('登录成功')
+      router.push('/')
+    })
 }
 
 onBeforeUnmount(() => {

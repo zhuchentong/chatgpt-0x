@@ -12,6 +12,7 @@ import { HttpService } from '@nestjs/axios'
 import { lastValueFrom } from 'rxjs'
 import { nanoid } from 'nanoid/non-secure'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { CACHE_ADMIN, CACHE_USER } from 'src/config/constants'
 
 const WEAPP_API = {
   token: 'https://api.weixin.qq.com/cgi-bin/token',
@@ -182,7 +183,7 @@ export class AuthService {
 
     // 缓存AccessToken
     await this.cacheManager.set(
-      administrator.id,
+      `${CACHE_ADMIN}:${administrator.id}`,
       refreshToken,
       refreshTokenExpiresIn,
     )
@@ -212,8 +213,17 @@ export class AuthService {
    * @param admin
    * @returns
    */
-  async userSign(user: User, origin: AppOrigin) {
+  async userSign(
+    user: User,
+    origin: AppOrigin,
+    reAccessTokenExpiresIn?: number,
+    reRefreshTokenExpiresIn?: number,
+  ) {
     const jwtOrigin = origin
+    const tokenExpiresIn = {
+      accessTokenExpiresIn: reAccessTokenExpiresIn || accessTokenExpiresIn,
+      refreshTokenExpiresIn: reRefreshTokenExpiresIn || refreshTokenExpiresIn,
+    }
 
     const payload = {
       id: user.id,
@@ -223,23 +233,27 @@ export class AuthService {
     // 获取AccessToken
     const accessToken = this.jwtService.sign(payload, {
       secret: this.config.get('jwt.accessTokenSecret'),
-      expiresIn: accessTokenExpiresIn,
+      expiresIn: tokenExpiresIn.accessTokenExpiresIn,
     })
 
     // 获取AccessToken
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.config.get('jwt.refreshTokenSecret'),
-      expiresIn: refreshTokenExpiresIn,
+      expiresIn: tokenExpiresIn.refreshTokenExpiresIn,
     })
 
     // 缓存AccessToken
-    await this.cacheManager.set(user.id, refreshToken, refreshTokenExpiresIn)
+    await this.cacheManager.set(
+      `${CACHE_USER}:${user.id}`,
+      refreshToken,
+      tokenExpiresIn.refreshTokenExpiresIn,
+    )
 
     // 返回认证信息
     return {
       access_token: accessToken,
       refresh_token: refreshToken,
-      expires_in: accessTokenExpiresIn,
+      expires_in: tokenExpiresIn.accessTokenExpiresIn,
       token_origin: jwtOrigin,
     }
   }

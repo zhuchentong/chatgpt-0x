@@ -6,5 +6,5 @@ export type AdministratorResetPasswordResponse = {
   /**
    * 新生成随机密码
    */
-  password: string
+  password: string;
 }

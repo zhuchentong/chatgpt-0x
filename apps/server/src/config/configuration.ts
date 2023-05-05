@@ -1,3 +1,5 @@
+import { ProductType } from './enum.config'
+
 export default () => ({
   app: {
     port: process.env.APP_PORT,
@@ -46,6 +48,14 @@ export default () => ({
     token: process.env.WXMP_TOKEN,
     aeskey: process.env.WXMP_AESKEY,
   },
+  wxpay: {
+    appId: process.env.WECHAT_PEY_APPID,
+    mchId: process.env.WECHAT_PAY_MCHID,
+    serialNo: process.env.WECHAT_PAY_SERIAL,
+    keyPath: process.env.WECHAT_PAY_KEYPATH,
+    certPath: process.env.WECHAT_PAY_CERTPATH,
+    privateKey: process.env.WECHAT_PAY_PRIVATE_KEY,
+  },
   email: {
     service: process.env.EMAIL_SERVICE,
     username: process.env.EMAIL_USERNAME,
@@ -54,5 +64,25 @@ export default () => ({
   openai: {
     apiurl: process.env.OPENAI_APIURL,
     apikey: process.env.OPENAI_APIKEY,
+  },
+  // TODO: 迁移到配置中心
+  setting: {
+    balance: {
+      enable: true,
+      events: {
+        register: {
+          type: ProductType.Count,
+          value: 20,
+        },
+        inviter: {
+          type: ProductType.Count,
+          value: 30,
+        },
+        invitee: {
+          type: ProductType.Count,
+          value: 10,
+        },
+      },
+    },
   },
 })

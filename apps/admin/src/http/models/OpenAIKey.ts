@@ -6,37 +6,37 @@ export type OpenAIKey = {
   /**
    * 启用状态
    */
-  enable: boolean
+  enable: boolean;
   /**
    * 创建日期
    */
-  createdAt: string
+  createdAt: string;
   /**
    * 更新日期
    */
-  updatedAt: string
+  updatedAt: string;
   /**
    * Key
    */
-  key: string
+  key: string;
   /**
    * 总额度
    */
-  limit: number
+  limit: number;
   /**
    * 使用量
    */
-  usage: number
+  usage: number;
   /**
    * 调用次数
    */
-  count: number
+  count: number;
   /**
    * 到期时间
    */
-  expireAt: string
+  expireAt: string;
   /**
    * 状态
    */
-  state: string
+  state: string;
 }

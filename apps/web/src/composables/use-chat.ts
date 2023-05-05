@@ -46,6 +46,7 @@ function appendChatMessage(chat: Chat, message: ChatMessage) {
 function sendChatMessage(message: string) {
   const openAIService = useRequest((service) => service.OpenaiService)
   const store = useStore()
+
   // 获取当前会话
   const chat = store.chat.currentChat
   // 获取当前助手
@@ -82,15 +83,30 @@ function sendChatMessage(message: string) {
   }
 
   try {
-    event.addEventListener('message', ({ data }) => {
+    event.addEventListener('message', ({ data }: { data: string }) => {
       chat.inputing = true
       chat.waiting = false
+      switch (true) {
+        case data.startsWith('[ERROR]'): {
+          const errorMsg = data.replace('[ERROR]', '')
+          const messageEventBus = useEventBus<{
+            type: 'success' | 'error' | 'warning' | 'info'
+            content: string
+            duration: number
+          }>('message')
 
-      if (data === '[DONE]') {
-        return closeEvent()
+          messageEventBus.emit({
+            type: 'error',
+            content: errorMsg,
+            duration: 5000,
+          })
+          return closeEvent()
+        }
+        case data === '[DONE]':
+          return closeEvent()
+        default:
+          appendChatMessage(chat, JSON.parse(data))
       }
-
-      appendChatMessage(chat, JSON.parse(data))
     })
   } catch (e) {
     chat.inputing = false

@@ -1,35 +1,35 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CreateAssistantInput } from '../models/CreateAssistantInput'
-import type { Assistant } from '../models/Assistant'
-import type { PageAssistant } from '../models/PageAssistant'
-import type { UpdateAssistantInput } from '../models/UpdateAssistantInput'
-import type { ImportAssistantsInput } from '../models/ImportAssistantsInput'
-import {
-  RequestService,
-  RequestGenerateType,
-  type RequestSendOptions,
-  type RequestPlugin,
-  type RequestGenerateOptions,
-} from '@gopowerteam/request'
+import type { CreateAssistantInput } from '../models/CreateAssistantInput';
+import type { Assistant } from '../models/Assistant';
+import type { PageAssistant } from '../models/PageAssistant';
+import type { UpdateAssistantInput } from '../models/UpdateAssistantInput';
+import type { ImportAssistantsInput } from '../models/ImportAssistantsInput';
+import { RequestService, RequestGenerateType, type RequestSendOptions, type RequestPlugin, type RequestGenerateOptions } from '@gopowerteam/request';
 export class AssistantService {
   // 请求实例
-  private request = RequestService.getInstance()
+  private request = RequestService.getInstance();
   private service = ''
 
   private generateRequest(
     requestSendOptions: RequestSendOptions,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
-  ) {
-    switch (true) {
+    requestGenerateOptions?: RequestGenerateOptions
+  ){
+    switch(true){
       case requestGenerateOptions?.type === RequestGenerateType.URL:
         // 生成URL
-        return this.request.toURL(requestSendOptions, requestPlugins)
+        return this.request.toURL(
+          requestSendOptions,
+          requestPlugins
+        );
       default: {
         // 请求数据
-        const result = this.request.send(requestSendOptions, requestPlugins)
+        const result =  this.request.send(
+          requestSendOptions,
+          requestPlugins
+        );
 
         return result
       }
@@ -42,19 +42,17 @@ export class AssistantService {
   public createAssistant(
     requestBody: CreateAssistantInput,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public createAssistant(
     requestBody: CreateAssistantInput,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Assistant>
   public createAssistant(
     requestBody: CreateAssistantInput,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Assistant> | string {
     const requestSendOptions = {
       service: this.service,
@@ -62,33 +60,33 @@ export class AssistantService {
       method: 'post',
       paramsBody: requestBody,
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
-
+  
   /**
    * 查找助手
    */
   public findAssistant(
     requestQuery: RequestQueryParams.FindAssistant,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public findAssistant(
     requestQuery: RequestQueryParams.FindAssistant,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<PageAssistant>
   public findAssistant(
     requestQuery: RequestQueryParams.FindAssistant,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<PageAssistant> | string {
     const requestSendOptions = {
       service: this.service,
@@ -96,33 +94,33 @@ export class AssistantService {
       method: 'get',
       paramsQuery: requestQuery,
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
-
+  
   /**
    * 获取助手
    */
   public getAssistant(
     id: string,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public getAssistant(
     id: string,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Assistant>
   public getAssistant(
     id: string,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Assistant> | string {
     const requestSendOptions = {
       service: this.service,
@@ -132,14 +130,16 @@ export class AssistantService {
         id,
       },
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
-
+  
   /**
    * 更新助手
    */
@@ -147,21 +147,19 @@ export class AssistantService {
     id: string,
     requestBody: UpdateAssistantInput,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public updateAssistant(
     id: string,
     requestBody: UpdateAssistantInput,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Assistant>
   public updateAssistant(
     id: string,
     requestBody: UpdateAssistantInput,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Assistant> | string {
     const requestSendOptions = {
       service: this.service,
@@ -172,33 +170,33 @@ export class AssistantService {
       },
       paramsBody: requestBody,
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
-
+  
   /**
    * 删除助手
    */
   public removeAssistant(
     id: string,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public removeAssistant(
     id: string,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void>
   public removeAssistant(
     id: string,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void> | string {
     const requestSendOptions = {
       service: this.service,
@@ -208,33 +206,33 @@ export class AssistantService {
         id,
       },
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
-
+  
   /**
    * 导入助手
    */
   public importAssistants(
     requestBody: ImportAssistantsInput,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public importAssistants(
     requestBody: ImportAssistantsInput,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void>
   public importAssistants(
     requestBody: ImportAssistantsInput,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void> | string {
     const requestSendOptions = {
       service: this.service,
@@ -242,20 +240,24 @@ export class AssistantService {
       method: 'post',
       paramsBody: requestBody,
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
+  
 }
+
 
 namespace RequestQueryParams {
   export type FindAssistant = {
     /**
      * 助手名称(模糊查询)
      */
-    name?: string
+    name?: string;
   }
 }

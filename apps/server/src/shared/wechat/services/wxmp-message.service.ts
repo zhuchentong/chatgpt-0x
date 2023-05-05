@@ -42,6 +42,7 @@ import {
   OutVoiceMsg,
 } from 'tnwx'
 import { OpenAIService } from 'src/modules/client/services/openai.service'
+import { CACHE_QRCODE_LOGIN } from 'src/config/constants'
 
 @Injectable()
 export class WXMPMessageService implements MsgAdapter {
@@ -178,7 +179,7 @@ export class WXMPMessageService implements MsgAdapter {
     const event = inQrCodeEvent.getEventKey.replace(/^qrscene\_/, '')
 
     switch (true) {
-      case event.startsWith('QRCODE_LOGIN:'):
+      case event.startsWith(CACHE_QRCODE_LOGIN):
         this.cacheManager.set(event, openid, 60 * 5)
         break
     }

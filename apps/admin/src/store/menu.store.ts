@@ -58,7 +58,7 @@ export const useMenuStore = defineStore('menu', {
     /**
      * 检测用户菜单权限
      */
-    checkMenuRole(menu: Menu) {
+    checkMenuRole(_menu: Menu) {
       // TODO: 用户菜单权限检测 requireRoles includes userRoles
       return true
     },
@@ -85,7 +85,10 @@ export const useMenuStore = defineStore('menu', {
               requireAuth: route.children[0]?.meta?.requireAuth ?? true,
               requireRoles: route.children[0]?.meta?.requireRoles,
               // 菜单配置信息
-              ...(route.children[0]?.meta?.menu as Record<string, string>),
+              ...(route.children[0]?.meta?.menu as Record<
+                string,
+                string | number
+              >),
             } as Menu),
         )
 
@@ -93,9 +96,23 @@ export const useMenuStore = defineStore('menu', {
       const userMenus: Menu[] = [...pages, ...menus].filter(this.checkMenuRole)
 
       // 获取根菜单项
-      const roots = userMenus.filter(
-        (route) => route.key && !route.key.includes('.'),
-      )
+      const roots = userMenus
+        .filter((route) => route.key && !route.key.includes('.'))
+        .sort((a, b) => {
+          switch (true) {
+            case a.index !== undefined && b.index !== undefined:
+              return (a.index ?? 0) - (b.index ?? 0)
+            case a.index !== undefined && b.index === undefined:
+              return -1
+            case a.index === undefined && b.index !== undefined:
+              return 1
+            default:
+              return (
+                userMenus.findIndex((x) => x === a) -
+                userMenus.findIndex((x) => x === b)
+              )
+          }
+        })
 
       // TODO: 处理排序排序问题
       // 生成用户菜单树

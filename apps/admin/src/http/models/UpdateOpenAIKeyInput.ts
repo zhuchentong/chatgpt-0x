@@ -6,5 +6,5 @@ export type UpdateOpenAIKeyInput = {
   /**
    * 状态
    */
-  state?: string
+  state?: string;
 }

@@ -3,6 +3,6 @@
 /* eslint-disable */
 
 export type UpdatePasswordInput = {
-  oldPassword: string
-  newPassword: string
+  oldPassword: string;
+  newPassword: string;
 }

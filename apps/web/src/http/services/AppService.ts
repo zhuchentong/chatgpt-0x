@@ -206,27 +206,25 @@ export class AppService {
    * 二维码登录状态查询
    */
   public qrcodeLoginStatus(
-    code: string,
+    requestQuery: RequestQueryParams.QrcodeLoginStatus,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public qrcodeLoginStatus(
-    code: string,
+    requestQuery: RequestQueryParams.QrcodeLoginStatus,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<QrcodeLoginStatusResponse>
   public qrcodeLoginStatus(
-    code: string,
+    requestQuery: RequestQueryParams.QrcodeLoginStatus,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<QrcodeLoginStatusResponse> | string {
     const requestSendOptions = {
       service: this.service,
-      path: '/api/client/app/qrcode-login-status/{code}',
-      method: 'post',
-      paramsPath: {
-        code,
-      },
+      path: '/api/client/app/qrcode-login-status',
+      method: 'get',
+      paramsQuery: requestQuery,
     }
   
     return this.generateRequest(
@@ -366,6 +364,36 @@ export class AppService {
   
   }
   
+  /**
+   * API刷新Token
+   */
+  public apiToken(
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
+  ): string
+  public apiToken(
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<TokenResponse>
+  public apiToken(
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<TokenResponse> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/client/app/api-refresh-token',
+      method: 'get',
+    }
+  
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions
+    )
+  
+  
+  }
+  
 }
 
 
@@ -375,5 +403,19 @@ namespace RequestQueryParams {
      * 用户openid
      */
     openid: string;
+    /**
+     * 邀请人ID
+     */
+    inviter: string;
+  }
+  export type QrcodeLoginStatus = {
+    /**
+     * 用户登录码
+     */
+    code: string;
+    /**
+     * 邀请人ID
+     */
+    inviter: string;
   }
 }

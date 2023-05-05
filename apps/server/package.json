@@ -55,6 +55,7 @@
     "fastify": "^4.15.0",
     "log4js": "6.6.1",
     "nanoid": "^3.0.0",
+    "nest-wechatpay-node-v3": "^1.0.1",
     "nodemailer": "^6.9.1",
     "passport": "0.6.0",
     "passport-custom": "1.1.1",
@@ -62,6 +63,7 @@
     "passport-local": "1.0.0",
     "pg": "8.8.0",
     "qiniu": "7.7.0",
+    "qrcode": "^1.5.3",
     "ramda": "0.28.0",
     "redis": "4.3.1",
     "reflect-metadata": "0.1.13",
@@ -69,6 +71,7 @@
     "rxjs": "7.5.6",
     "tnwx": "^2.5.6",
     "typeorm": "0.3.10",
+    "wechatpay-node-v3": "^2.1.1",
     "yaml": "2.1.1"
   },
   "devDependencies": {
@@ -89,6 +92,7 @@
     "@types/nodemailer": "^6.4.7",
     "@types/passport-jwt": "3.0.6",
     "@types/passport-local": "1.0.34",
+    "@types/qrcode": "^1.5.0",
     "@types/ramda": "0.28.15",
     "@typescript-eslint/eslint-plugin": "5.38.0",
     "@typescript-eslint/parser": "5.38.0",

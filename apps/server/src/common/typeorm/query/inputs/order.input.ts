@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Transform } from 'class-transformer'
 import { IsOptional } from 'class-validator'
-import { Order } from 'src/config/enum.config'
+import { OrderMode } from 'src/config/enum.config'
 import { Constructor } from '../../interfaces'
 
 export function OrderInput<T extends Constructor>(Base: T) {
@@ -15,13 +15,17 @@ export function OrderInput<T extends Constructor>(Base: T) {
     @Transform(({ value }: { value: string }) => {
       return value.split(';').reduce((r, v) => {
         const [key, sort] = v.split(',')
-        if (key && sort && Object.keys(Order).includes(sort.toUpperCase())) {
+        if (
+          key &&
+          sort &&
+          Object.keys(OrderMode).includes(sort.toUpperCase())
+        ) {
           r[key] = sort.toUpperCase()
         }
         return r
       }, {})
     })
-    public order: Record<string, Order>
+    public order: Record<string, OrderMode>
   }
 
   return AbstractBase

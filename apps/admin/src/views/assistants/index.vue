@@ -177,7 +177,6 @@ meta:
   layout: workspace
   requireAuth: true
   menu:
-    key: config.assistants
+    key: assistants
     title: 助手管理
-    index: 0
 </route>

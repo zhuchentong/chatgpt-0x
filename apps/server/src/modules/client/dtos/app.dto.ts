@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsEmail, IsString, Length } from 'class-validator'
+import { IsEmail, IsString, Length, IsOptional } from 'class-validator'
 
 /**
  * 登录
@@ -44,10 +44,18 @@ export class QrcodeLoginStatusInput {
   @ApiProperty({ description: '用户登录码' })
   @IsString()
   code: string
+
+  @ApiProperty({ description: '邀请人ID', required: true, nullable: true })
+  @IsOptional()
+  inviter?: string
 }
 
 export class WechatLoginInput {
   @ApiProperty({ description: '用户openid' })
   @IsString()
   openid: string
+
+  @ApiProperty({ description: '邀请人ID', required: true, nullable: true })
+  @IsOptional()
+  inviter?: string
 }

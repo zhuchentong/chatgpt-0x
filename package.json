@@ -9,7 +9,7 @@
     "dev:server": "lerna run dev --scope chatgpt-server",
     "dev": "lerna run dev",
     "exec": "node scripts/exec.js",
-    "start:prod":"lerna run start:prod --scope chatgpt-server",
+    "start:prod": "lerna run start:prod --scope chatgpt-server",
     "lint": "lerna run lint",
     "publish:patch": "lerna publish patch --no-private --yes",
     "publish:minor": "lerna publish minor --no-private --yes",
@@ -19,8 +19,9 @@
     "lint:eslint": "eslint \"src/**/*.{vue,ts,tsx}\" --fix",
     "precommit": "chmod +x .husky/*",
     "clean": "lerna clean",
-    "update:request": "lerna run update:request --scope chatgpt-web",
-    "deploy:pm2":"pm2 deploy ecosystem.config.js production update"
+    "update:web-request": "lerna run update:request --scope chatgpt-web",
+    "update:admin-request": "lerna run update:request --scope chatgpt-admin",
+    "deploy:pm2": "pm2 deploy ecosystem.config.js production update"
   },
   "devDependencies": {
     "@commitlint/cli": "17.4.2",

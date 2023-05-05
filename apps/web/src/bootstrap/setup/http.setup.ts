@@ -1,4 +1,3 @@
-import { Message } from '@arco-design/web-vue'
 import {
   type AdapterResponse,
   type ResponseInterceptor,
@@ -48,7 +47,13 @@ class ExceptionInterceptors implements ResponseInterceptor {
       logger.error(errorMessage)
 
       if (response.data?.toast === true) {
-        Message.error(errorMessage)
+        useEventBus<{
+          type: 'success' | 'error' | 'warning' | 'info'
+          content: string
+        }>('message').emit({
+          type: 'error',
+          content: errorMessage,
+        })
       }
     }
     switch (response.status) {

@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Inject,
-  Param,
   Post,
   Query,
   UseGuards,
@@ -43,6 +42,7 @@ import { UserService } from '../services/user.service'
 import { AppOrigin } from 'src/config/enum.config'
 import { WXMPService } from 'src/shared/wechat/services/wxmp.service'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { CACHE_MAIL_CODE, CACHE_QRCODE_LOGIN } from 'src/config/constants'
 @Controller('app')
 @ApiTags('app')
 @ApiSecurity('access-token')
@@ -53,7 +53,6 @@ export class AppController {
     private readonly emailService: EmailService,
     private readonly userService: UserService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
-
     private readonly wxmpService: WXMPService,
   ) {}
 
@@ -108,7 +107,7 @@ export class AppController {
   async qrcodeLogin() {
     const code = nanoid(10)
     const qrcode = await this.wxmpService.getQRCode({
-      scene: `QRCODE_LOGIN:${code}`,
+      scene: `${CACHE_QRCODE_LOGIN}:${code}`,
     })
 
     return {
@@ -124,29 +123,30 @@ export class AppController {
     operationId: 'wechatLogin',
     summary: '微信登录',
   })
-  async wechatLogin(@Query() { openid }: WechatLoginInput) {
-    const user = await this.userService.findOneBy({ openid }).then((user) => {
-      if (user) {
-        return user
-      } else {
-        return this.userService.createByOpenID(openid)
-      }
-    })
+  async wechatLogin(@Query() { openid, inviter }: WechatLoginInput) {
+    // 用户登录
+    const { user, isNewRegister } = await this.userService.login({ openid })
 
+    // 发放用户奖励
+    await this.userService.sendUserReward(user, { inviter, isNewRegister })
+
+    // 生成Token
     const token = await this.authService.userSign(user, AppOrigin.Web)
 
     return token
   }
 
   @Public()
-  @Post('qrcode-login-status/:code')
+  @Get('qrcode-login-status')
   @ApiOkResponse({ type: QrcodeLoginStatusResponse })
   @ApiOperation({
     operationId: 'qrcodeLoginStatus',
     summary: '二维码登录状态查询',
   })
-  async qrcodeLoginStatus(@Param() { code }: QrcodeLoginStatusInput) {
-    const openid = await this.cacheManager.get<string>(`QRCODE_LOGIN:${code}`)
+  async qrcodeLoginStatus(@Query() { code, inviter }: QrcodeLoginStatusInput) {
+    const openid = await this.cacheManager.get<string>(
+      `${CACHE_QRCODE_LOGIN}:${code}`,
+    )
 
     // 登录成功进行注册
     if (!openid) {
@@ -155,15 +155,16 @@ export class AppController {
       }
     }
 
-    await this.cacheManager.del(`QRCODE_LOGIN:${code}`)
-    const user = await this.userService.findOneBy({ openid }).then((user) => {
-      if (user) {
-        return user
-      } else {
-        return this.userService.createByOpenID(openid)
-      }
-    })
+    //  清除缓存
+    await this.cacheManager.del(`${CACHE_QRCODE_LOGIN}:${code}`)
 
+    // 用户登录
+    const { user, isNewRegister } = await this.userService.login({ openid })
+
+    // 发放用户奖励
+    await this.userService.sendUserReward(user, { inviter, isNewRegister })
+
+    // 生成Token
     const token = await this.authService.userSign(user, AppOrigin.Web)
 
     return {
@@ -176,17 +177,19 @@ export class AppController {
   @Post('register')
   @ApiOperation({ operationId: 'register', summary: '用户注册' })
   @ApiOkResponse({ type: TokenResponse })
-  async emailRegister(@Body() registerInput: EmailRegisterInput) {
+  async emailRegister(@Body() input: EmailRegisterInput) {
     // 缓存Code
-    const email = await this.cacheManager.get(registerInput.code)
+    const email = await this.cacheManager.get(
+      `${CACHE_MAIL_CODE}:${input.code}`,
+    )
 
-    if (!email || email !== registerInput.email) {
+    if (!email || email !== input.email) {
       throw Error('验证码错误')
     }
 
     const user = await this.userService.createByEmailPassword(
-      registerInput.email,
-      registerInput.password,
+      input.email,
+      input.password,
     )
 
     return this.authService.userSign(user, AppOrigin.Web)
@@ -207,15 +210,17 @@ export class AppController {
     const code = nanoid(6).toUpperCase()
 
     // 缓存Code
-    await this.cacheManager.set(code, registerInput.email, 60 * 10)
+    await this.cacheManager.set(
+      `${CACHE_MAIL_CODE}:${code}`,
+      registerInput.email,
+      60 * 10,
+    )
 
     await this.emailService.sendEmail(
       registerInput.email,
       '注册验证码',
       `您正在申请注册,注册验证码是: ${code}`,
     )
-
-    return { a: 2 }
   }
 
   @Get('current')
@@ -233,6 +238,22 @@ export class AppController {
   token(@RequestUser() user: User) {
     if (user) {
       return this.authService.userSign(user, AppOrigin.Web)
+    }
+  }
+
+  @Public()
+  @Get('api-refresh-token')
+  @ApiOperation({ operationId: 'apiToken', summary: 'API刷新Token' })
+  @ApiOkResponse({ type: TokenResponse })
+  @UseGuards(RefreshTokenGuard)
+  apiToken(@RequestUser() user: User) {
+    if (user) {
+      return this.authService.userSign(
+        user,
+        AppOrigin.Web,
+        60 * 60 * 24 * 30 * 12,
+        60 * 60 * 24 * 30 * 12,
+      )
     }
   }
 }

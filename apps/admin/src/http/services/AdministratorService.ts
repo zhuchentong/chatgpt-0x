@@ -1,36 +1,36 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CreateAdministratorInput } from '../models/CreateAdministratorInput'
-import type { Administrator } from '../models/Administrator'
-import type { PageAdministrator } from '../models/PageAdministrator'
-import type { UpdateAdministratorInput } from '../models/UpdateAdministratorInput'
-import type { AdministratorResetPasswordResponse } from '../models/AdministratorResetPasswordResponse'
-import type { UpdatePasswordInput } from '../models/UpdatePasswordInput'
-import {
-  RequestService,
-  RequestGenerateType,
-  type RequestSendOptions,
-  type RequestPlugin,
-  type RequestGenerateOptions,
-} from '@gopowerteam/request'
+import type { CreateAdministratorInput } from '../models/CreateAdministratorInput';
+import type { Administrator } from '../models/Administrator';
+import type { PageAdministrator } from '../models/PageAdministrator';
+import type { UpdateAdministratorInput } from '../models/UpdateAdministratorInput';
+import type { AdministratorResetPasswordResponse } from '../models/AdministratorResetPasswordResponse';
+import type { UpdatePasswordInput } from '../models/UpdatePasswordInput';
+import { RequestService, RequestGenerateType, type RequestSendOptions, type RequestPlugin, type RequestGenerateOptions } from '@gopowerteam/request';
 export class AdministratorService {
   // 请求实例
-  private request = RequestService.getInstance()
+  private request = RequestService.getInstance();
   private service = ''
 
   private generateRequest(
     requestSendOptions: RequestSendOptions,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
-  ) {
-    switch (true) {
+    requestGenerateOptions?: RequestGenerateOptions
+  ){
+    switch(true){
       case requestGenerateOptions?.type === RequestGenerateType.URL:
         // 生成URL
-        return this.request.toURL(requestSendOptions, requestPlugins)
+        return this.request.toURL(
+          requestSendOptions,
+          requestPlugins
+        );
       default: {
         // 请求数据
-        const result = this.request.send(requestSendOptions, requestPlugins)
+        const result =  this.request.send(
+          requestSendOptions,
+          requestPlugins
+        );
 
         return result
       }
@@ -43,19 +43,17 @@ export class AdministratorService {
   public createAdministrator(
     requestBody: CreateAdministratorInput,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public createAdministrator(
     requestBody: CreateAdministratorInput,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Administrator>
   public createAdministrator(
     requestBody: CreateAdministratorInput,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Administrator> | string {
     const requestSendOptions = {
       service: this.service,
@@ -63,33 +61,33 @@ export class AdministratorService {
       method: 'post',
       paramsBody: requestBody,
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
-
+  
   /**
    * 查询管理员列表
    */
   public findAdministrator(
     requestQuery: RequestQueryParams.FindAdministrator,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public findAdministrator(
     requestQuery: RequestQueryParams.FindAdministrator,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<PageAdministrator>
   public findAdministrator(
     requestQuery: RequestQueryParams.FindAdministrator,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<PageAdministrator> | string {
     const requestSendOptions = {
       service: this.service,
@@ -97,14 +95,16 @@ export class AdministratorService {
       method: 'get',
       paramsQuery: requestQuery,
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
-
+  
   /**
    * 更新管理员
    */
@@ -112,21 +112,19 @@ export class AdministratorService {
     id: string,
     requestBody: UpdateAdministratorInput,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public updateAdministrator(
     id: string,
     requestBody: UpdateAdministratorInput,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Administrator>
   public updateAdministrator(
     id: string,
     requestBody: UpdateAdministratorInput,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Administrator> | string {
     const requestSendOptions = {
       service: this.service,
@@ -137,33 +135,33 @@ export class AdministratorService {
       },
       paramsBody: requestBody,
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
-
+  
   /**
    * 获取管理员
    */
   public getAdministrator(
     id: string,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public getAdministrator(
     id: string,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Administrator>
   public getAdministrator(
     id: string,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<Administrator> | string {
     const requestSendOptions = {
       service: this.service,
@@ -173,33 +171,33 @@ export class AdministratorService {
         id,
       },
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
-
+  
   /**
    * 删除用户
    */
   public deleteAdministrator(
     id: string,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public deleteAdministrator(
     id: string,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void>
   public deleteAdministrator(
     id: string,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void> | string {
     const requestSendOptions = {
       service: this.service,
@@ -209,33 +207,33 @@ export class AdministratorService {
         id,
       },
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
-
+  
   /**
    * 重置管理员密码
    */
   public resetAdministratorPassword(
     id: string,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public resetAdministratorPassword(
     id: string,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<AdministratorResetPasswordResponse>
   public resetAdministratorPassword(
     id: string,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<AdministratorResetPasswordResponse> | string {
     const requestSendOptions = {
       service: this.service,
@@ -245,14 +243,16 @@ export class AdministratorService {
         id,
       },
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
-
+  
   /**
    * 更新管理员密码
    */
@@ -260,21 +260,19 @@ export class AdministratorService {
     id: string,
     requestBody: UpdatePasswordInput,
     requestPlugins: RequestPlugin[],
-    requestGenerateOptions: RequestGenerateOptions & {
-      type: RequestGenerateType.URL
-    },
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public updateAdministratorPassword(
     id: string,
     requestBody: UpdatePasswordInput,
     requestPlugins?: RequestPlugin[],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void>
   public updateAdministratorPassword(
     id: string,
     requestBody: UpdatePasswordInput,
     requestPlugins: RequestPlugin[] = [],
-    requestGenerateOptions?: RequestGenerateOptions,
+    requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void> | string {
     const requestSendOptions = {
       service: this.service,
@@ -285,24 +283,28 @@ export class AdministratorService {
       },
       paramsBody: requestBody,
     }
-
+  
     return this.generateRequest(
       requestSendOptions,
       requestPlugins,
-      requestGenerateOptions,
+      requestGenerateOptions
     )
+  
+  
   }
+  
 }
+
 
 namespace RequestQueryParams {
   export type FindAdministrator = {
     /**
      * 姓名(模糊查询)
      */
-    realname: string
+    realname: string;
     /**
      * 用户名(模糊查询)
      */
-    username: string
+    username: string;
   }
 }
