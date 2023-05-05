@@ -263,7 +263,7 @@ export class BalanceService {
       balance.currentCount = balance.startCount
       // 重置下一个周期
       balance.nextCycleTime = nextCycleTime.isBefore(balance.endTime)
-        ? balance.nextCycleTime
+        ? nextCycleTime.toDate()
         : null
 
       await this.balanceRepository.save(balance)
