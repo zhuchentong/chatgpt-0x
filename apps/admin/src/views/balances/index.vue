@@ -108,7 +108,7 @@ const columns: TableColumnsOptions<Balance> = [
             }
           }
 
-          return getState() ? '可用' : '不可用'
+          return getState() ? '可用' : '已用完'
         },
       }),
   },
