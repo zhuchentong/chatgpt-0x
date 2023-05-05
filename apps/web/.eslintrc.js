@@ -55,6 +55,7 @@ module.exports = {
         '@vue/typescript',
       ],
       rules: {
+        'vue/no-v-html': ['off'],
         'vue/one-component-per-file': ['off'],
         'vue/multi-word-component-names': ['off'],
         // 'vue/max-attributes-per-line': ['off'],
