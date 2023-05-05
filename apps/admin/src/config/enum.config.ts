@@ -61,6 +61,8 @@ export enum ProductType {
 export enum BalanceOrigin {
   Code = 'CODE',
   Order = 'ORDER',
+  Register = 'REGISTER',
+  Invite = 'INVITE',
 }
 
 // #endregion

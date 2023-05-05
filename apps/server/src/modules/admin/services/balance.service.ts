@@ -93,7 +93,7 @@ export class BalanceService {
     try {
       const balance = await this.createBalanceEntity({
         user: order.user,
-        origin: BalanceOrigin.Register,
+        origin: BalanceOrigin.Order,
         type: order.product.type,
         value: order.product.value,
         cycleType: order.product.cycleType,
@@ -126,7 +126,12 @@ export class BalanceService {
     cycleType?: CycleType
     cycleTime?: number
   }) {
-    const balance = this.balanceRepository.create({ user, type, origin })
+    const balance = this.balanceRepository.create({
+      user,
+      type,
+      origin,
+      enable: true,
+    })
 
     switch (type) {
       case ProductType.Time:

@@ -36,11 +36,14 @@ export const CycleTypeDict = new Map<CycleType | string, string>([
 export const ProductUnitDict = new Map<ProductType | string, string>([
   [ProductType.Count, '次'],
   [ProductType.Time, '天'],
+  [ProductType.Cycle, '周期'],
 ])
 
 export const BalanceOriginDict = new Map<BalanceOrigin | string, string>([
   [BalanceOrigin.Code, '兑换码'],
   [BalanceOrigin.Order, '订单'],
+  [BalanceOrigin.Register, '注册'],
+  [BalanceOrigin.Invite, '邀请'],
 ])
 
 export const EnableStateDict = new Map<boolean, string>([

@@ -99,7 +99,7 @@ const columns: TableColumnsOptions<Order> = [
     render: (r) =>
       r.text({
         text: (record) =>
-          `${record.product.value}${ProductUnitDict.get(record.product.type)}`,
+          `${record.product.value}/${ProductUnitDict.get(record.product.type)}`,
       }),
   },
   {

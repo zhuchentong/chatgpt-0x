@@ -63,7 +63,12 @@ export class BalanceService {
     type: ProductType
     value: number
   }) {
-    const balance = this.balanceRepository.create({ user, type, origin })
+    const balance = this.balanceRepository.create({
+      user,
+      type,
+      origin,
+      enable: true,
+    })
 
     switch (type) {
       case ProductType.Time:
