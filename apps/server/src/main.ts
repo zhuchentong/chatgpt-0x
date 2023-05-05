@@ -14,6 +14,7 @@ import { WechatModule } from './shared/wechat/wechat.module'
 import { RequestContextMiddleware } from './middlewaves/request-context.middlewave'
 import { ExceptionsFilter } from './filters/exceptions.filter'
 import { OpenAIModule } from './shared/openai/openai.module'
+// import { Logger } from './core/logger/services/logger.service'
 /**
  * 配置Swagger
  * @param app
@@ -124,9 +125,11 @@ async function bootstrap() {
     {
       cors: true,
       rawBody: true,
+      // bufferLogs: true,
     },
   )
 
+  // app.useLogger(new Logger())
   app.useBodyParser('text/xml')
 
   // 安装全局前缀

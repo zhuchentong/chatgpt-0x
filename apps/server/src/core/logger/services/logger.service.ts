@@ -5,24 +5,53 @@ import * as log4js from 'log4js'
 export class Logger implements LoggerService {
   private _logger: log4js.Logger
 
-  constructor() {
-    const appender =
-      process.env.NODE_ENV === 'development'
-        ? { type: 'console' }
-        : {
-            type: 'dateFile',
-            filename: 'logs/output.log',
-            compress: true,
-          }
+  private readonly log4jsDevConfig: log4js.Configuration = {
+    appenders: {
+      default: { type: 'console' },
+    },
+    categories: {
+      default: { appenders: ['default'], level: 'all' },
+    },
+  }
 
-    log4js.configure({
-      appenders: {
-        app: appender,
+  private readonly log4jsProdConfig: log4js.Configuration = {
+    appenders: {
+      default: { type: 'console' },
+      debug: {
+        type: 'dateFile',
+        filename: 'logs/debug.log',
+        numBackups: 30,
       },
-      categories: {
-        default: { appenders: ['app'], level: 'all' },
+      error: {
+        type: 'dateFile',
+        filename: 'logs/error.log',
+        numBackups: 30,
       },
-    })
+      debugFilter: {
+        type: 'logLevelFilter',
+        appender: 'debug',
+        level: 'debug',
+      },
+      errorFilter: {
+        type: 'logLevelFilter',
+        appender: 'error',
+        level: 'error',
+      },
+    },
+    categories: {
+      default: {
+        appenders: ['default', 'debugFilter', 'errorFilter'],
+        level: 'all',
+      },
+    },
+  }
+
+  constructor() {
+    log4js.configure(
+      process.env.NODE_ENV === 'development'
+        ? this.log4jsDevConfig
+        : this.log4jsProdConfig,
+    )
   }
 
   private get logger() {
