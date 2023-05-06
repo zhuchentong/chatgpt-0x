@@ -1,9 +1,8 @@
-import type { ChatMessage } from 'chatgpt'
 import { useRequest } from 'virtual:request'
 import { RequestGenerateType } from '@gopowerteam/request'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { nanoid } from 'nanoid'
-import type { AssistantChatRecord, Chat } from '@/interfaces'
+import type { AssistantChatRecord, Chat, ChatMessage } from '@/interfaces'
 import { useStore } from '@/store'
 import { ChatRole } from '@/config/enum.config'
 

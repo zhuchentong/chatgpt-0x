@@ -13,3 +13,4 @@ export const CACHE_QRCODE_LOGIN = 'QRCODE_LOGIN'
 export const CACHE_MAIL_CODE = `MAIL_CODE`
 export const CACHE_USER = 'USER'
 export const CACHE_ADMIN = 'ADMIN'
+export const CACHE_MESSAGE = 'MESSAGE'

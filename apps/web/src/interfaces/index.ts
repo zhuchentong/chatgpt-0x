@@ -28,3 +28,29 @@ export interface Chat {
   records: (AssistantChatRecord | UserChatRecord)[]
   deleted?: boolean
 }
+
+export interface ChatMessage {
+  id: string
+  text: string
+  role: 'user' | 'assistant' | 'system'
+  name?: string
+  delta?: string
+  detail?: {
+    id: string
+    object: 'chat.completion.chunk'
+    created: number
+    model: string
+    choices: [
+      {
+        delta: {
+          role: 'user' | 'assistant' | 'system'
+          content?: string
+        }
+        index: number
+        finish_reason: string | null
+      },
+    ]
+  }
+  parentMessageId?: string
+  conversationId?: string
+}
