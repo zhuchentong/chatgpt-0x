@@ -38,7 +38,10 @@
           <div class="actions space-x-2">
             <Transition>
               <n-button
-                v-if="store.chat.currentChat.inputing"
+                v-if="
+                  store.chat.currentChat.inputing ||
+                  store.chat.currentChat.waiting
+                "
                 class="stop-btn"
                 :focusable="false"
                 size="tiny"

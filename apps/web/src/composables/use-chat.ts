@@ -75,11 +75,33 @@ function sendChatMessage(message: string) {
     },
   )
 
-  const closeEvent = () => {
-    event.close()
+  const closeChat = () => {
+    if (!chat.eventSource) {
+      return
+    }
+
+    const [lastRecord] = chat.records.slice(-1)
+
+    if (
+      !chat.waiting &&
+      chat.inputing &&
+      lastRecord.role === ChatRole.Assistant
+    ) {
+      chat.records.splice(-1, 1)
+    }
+
     chat.inputing = false
     chat.waiting = false
     delete chat.eventSource
+    event.close()
+  }
+
+  const closeEvent = () => {
+    chat.inputing = false
+    chat.waiting = false
+    delete chat.eventSource
+
+    event.close()
   }
 
   try {
@@ -116,7 +138,7 @@ function sendChatMessage(message: string) {
   event.addEventListener('error', () => closeEvent())
 
   chat.eventSource = {
-    close: closeEvent,
+    close: closeChat,
   }
 }
 
