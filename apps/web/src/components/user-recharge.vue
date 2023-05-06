@@ -1,8 +1,13 @@
 <template>
   <div class="user-recharge-container">
-    <n-card title="用户充值">
+    <n-card
+      closable
+      :on-close="() => $emit('close')"
+      title="用户充值">
       <template #header-extra>
-        <div class="flex w-full space-x-5 items-center">
+        <div
+          v-if="store.app.desktop"
+          class="flex w-full space-x-5 items-center mr-5">
           <div class="flex flex-auto text-center space-x-2 items-center">
             <icon-park-outline:dashboard></icon-park-outline:dashboard>
             <span>剩余次数:</span>
@@ -15,6 +20,20 @@
           </div>
         </div>
       </template>
+      <div
+        v-if="store.app.mobile"
+        class="flex w-full space-x-5 items-center justify-around mb-5">
+        <div class="flex text-center space-x-2 items-center">
+          <icon-park-outline:dashboard></icon-park-outline:dashboard>
+          <span>剩余次数:</span>
+          <span>{{ balance.count }}</span>
+        </div>
+        <div class="text-center space-x-2 flex items-center">
+          <icon-park-outline:calendar></icon-park-outline:calendar>
+          <span>剩余天数:</span>
+          <span>{{ balance.time }}</span>
+        </div>
+      </div>
       <div class="active-code-container">
         <n-form
           ref="form"
@@ -122,7 +141,10 @@ import { OrderState, ProductType } from '@/config/enum.config'
 import type { Product } from '@/http/models/Product'
 import type { SubmitOrderResponse } from '@/http/models/SubmitOrderResponse'
 
+defineEmits(['close'])
+
 dayjs.extend(minMax)
+
 const store = useStore()
 const form = $(templateRef<FormInst>('form'))
 const width = computed(() => (store.app.desktop ? '50%' : '90%'))

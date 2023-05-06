@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { QueryInputParam } from 'src/common/typeorm/interfaces'
 import { Invite } from 'src/entities/invite.entity'
+import { User } from 'src/entities/user.entity'
 import { Repository } from 'typeorm'
 
 @Injectable()
@@ -21,9 +21,22 @@ export class InviteService {
     return this.inviteRepository.save(product)
   }
 
-  findAll({ buildWhereParams }: QueryInputParam<Invite>) {
+  /**
+   * 获取当前用户的邀请记录
+   * @param user
+   * @returns
+   */
+  getAll(user: User) {
     return this.inviteRepository.find({
-      where: buildWhereParams(),
+      where: {
+        inviter: {
+          id: user.id,
+        },
+      },
+      relations: {
+        inviterReward: true,
+        invitee: true,
+      },
       order: {
         createdAt: 'DESC',
       },

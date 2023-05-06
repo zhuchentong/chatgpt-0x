@@ -3,6 +3,7 @@ import { ActiveCodeService } from '~/http/services/ActiveCodeService'
 import { AppService } from '~/http/services/AppService'
 import { AssistantService } from '~/http/services/AssistantService'
 import { BalanceService } from '~/http/services/BalanceService'
+import { InviteService } from '~/http/services/InviteService'
 import { OpenaiService } from '~/http/services/OpenaiService'
 import { OrderService } from '~/http/services/OrderService'
 import { ProductService } from '~/http/services/ProductService'
@@ -14,6 +15,7 @@ const serviceMap = {
   AppService,
   AssistantService,
   BalanceService,
+  InviteService,
   OpenaiService,
   OrderService,
   ProductService,

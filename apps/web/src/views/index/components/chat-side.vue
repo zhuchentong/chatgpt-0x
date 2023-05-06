@@ -65,7 +65,7 @@
       <NButton
         block
         :focusable="false"
-        @click="onInvite">
+        @click="() => (showUserInvite = true)">
         <template #icon>
           <icon-park-outline:share-two></icon-park-outline:share-two>
         </template>
@@ -107,6 +107,9 @@
   <n-modal v-model:show="showUserRecharge">
     <UserRecharge @close="() => (showUserRecharge = false)"></UserRecharge>
   </n-modal>
+  <n-modal v-model:show="showUserInvite">
+    <UserInvite @close="() => (showUserInvite = false)"></UserInvite>
+  </n-modal>
 </template>
 
 <style lang="less" scoped>
@@ -136,31 +139,19 @@
 </style>
 
 <script setup lang="ts">
-import { useMessage } from 'naive-ui'
 import { useStore } from '@/store'
 import SystemSetting from '@/components/system-setting.vue'
 import UserRecharge from '@/components/user-recharge.vue'
+import UserInvite from '@/components/user-invite.vue'
 import ContactImage from '@/assets/image/contact.jpg'
 
 const store = useStore()
 const showSystemSetting = ref(false)
 const showUserRecharge = ref(false)
+const showUserInvite = ref(false)
 const colorMode = useColorMode()
-
-const message = useMessage()
-const clipboard = useClipboard({ legacy: true })
 
 function onChangeAssistant(id: string) {
   store.chat.changeAssistant(id)
-}
-
-function onInvite() {
-  if (clipboard.isSupported) {
-    clipboard
-      .copy(`${location.origin}?inviter=${store.user.current?.id}`)
-      .then(() => {
-        message.success('邀请链接已复制到粘贴板,邀请好友注册有奖励哦~')
-      })
-  }
 }
 </script>
