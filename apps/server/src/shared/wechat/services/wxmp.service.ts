@@ -1,15 +1,11 @@
 import { HttpService } from '@nestjs/axios'
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { lastValueFrom } from 'rxjs'
-import { Logger } from 'src/core/logger/services/logger.service'
 import { AccessTokenApi } from 'tnwx'
 
 @Injectable()
 export class WXMPService {
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly logger: Logger,
-  ) {}
+  constructor(private readonly httpService: HttpService) {}
 
   async getQRCode({
     action = 'QR_STR_SCENE',
@@ -42,13 +38,11 @@ export class WXMPService {
         }),
       )
 
-      this.logger.info(JSON.stringify(data))
-
       return `https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=${encodeURIComponent(
         data.ticket,
       )}`
     } catch (ex) {
-      this.logger.error(ex)
+      Logger.error(ex)
     }
   }
 }

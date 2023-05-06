@@ -1,4 +1,4 @@
-import { RequestMethod, ValidationPipe } from '@nestjs/common'
+import { Logger, RequestMethod, ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { HttpAdapterHost, NestFactory } from '@nestjs/core'
 import {
@@ -14,7 +14,7 @@ import { WechatModule } from './shared/wechat/wechat.module'
 import { RequestContextMiddleware } from './middlewaves/request-context.middlewave'
 import { ExceptionsFilter } from './filters/exceptions.filter'
 import { OpenAIModule } from './shared/openai/openai.module'
-// import { Logger } from './core/logger/services/logger.service'
+import { LoggerService } from './core/logger/services/logger.service'
 /**
  * 配置Swagger
  * @param app
@@ -125,11 +125,11 @@ async function bootstrap() {
     {
       cors: true,
       rawBody: true,
-      // bufferLogs: true,
+      bufferLogs: true,
     },
   )
 
-  // app.useLogger(new Logger())
+  app.useLogger(app.get(LoggerService))
   app.useBodyParser('text/xml')
 
   // 安装全局前缀
@@ -172,7 +172,7 @@ async function launch(app: NestFastifyApplication) {
   const port = await config.get('app.port')
 
   await app.listen(port, '0.0.0.0').then(() => {
-    console.log(`launch at ${port}`)
+    Logger.log(`launch at ${port}`)
   })
 }
 

@@ -1,5 +1,5 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import {
   BalanceOrigin,
@@ -18,8 +18,7 @@ import { buildPaginator } from 'src/common/typeorm/query/paginator'
 import { User } from 'src/entities/user.entity'
 import { Order } from 'src/entities/order.entity'
 import { OrderMode } from 'src/config/enum.config'
-import { Cron, CronExpression } from '@nestjs/schedule'
-import { Logger } from 'src/core/logger/services/logger.service'
+import { Cron } from '@nestjs/schedule'
 
 @Injectable()
 export class BalanceService {
@@ -28,7 +27,6 @@ export class BalanceService {
     private readonly balanceRepository: Repository<Balance>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
-    private readonly logger: Logger,
   ) {}
 
   async findAll({ buildWhereQuery, page, order }: QueryInputParam<User>) {
@@ -109,7 +107,7 @@ export class BalanceService {
 
       return this.balanceRepository.save(balance)
     } catch (ex) {
-      this.logger.error(ex)
+      Logger.error(ex)
     }
   }
 
@@ -240,7 +238,7 @@ export class BalanceService {
     timeZone: 'Asia/Shanghai',
   })
   async updateCycleBalance() {
-    this.logger.info('开始重置余额:', dayjs().format('YYYY-MM-DD HH:mm:ss'))
+    Logger.debug('开始重置余额:', dayjs().format('YYYY-MM-DD HH:mm:ss'))
 
     const balances = await this.balanceRepository.find({
       where: {
@@ -258,7 +256,7 @@ export class BalanceService {
         cycleType: balance.cycleType,
       })
 
-      this.logger.debug('开始重置余额', balance)
+      Logger.debug('开始重置余额', balance)
 
       balance.currentCount = balance.startCount
       // 重置下一个周期

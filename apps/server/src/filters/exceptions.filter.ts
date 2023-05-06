@@ -4,6 +4,7 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common'
 import { HttpAdapterHost } from '@nestjs/core'
 
@@ -17,6 +18,9 @@ export class ExceptionsFilter implements ExceptionFilter {
     const { httpAdapter } = this.httpAdapterHost
 
     const ctx = host.switchToHttp()
+
+    // 输出日志
+    Logger.error(exception)
 
     const getHttpStatus = () => {
       if (exception instanceof HttpException) {

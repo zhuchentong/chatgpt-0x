@@ -1,10 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import * as qiniu from 'qiniu'
 import { TokenService } from './token.service'
 import { nanoid } from 'nanoid'
 import { RequestContext } from 'src/middlewaves/request-context.middlewave'
-import { Logger } from 'src/core/logger/services/logger.service'
 
 @Injectable()
 export class FileService {
@@ -12,7 +11,6 @@ export class FileService {
     private readonly config: ConfigService,
     private readonly tokenService: TokenService,
     private readonly requestContext: RequestContext,
-    private logger: Logger,
   ) {}
 
   /**
@@ -74,12 +72,12 @@ export class FileService {
     const [mainFile] = await this.listFile(mainBucket, key)
 
     if (!tempFile) {
-      this.logger.warn(`无法找到素材(${key})`)
+      Logger.warn(`无法找到素材(${key})`)
       return
     }
 
     if (mainFile) {
-      this.logger.warn(`素材(${key})已存在`)
+      Logger.warn(`素材(${key})已存在`)
       return
     }
 

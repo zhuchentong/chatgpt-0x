@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Logger,
+  Post,
+  Query,
+} from '@nestjs/common'
 import {
   ApiTags,
   ApiSecurity,
@@ -11,7 +19,6 @@ import { Order } from 'src/entities/order.entity'
 import { FindOrderInput } from '../dtos/order.dto'
 import { Public } from 'src/decorators/public.decorator'
 import { WXPayService } from 'src/shared/wechat/services/wxpay.service'
-import { Logger } from 'src/core/logger/services/logger.service'
 
 @Controller('order')
 @ApiTags('order')
@@ -20,7 +27,6 @@ export class OrderController {
   constructor(
     private readonly orderService: OrderService,
     private readonly wxpayService: WXPayService,
-    private readonly logger: Logger,
   ) {}
 
   @Get()
@@ -46,7 +52,7 @@ export class OrderController {
       })
 
       // 保存日志
-      this.logger.debug(response)
+      Logger.debug(response)
 
       const { out_trade_no, trade_state, amount, transaction_id } = response
 

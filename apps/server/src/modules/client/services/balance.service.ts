@@ -1,4 +1,4 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common'
+import { Inject, Injectable, Logger, forwardRef } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { BalanceOrigin, ProductType } from 'src/config/enum.config'
 import { ActiveCode } from 'src/entities/active-code.entity'
@@ -11,12 +11,13 @@ import { Cache } from 'cache-manager'
 import { plainToInstance } from 'class-transformer'
 import { CACHE_BALANCE } from 'src/config/constants'
 import { ConfigService } from '@nestjs/config'
-import { Logger } from 'src/core/logger/services/logger.service'
 import { UserService } from './user.service'
 import { InviteService } from './invite.service'
 
 @Injectable()
 export class BalanceService {
+
+
   constructor(
     @InjectRepository(Balance)
     private balanceRepository: Repository<Balance>,
@@ -26,7 +27,6 @@ export class BalanceService {
     private readonly userService: UserService,
     private readonly inviteService: InviteService,
     private readonly config: ConfigService,
-    private readonly logger: Logger,
   ) {}
 
   /**
@@ -95,7 +95,7 @@ export class BalanceService {
     const { type, value } = this.config.get('setting.balance.events.register')
 
     if (!type || !value) {
-      this.logger.warn('注册奖励未配置')
+      Logger.warn('注册奖励未配置')
       return
     }
 
@@ -122,12 +122,12 @@ export class BalanceService {
     const inviter = await this.userService.findOne(inviterId)
 
     if (!inviter) {
-      this.logger.warn('邀请人不存在')
+      Logger.warn('邀请人不存在')
       return
     }
 
     if (!inviterReward || !inviteeReward) {
-      this.logger.warn('邀请奖励未配置')
+      Logger.warn('邀请奖励未配置')
       return
     }
 

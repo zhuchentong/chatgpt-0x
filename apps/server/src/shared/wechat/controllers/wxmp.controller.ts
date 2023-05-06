@@ -4,6 +4,7 @@ import {
   Header,
   HttpCode,
   Inject,
+  Logger,
   Post,
   Query,
   RawBodyRequest,
@@ -21,7 +22,6 @@ import { SnsAccessTokenApi, WeChat } from '@tnwx/wxmp'
 import { ApiConfigKit, ScopeEnum } from 'tnwx'
 import { FastifyRequest } from 'fastify'
 import { WXMPMessageService } from '../services/wxmp-message.service'
-import { Logger } from 'src/core/logger/services/logger.service'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
 
@@ -31,7 +31,6 @@ import { Cache } from 'cache-manager'
 export class WXMPController {
   constructor(
     private readonly wxmpMessageService: WXMPMessageService,
-    private readonly logger: Logger,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
@@ -73,7 +72,7 @@ export class WXMPController {
         nonce,
       )
     } catch (ex) {
-      this.logger.error(ex)
+      Logger.error(ex)
       return 'success'
     }
   }

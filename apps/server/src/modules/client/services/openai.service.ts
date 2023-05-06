@@ -1,7 +1,6 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 // import { ChatGPTAPI, SendMessageOptions } from 'chatgpt'
-import { Logger } from 'src/core/logger/services/logger.service'
 import { KeyService } from 'src/shared/openai/services/key.service'
 
 export const importDynamic = new Function(
@@ -13,10 +12,7 @@ export const importDynamic = new Function(
 export class OpenAIService {
   chatgptAPI: any
 
-  constructor(
-    private readonly config: ConfigService,
-    private readonly logger: Logger,
-  ) {}
+  constructor(private readonly config: ConfigService) {}
 
   async onModuleInit() {
     await this.initGPT()
@@ -36,7 +32,7 @@ export class OpenAIService {
         apiBaseUrl: apiurl,
       })
     } catch (e) {
-      this.logger.error(e)
+      Logger.error(e)
     }
   }
 
@@ -58,7 +54,7 @@ export class OpenAIService {
   ) {
     if (key) {
       this.chatgptAPI._apiKey = key
-      this.logger.info(`use key: ${key}`)
+      Logger.debug(`use key: ${key}`)
     }
 
     return this.chatgptAPI.sendMessage(message, options)

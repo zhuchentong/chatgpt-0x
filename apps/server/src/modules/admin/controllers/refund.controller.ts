@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Logger,
+  Post,
+  Query,
+} from '@nestjs/common'
 import {
   ApiExcludeEndpoint,
   ApiOkResponse,
@@ -14,7 +22,6 @@ import { RefundService } from '../services/refund.service'
 import { WXPayService } from 'src/shared/wechat/services/wxpay.service'
 import { Public } from 'src/decorators/public.decorator'
 import { nanoid } from 'nanoid'
-import { Logger } from 'src/core/logger/services/logger.service'
 import { toPageResponse } from 'src/common/typeorm/responses/page.response'
 import { Refund } from 'src/entities/refund.entity'
 import { FindRefundInput } from '../dtos/refund.dto'
@@ -27,7 +34,6 @@ export class RefundController {
     private readonly wxpayService: WXPayService,
     private readonly orderService: OrderService,
     private readonly refundService: RefundService,
-    private readonly logger: Logger,
   ) {}
 
   @Get()
@@ -74,8 +80,6 @@ export class RefundController {
   @Post('wxpay-notify')
   @ApiExcludeEndpoint()
   async onWXPayRefundNotify(@Body() { resource }: any) {
-    console.log(resource)
-
     if (!resource) {
       return
     }
@@ -88,7 +92,7 @@ export class RefundController {
       })
 
       // 打印日志
-      this.logger.debug(response)
+      Logger.debug(response)
 
       const { out_refund_no, out_trade_no, refund_status, success_time } =
         response

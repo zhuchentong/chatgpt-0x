@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios'
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { lastValueFrom, zip } from 'rxjs'
@@ -12,7 +12,6 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import type { Cache } from 'cache-manager'
 import { CACHE_OPENAI_KEYS } from 'src/config/constants'
-import { Logger } from 'src/core/logger/services/logger.service'
 
 @Injectable()
 export class KeyService {
@@ -25,7 +24,6 @@ export class KeyService {
     private openAIKeyRepository: Repository<OpenAIKey>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
-    private readonly logger: Logger,
   ) {}
 
   async create(key: string) {
@@ -175,7 +173,7 @@ export class KeyService {
           openAIKey.usage = usage
           openAIKey.limit = limitUsd
         } catch (ex) {
-          this.logger.error(
+          Logger.error(
             '同步余额失败:',
             openAIKey.key,
             ex.response?.data?.error,

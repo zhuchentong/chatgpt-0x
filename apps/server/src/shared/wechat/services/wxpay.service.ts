@@ -1,5 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
-import { Logger } from 'src/core/logger/services/logger.service'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 import { RequestContext } from 'src/middlewaves/request-context.middlewave'
 import WxPay from 'wechatpay-node-v3'
 import { WECHAT_PAY_MANAGER } from 'nest-wechatpay-node-v3'
@@ -7,10 +6,9 @@ import { ToastException } from 'src/exceptions/toast.exception'
 
 @Injectable()
 export class WXPayService {
-  constructor(
-    private readonly logger: Logger,
-    @Inject(WECHAT_PAY_MANAGER) private wxpay: WxPay,
-  ) {}
+
+
+  constructor(@Inject(WECHAT_PAY_MANAGER) private wxpay: WxPay) {}
 
   submitRefund({
     orderNumber,
@@ -41,7 +39,7 @@ export class WXPayService {
       })
       .then((response) => {
         // 输出日志
-        this.logger.debug(response)
+        Logger.debug(response)
 
         if (response.status >= 400 && response.status <= 500) {
           throw new ToastException(response.message)
@@ -77,7 +75,7 @@ export class WXPayService {
       })
       .then((response) => {
         if (response.status !== 200) {
-          this.logger.error(response)
+          Logger.error(response)
           throw new Error('支付失败')
         }
 

@@ -1,4 +1,4 @@
-import { Controller, Query, Sse } from '@nestjs/common'
+import { Controller, Logger, Query, Sse } from '@nestjs/common'
 import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger'
 import { OpenAIService } from '../services/openai.service'
 import { Observable, Subscriber, from } from 'rxjs'
@@ -8,7 +8,6 @@ import { RequestUser } from 'src/decorators/request-user.decorator'
 import { User } from 'src/entities/user.entity'
 import { KeyService } from 'src/shared/openai/services/key.service'
 import { OpenAIKeyState } from 'src/config/enum.config'
-import { Logger } from 'src/core/logger/services/logger.service'
 
 @Controller('openai')
 @ApiTags('openai')
@@ -18,7 +17,6 @@ export class OpenaiController {
     private readonly openai: OpenAIService,
     private readonly balanceService: BalanceService,
     private readonly keyService: KeyService,
-    private readonly logger: Logger,
   ) {}
 
   /**
@@ -64,7 +62,7 @@ export class OpenaiController {
     const balance = await this.balanceService.getUserBalance(user.id)
 
     // 输入余额日志
-    this.logger.debug(balance)
+    Logger.debug(balance)
 
     if (!balance) {
       return from([
@@ -91,7 +89,7 @@ export class OpenaiController {
           return
         }
 
-        this.logger.error('消息发送错误:', ex)
+        Logger.error('消息发送错误:', ex)
 
         // 设置key为无效
         if (ex?.statusCode !== 429) {
