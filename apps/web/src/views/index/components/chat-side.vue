@@ -56,7 +56,7 @@
       <NButton
         block
         :focusable="false"
-        @click="() => (showUserRecharge = true)">
+        @click="() => (showUserPayment = true)">
         <template #icon>
           <icon-park-outline:finance></icon-park-outline:finance>
         </template>
@@ -104,8 +104,8 @@
       <SystemSetting></SystemSetting>
     </n-drawer-content>
   </n-drawer>
-  <n-modal v-model:show="showUserRecharge">
-    <UserRecharge @close="() => (showUserRecharge = false)"></UserRecharge>
+  <n-modal v-model:show="showUserPayment">
+    <UserPayment @close="() => (showUserPayment = false)"></UserPayment>
   </n-modal>
   <n-modal v-model:show="showUserInvite">
     <UserInvite @close="() => (showUserInvite = false)"></UserInvite>
@@ -141,13 +141,13 @@
 <script setup lang="ts">
 import { useStore } from '@/store'
 import SystemSetting from '@/components/system-setting.vue'
-import UserRecharge from '@/components/user-recharge.vue'
+import UserPayment from '@/components/user-payment.vue'
 import UserInvite from '@/components/user-invite.vue'
 import ContactImage from '@/assets/image/contact.jpg'
 
 const store = useStore()
 const showSystemSetting = ref(false)
-const showUserRecharge = ref(false)
+const showUserPayment = ref(false)
 const showUserInvite = ref(false)
 const colorMode = useColorMode()
 

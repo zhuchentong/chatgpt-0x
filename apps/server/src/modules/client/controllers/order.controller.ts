@@ -9,6 +9,7 @@ import { WXPayService } from 'src/shared/wechat/services/wxpay.service'
 import {
   QueryPaymentStateResponse,
   SubmitOrderResponse,
+  SubmitWechatOrderResponse,
 } from '../responses/order.response'
 import { QueryPaymentStateInput, SubmitOrderInput } from '../dtos/order.dto'
 import { OrderService } from '../services/order.service'
@@ -64,6 +65,35 @@ export class OrderController {
       qrcode: data,
       amount: product.price,
     }
+  }
+
+  @Post('submit-wechat-order')
+  @ApiOperation({ operationId: 'submitWechatOrder' })
+  @ApiOkResponse({ type: SubmitWechatOrderResponse })
+  async submitWechatOrder(
+    @RequestUser() user: User,
+    @Body() { productId }: SubmitOrderInput,
+  ): Promise<SubmitWechatOrderResponse> {
+    const product = await this.productService.findOne(productId)
+
+    if (!product) {
+      throw new ToastException('产品不可购买')
+    }
+
+    const order = await this.orderService.createOrder(product, user)
+
+    const response = await this.wxpayService.submitJSAPIOrder({
+      orderNumber: order.id,
+      amount: product.price,
+      description: product.name,
+      openid: user.openid,
+    })
+
+    if (!response) {
+      throw new ToastException('创建订单失败失败')
+    }
+
+    return response
   }
 
   @Get('query-payment-state/:orderId')

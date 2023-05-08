@@ -3,11 +3,10 @@ import { RequestContext } from 'src/middlewaves/request-context.middlewave'
 import WxPay from 'wechatpay-node-v3'
 import { WECHAT_PAY_MANAGER } from 'nest-wechatpay-node-v3'
 import { ToastException } from 'src/exceptions/toast.exception'
+import { PayJSAPIResponse } from '../responses/wxpay.response'
 
 @Injectable()
 export class WXPayService {
-
-
   constructor(@Inject(WECHAT_PAY_MANAGER) private wxpay: WxPay) {}
 
   submitRefund({
@@ -80,6 +79,46 @@ export class WXPayService {
         }
 
         return response.code_url
+      })
+  }
+
+  /**
+   * 提交支付订单
+   */
+  submitJSAPIOrder({
+    orderNumber,
+    description,
+    amount,
+    openid,
+  }: {
+    orderNumber: string
+    description: string
+    amount: number
+    openid: string
+  }): Promise<PayJSAPIResponse> {
+    const host = RequestContext.currentContext.host
+
+    return this.wxpay
+      .transactions_jsapi({
+        description,
+        out_trade_no: orderNumber,
+        notify_url: `https://${host}/api/admin/order/wxpay-notify`,
+        amount: {
+          total: amount,
+          currency: 'CNY',
+        },
+        payer: {
+          openid,
+        },
+      })
+      .then((response) => {
+        Logger.error(response, 33)
+        if (response.status !== 200) {
+          Logger.error(response)
+          throw new Error('支付失败')
+        }
+
+        return response as PayJSAPIResponse
       })
   }
 

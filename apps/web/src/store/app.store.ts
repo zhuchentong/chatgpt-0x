@@ -30,6 +30,11 @@ const initialState: State = {
 export const useAppStore = defineStore('app', {
   state: () => initialState,
 
+  getters: {
+    isWechat: () => {
+      return /MicroMessenger/i.test(window.navigator.userAgent)
+    },
+  },
   actions: {
     /**
      * 更新系统状态

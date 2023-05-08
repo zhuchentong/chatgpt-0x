@@ -1,5 +1,5 @@
 <template>
-  <div class="user-recharge-container">
+  <div class="user-payment-container">
     <n-card
       closable
       :on-close="() => $emit('close')"
@@ -118,7 +118,7 @@
 </template>
 
 <style lang="less">
-.user-recharge-container {
+.user-payment-container {
   width: v-bind(width);
 }
 
@@ -140,6 +140,7 @@ import { useStore } from '@/store'
 import { OrderState, ProductType } from '@/config/enum.config'
 import type { Product } from '@/http/models/Product'
 import type { SubmitOrderResponse } from '@/http/models/SubmitOrderResponse'
+import { WechatService } from '@/shared/utils/wechat.service'
 
 defineEmits(['close'])
 
@@ -233,11 +234,25 @@ function getProducts() {
 }
 
 function onSubmitOrder(productId: string) {
-  orderService.submitOrder({ productId }).then((data) => {
-    order = data
-    showPayment = true
-    startQueryPayment()
-  })
+  if (store.app.isWechat) {
+    orderService.submitWechatOrder({ productId }).then((response) => {
+      const wechatService = new WechatService()
+      wechatService.chooseWXPay({
+        ...response,
+        timestamp: response.timeStamp,
+        success(_res) {
+          // console.log(res)
+          getUserBalance()
+        },
+      })
+    })
+  } else {
+    orderService.submitOrder({ productId }).then((data) => {
+      order = data
+      showPayment = true
+      startQueryPayment()
+    })
+  }
 }
 
 function requestPaymentState() {

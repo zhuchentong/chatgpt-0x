@@ -2,7 +2,17 @@ import { useRequest } from 'virtual:request'
 
 declare const wx: any
 
+interface WxPayConfig {
+  timestamp: number // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+  nonceStr: string // 支付签名随机串，不长于 32 位
+  package: string // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+  signType: string // 微信支付V3的传入RSA,微信支付V2的传入格式与V2统一下单的签名格式保持一致
+  paySign: string // 支付签名
+  success: (res: any) => void
+}
+
 const wechatApiList = [
+  'chooseWXPay',
   'chooseImage',
   'uploadImage',
   'updateAppMessageShareData',
@@ -130,5 +140,9 @@ export class WechatService {
 
   public uploadImage(config: uploadType) {
     return this.invoke('uploadImage', config)
+  }
+
+  public chooseWXPay(config: WxPayConfig) {
+    return this.invoke('chooseWXPay', config)
   }
 }

@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type { SubmitOrderInput } from '../models/SubmitOrderInput';
 import type { SubmitOrderResponse } from '../models/SubmitOrderResponse';
+import type { SubmitWechatOrderResponse } from '../models/SubmitWechatOrderResponse';
 import type { QueryPaymentStateResponse } from '../models/QueryPaymentStateResponse';
 import { RequestService, RequestGenerateType, type RequestSendOptions, type RequestPlugin, type RequestGenerateOptions } from '@gopowerteam/request';
 export class OrderService {
@@ -52,6 +53,37 @@ export class OrderService {
     const requestSendOptions = {
       service: this.service,
       path: '/api/client/order/submit-order',
+      method: 'post',
+      paramsBody: requestBody,
+    }
+  
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions
+    )
+  
+  
+  }
+  
+  public submitWechatOrder(
+    requestBody: SubmitOrderInput,
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
+  ): string
+  public submitWechatOrder(
+    requestBody: SubmitOrderInput,
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<SubmitWechatOrderResponse>
+  public submitWechatOrder(
+    requestBody: SubmitOrderInput,
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<SubmitWechatOrderResponse> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/client/order/submit-wechat-order',
       method: 'post',
       paramsBody: requestBody,
     }
