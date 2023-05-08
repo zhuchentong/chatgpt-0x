@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { JSSignatureResponse } from '../models/JSSignatureResponse';
 import { RequestService, RequestGenerateType, type RequestSendOptions, type RequestPlugin, type RequestGenerateOptions } from '@gopowerteam/request';
 export class WechatService {
   // 请求实例
@@ -120,6 +121,37 @@ export class WechatService {
   
   }
   
+  public getJSSignature(
+    requestQuery: RequestQueryParams.GetJSSignature,
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
+  ): string
+  public getJSSignature(
+    requestQuery: RequestQueryParams.GetJSSignature,
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<JSSignatureResponse>
+  public getJSSignature(
+    requestQuery: RequestQueryParams.GetJSSignature,
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<JSSignatureResponse> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/wechat/js-sdk-signature',
+      method: 'get',
+      paramsQuery: requestQuery,
+    }
+  
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions
+    )
+  
+  
+  }
+  
 }
 
 
@@ -136,5 +168,8 @@ namespace RequestQueryParams {
     nonce: string;
     openid: string;
     appId: string;
+  }
+  export type GetJSSignature = {
+    url: string;
   }
 }

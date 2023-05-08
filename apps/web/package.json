@@ -26,8 +26,6 @@
   },
   "dependencies": {
     "@gopowerteam/request": "0.1.16",
-    "@gopowerteam/vue-dynamic-table": "~0.0.34",
-    "@gopowerteam/vue-modal": "0.1.12",
     "@traptitech/markdown-it-katex": "^3.6.0",
     "@vue/runtime-core": "3.2.47",
     "dayjs": "^1.11.7",

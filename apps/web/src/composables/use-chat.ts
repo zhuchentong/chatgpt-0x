@@ -54,9 +54,13 @@ function sendChatMessage(message: string) {
   let lastMessage = null
   // 开启上下文
   if (store.chat.keepContext) {
-    lastMessage = chat.records.findLast(
+    const messages = chat.records.filter(
       (record) => record.role === ChatRole.Assistant && !record.deleted,
-    ) as AssistantChatRecord
+    ) as AssistantChatRecord[]
+
+    if (messages.length) {
+      lastMessage = messages[messages.length - 1]
+    }
   }
 
   const event = new EventSourcePolyfill(

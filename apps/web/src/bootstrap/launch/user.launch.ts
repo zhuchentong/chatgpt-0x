@@ -5,6 +5,26 @@ import { useStore } from '@/store'
 import { HeaderService } from '@/http/extends/header.service'
 import { useChat } from '@/composables/use-chat'
 import { ChatRole } from '@/config/enum.config'
+import { WechatService } from '@/shared/utils/wechat.service'
+
+function updateWechatShareData() {
+  const isWechat = /MicroMessenger/i.test(window.navigator.userAgent)
+
+  if (!isWechat) {
+    return
+  }
+
+  const store = useStore()
+
+  const wechatService = new WechatService()
+
+  wechatService.updateAppMessageShareData({
+    title: '奥创·20X Robot', // 分享标题
+    desc: '奥创·20X 你的智能助理', // 分享描述
+    link: `${location.origin}?inviter=${store.user.current?.id}`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+    imgUrl: 'https://ai.1zhizu.com/logo-light.png', // 分享图标
+  })
+}
 
 function resetChatState() {
   const store = useStore()
@@ -128,14 +148,15 @@ export default function userLaunch(router: Router) {
       return next()
     }
 
-    // 未登录用户处理
-    if (!store.user.current) {
-      // 更新用户Token
-      await updateCurrentToken()
-
-      // 更新用户信息
-      await updateCurrentUser()
+    // 已登录用户处理
+    if (store.user.current) {
+      next()
     }
+
+    // 更新用户Token
+    await updateCurrentToken()
+    // 更新用户信息
+    await updateCurrentUser()
 
     // 未登录用户进行登录
     if (!store.user.current) {
@@ -154,6 +175,8 @@ export default function userLaunch(router: Router) {
     if (store.app.careMode.enable) {
       await sendCareMessage()
     }
+
+    updateWechatShareData()
 
     next()
   })

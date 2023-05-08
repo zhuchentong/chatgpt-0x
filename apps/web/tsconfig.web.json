@@ -19,7 +19,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
-    "lib": ["ESNext", "DOM"]
+    "lib": ["ESNext", "DOM", "ESNext.Array"]
   },
   "vueCompilerOptions": {
     "plugins": ["@volar/vue-language-plugin-pug"]

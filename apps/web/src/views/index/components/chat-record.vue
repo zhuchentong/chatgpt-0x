@@ -99,7 +99,7 @@
   }
 
   &.user {
-    justify-content: end;
+    justify-content: flex-end;
     .record-content {
       order: 1;
     }
@@ -259,11 +259,12 @@ function onRedo() {
   // eslint-disable-next-line vue/no-mutating-props
   props.record.deleted = true
 
-  const record = chat.records.findLast(
+  const records = chat.records.filter(
     (record) => record.deleted !== true && record.role === ChatRole.User,
   )
 
-  if (record) {
+  if (records.length) {
+    const record = records[records.length - 1]
     sendChatMessage(record.content)
   }
 }

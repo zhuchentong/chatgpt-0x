@@ -1,20 +1,17 @@
 <template>
-  <modal-provider>
-    <n-config-provider
-      :theme="themes[colorMode].theme"
-      :theme-overrides="themes[colorMode].overrides">
-      <n-dialog-provider>
-        <n-message-provider>
-          <RouterView />
-        </n-message-provider>
-      </n-dialog-provider>
-      <n-global-style />
-    </n-config-provider>
-  </modal-provider>
+  <n-config-provider
+    :theme="themes[colorMode].theme"
+    :theme-overrides="themes[colorMode].overrides">
+    <n-dialog-provider>
+      <n-message-provider>
+        <RouterView />
+      </n-message-provider>
+    </n-dialog-provider>
+    <n-global-style />
+  </n-config-provider>
 </template>
 
 <script setup lang="ts">
-import { ModalProvider } from '@gopowerteam/vue-modal'
 import { darkTheme, lightTheme } from 'naive-ui'
 import { type BasicColorSchema, useColorMode } from '@vueuse/core'
 import { appConfig } from './config/app.config'

@@ -16,8 +16,6 @@ import { InviteService } from './invite.service'
 
 @Injectable()
 export class BalanceService {
-
-
   constructor(
     @InjectRepository(Balance)
     private balanceRepository: Repository<Balance>,

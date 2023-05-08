@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common'
 import {
   ApiExcludeEndpoint,
+  ApiOkResponse,
   ApiOperation,
   ApiSecurity,
   ApiTags,
@@ -24,6 +25,8 @@ import { FastifyRequest } from 'fastify'
 import { WXMPMessageService } from '../services/wxmp-message.service'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
+import { nanoid } from 'nanoid'
+import { JSSignatureResponse } from '../responses/wxmp.response'
 
 @ApiTags('wechat')
 @Controller()
@@ -124,5 +127,32 @@ export class WXMPController {
     )
 
     return { url: `${referer.replace(/\/$/, '')}/login?openid=${openid}` }
+  }
+
+  @Public()
+  @Get('js-sdk-signature')
+  @ApiOperation({
+    operationId: 'getJSSignature',
+    description: '获取JSSDK签名',
+  })
+  @ApiOkResponse({
+    type: JSSignatureResponse,
+  })
+  async jssdk(@Query('url') url: string) {
+    const appId = ApiConfigKit.getApiConfig.getAppId
+    const timestamp = new Date().getTime() / 1000
+    const nonceStr = nanoid()
+    // 生成签名
+    const signature = await WeChat.jssdkSignature(
+      nonceStr,
+      timestamp.toString(),
+      url,
+    )
+    return {
+      appId: appId,
+      timestamp: timestamp,
+      nonceStr: nonceStr,
+      signature: signature,
+    }
   }
 }
