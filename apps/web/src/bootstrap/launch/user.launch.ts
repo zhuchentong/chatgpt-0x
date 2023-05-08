@@ -8,13 +8,11 @@ import { ChatRole } from '@/config/enum.config'
 import { WechatService } from '@/shared/utils/wechat.service'
 
 function updateWechatShareData() {
-  const isWechat = /MicroMessenger/i.test(window.navigator.userAgent)
+  const store = useStore()
 
-  if (!isWechat) {
+  if (!store.app.isWechat) {
     return
   }
-
-  const store = useStore()
 
   const wechatService = new WechatService()
 
@@ -22,7 +20,7 @@ function updateWechatShareData() {
     title: '奥创·20X Robot', // 分享标题
     desc: '奥创·20X 你的智能助理', // 分享描述
     link: `${location.origin}?inviter=${store.user.current?.id}`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-    imgUrl: 'https://ai.1zhizu.com/logo-light.png', // 分享图标
+    imgUrl: 'https://ai.1zhizu.com/share-icon.png', // 分享图标
   })
 }
 
