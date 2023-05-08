@@ -197,8 +197,16 @@ export class OpenAIService {
     )
 
     return new Promise((resolve, reject) => {
+      // TODO: 超时状态处理
+      // const timeout = setTimeout(() => {
+      //   reject()
+      // }, 1000 * 10)
       // 响应消息
       const onResponse = async (message: string) => {
+        // if (timeout && timeout.hasRef()) {
+        //   clearTimeout(timeout)
+        // }
+
         if (message === '[DONE]') {
           await this.cacheManager.set<Message>(
             `${CACHE_MESSAGE}:${responseMessage.id}`,
@@ -238,7 +246,7 @@ export class OpenAIService {
         // 消息发送失败
         reject(ex)
         // 记录异常
-        Logger.error(ex)
+        Logger.error(JSON.stringify(ex))
       })
     })
   }
