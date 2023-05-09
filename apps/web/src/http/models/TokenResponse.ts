@@ -10,7 +10,7 @@ export type TokenResponse = {
   /**
    * 刷新Token
    */
-  refresh_token: string;
+  refresh_token?: string;
   /**
    * 授权Token过期时间
    */

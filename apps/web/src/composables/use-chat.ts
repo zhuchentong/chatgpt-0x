@@ -65,7 +65,12 @@ function sendChatMessage(message: string) {
 
   const event = new EventSourcePolyfill(
     openAIService.message(
-      { message, parentMessageId: lastMessage?.id, prompt: assistant.prompt },
+      {
+        message,
+        parentMessageId: lastMessage?.id,
+        prompt: assistant.prompt,
+        drawable: chat.drawable,
+      },
       [],
       {
         type: RequestGenerateType.URL,

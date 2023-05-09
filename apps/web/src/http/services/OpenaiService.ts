@@ -82,5 +82,9 @@ namespace RequestQueryParams {
      * prompt
      */
     prompt?: string;
+    /**
+     * 绘图模式
+     */
+    drawable?: boolean;
   }
 }

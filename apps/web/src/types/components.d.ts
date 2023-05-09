@@ -27,6 +27,7 @@ declare module '@vue/runtime-core' {
     'IconParkOutline:moreOne': typeof import('~icons/icon-park-outline/more-one')['default']
     'IconParkOutline:pauseOne': typeof import('~icons/icon-park-outline/pause-one')['default']
     'IconParkOutline:peoples': typeof import('~icons/icon-park-outline/peoples')['default']
+    'IconParkOutline:picture': typeof import('~icons/icon-park-outline/picture')['default']
     'IconParkOutline:plus': typeof import('~icons/icon-park-outline/plus')['default']
     'IconParkOutline:redo': typeof import('~icons/icon-park-outline/redo')['default']
     'IconParkOutline:search': typeof import('~icons/icon-park-outline/search')['default']

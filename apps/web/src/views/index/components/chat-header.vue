@@ -56,7 +56,7 @@
               class="inline-block text-12px cursor-pointer"
               :class="{
                 'text-[#4b9e5f]': store.chat.keepContext,
-                'text-[#a8071a]': !store.chat.keepContext,
+                'text-[#aeaeae]': !store.chat.keepContext,
               }"
               :focusable="false"
               ghost
@@ -65,6 +65,25 @@
               title="保持上下文"
               @click="store.chat.toggleKeepContext">
               <icon-park-outline:history></icon-park-outline:history>
+            </div>
+            <div
+              v-if="store.chat.currentAssistant.id === 'default-assistant'"
+              class="inline-block text-12px cursor-pointer"
+              :class="{
+                'text-[#4b9e5f]': store.chat.currentChat.drawable,
+                'text-[#aeaeae]': !store.chat.currentChat.drawable,
+              }"
+              :focusable="false"
+              ghost
+              size="tiny"
+              text
+              title="绘图模式"
+              @click="
+                () =>
+                  (store.chat.currentChat.drawable =
+                    !store.chat.currentChat.drawable)
+              ">
+              <icon-park-outline:picture></icon-park-outline:picture>
             </div>
             <n-button
               size="tiny"

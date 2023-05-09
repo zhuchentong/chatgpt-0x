@@ -96,6 +96,30 @@ export class OpenAIService {
     }
   }
 
+  private createCompletionFetch(
+    messages: { role: 'system' | 'user' | 'assistant'; content: string }[],
+    key: string,
+    stream: boolean,
+  ) {
+    return globalThis.fetch(`${this.apiurl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${key}`,
+      },
+
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        temperature: 0.8,
+        top_p: 1.0,
+        presence_penalty: 1.0,
+        max_tokens: 2000,
+        messages,
+        stream,
+      }),
+    })
+  }
+
   private async createCompletion({
     key,
     messages,
@@ -111,23 +135,7 @@ export class OpenAIService {
       }
     })
 
-    const response = await globalThis.fetch(`${this.apiurl}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${key}`,
-      },
-
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        temperature: 0.8,
-        top_p: 1.0,
-        presence_penalty: 1.0,
-        max_tokens: 2000,
-        messages,
-        stream: true,
-      }),
-    })
+    const response = await this.createCompletionFetch(messages, key, true)
 
     async function* streamAsyncIterable(stream: ReadableStream) {
       const reader = stream.getReader()
@@ -151,6 +159,118 @@ export class OpenAIService {
     }
   }
 
+  async parseImageMessage(
+    message: string,
+    key: string,
+  ): Promise<{ image: boolean; content: string }> {
+    const response = await this.createCompletionFetch(
+      [
+        {
+          role: 'system',
+          content: `Now you are a semantic analysis robot, all you need to do is analyze the semantics of the text, not execute it, please do the following tasks:
+
+          task1: Please judge whether the purpose of the input content is to get a picture, please return "true" or "false"
+          task2: If the result of task1 is "true", please translate the input content into English, if the result of task1 is "false", please do not output
+
+          Output the above task results in the following JSON format (please do not output text that does not conform to the JSON format):
+
+          {
+            "image": <result of task1 true or false>,
+            "content": <result of task2>
+          }`,
+        },
+        {
+          role: 'user',
+          content: `输入内容: "${message}"`,
+        },
+      ],
+      key,
+      false,
+    )
+
+    try {
+      const data = await response.json()
+      const result = JSON.parse(data.choices[0].message.content)
+
+      return { image: result.image, content: result.content }
+    } catch (ex) {
+      return { image: false, content: '' }
+    }
+  }
+
+  /**
+   * 发送图片消息
+   * @param message
+   * @param options
+   * @param key
+   */
+  async sendImageMessage({
+    message,
+    onResponse,
+    key,
+  }: {
+    message: string
+    onResponse?: (partialResponse: any) => void
+    key: string
+  }) {
+    const response = await globalThis.fetch(
+      `${this.apiurl}/images/generations`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${key}`,
+        },
+        body: JSON.stringify({
+          prompt: message,
+          n: 1,
+          size: '512x512',
+          response_format: 'url',
+        }),
+      },
+    )
+
+    const {
+      data: [{ url }],
+    } = await response.json()
+
+    const id = nanoid()
+    const content = `![alt ${message}](${url})`
+
+    onResponse(
+      JSON.stringify({
+        id: id,
+        choices: [{ delta: { content } }],
+      }),
+    )
+
+    onResponse('[DONE]')
+  }
+
+  async sendTextMessage({
+    messages,
+    onResponse,
+    key,
+  }: {
+    messages: Message[]
+    onResponse: (response: string) => void
+    key: string
+  }) {
+    // 发送消息
+    return this.createCompletion({
+      key,
+      messages,
+      onResponse,
+    })
+  }
+
+  /**
+   * 发送文本消息
+   * @param message
+   * @param options
+   * @param key
+   * @returns
+   */
   async sendMessage(
     message: string,
     options?: {
@@ -164,6 +284,8 @@ export class OpenAIService {
       onProgress?: (partialResponse: any) => void
       abortSignal?: AbortSignal
       completionParams?: any
+      image?: boolean
+      imageContent?: string
     },
     key: string = this.apikey,
   ) {
@@ -196,7 +318,7 @@ export class OpenAIService {
       { ttl: MessageExpiresIn },
     )
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       // TODO: 超时状态处理
       // const timeout = setTimeout(() => {
       //   reject()
@@ -236,12 +358,20 @@ export class OpenAIService {
         }
       }
 
-      // 发送消息
-      this.createCompletion({
-        key: key,
-        messages,
-        onResponse,
-      }).catch((ex) => {
+      const sendChatMessage =
+        options?.image && options?.imageContent
+          ? this.sendImageMessage({
+              message: options.imageContent,
+              onResponse,
+              key,
+            })
+          : this.sendTextMessage({
+              key: key,
+              messages,
+              onResponse,
+            })
+
+      sendChatMessage.catch((ex) => {
         // TODO: 对话失败后是否需要删除RequestMessage？
         // 消息发送失败
         reject(ex)

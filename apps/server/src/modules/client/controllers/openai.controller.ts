@@ -32,6 +32,8 @@ export class OpenaiController {
     subscriber: Subscriber<MessageEvent<any>>,
     key: string,
     user: User,
+    image: boolean,
+    content: string,
   ) {
     return this.openai
       .sendMessage(
@@ -42,6 +44,8 @@ export class OpenaiController {
           onProgress: (chat) => {
             subscriber.next({ data: chat } as MessageEvent)
           },
+          image,
+          imageContent: content,
         },
         key,
       )
@@ -74,10 +78,26 @@ export class OpenaiController {
 
     // 获取key
     let key = await this.keyService.getOpenAIKey()
+
+    let image = false
+    let imageContent = ''
+    if (input.drawable) {
+      const data = await this.openai.parseImageMessage(input.message, key)
+      image = data.image
+      imageContent = data.content
+    }
+
     // 重置次数
     let retryCount = 0
     return new Observable((subscriber) => {
-      this.trySendMessage(input, subscriber, key, user).catch(async (ex) => {
+      this.trySendMessage(
+        input,
+        subscriber,
+        key,
+        user,
+        image,
+        imageContent,
+      ).catch(async (ex) => {
         // 增加重试次数
         retryCount += 1
         // 监测最大重试次数
@@ -98,7 +118,7 @@ export class OpenaiController {
         //  获取新的Key
         key = await this.keyService.getOpenAIKey()
         // 重试通化
-        this.trySendMessage(input, subscriber, key, user)
+        this.trySendMessage(input, subscriber, key, user, image, imageContent)
       })
     })
   }

@@ -82,7 +82,11 @@ watch(
   () => [records, chat.value.inputing],
   () => {
     nextTick(() => {
-      recordListRef.scrollTop = recordListRef.scrollHeight
+      if (recordListRef) {
+        recordListRef.scrollTop = recordListRef.scrollHeight
+
+        // TODO:
+      }
     })
   },
   {

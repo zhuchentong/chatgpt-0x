@@ -27,6 +27,7 @@ export interface Chat {
   usage: number
   records: (AssistantChatRecord | UserChatRecord)[]
   deleted?: boolean
+  drawable?: boolean
 }
 
 export interface ChatMessage {
