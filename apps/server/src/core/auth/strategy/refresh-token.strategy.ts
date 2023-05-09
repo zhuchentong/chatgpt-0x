@@ -1,6 +1,11 @@
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
+import {
+  Inject,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AppOrigin } from 'src/config/enum.config'
 import { AuthService } from '../services/auth.service'
@@ -56,6 +61,8 @@ export class RefreshTokenStrategy extends PassportStrategy(
       payload.origin === AppOrigin.Admin ? CACHE_ADMIN : CACHE_USER
 
     if ((await this.cacheManager.get(`${cacheHeader}:${user.id}`)) !== token) {
+      // TODO: 查看过期原因
+      Logger.error('登录过期:', payload, user.id)
       throw new UnauthorizedException('不存在的RefreshToken')
     }
 
