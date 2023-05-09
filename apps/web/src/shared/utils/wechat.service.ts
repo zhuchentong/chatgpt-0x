@@ -8,7 +8,8 @@ interface WxPayConfig {
   package: string // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
   signType: string // 微信支付V3的传入RSA,微信支付V2的传入格式与V2统一下单的签名格式保持一致
   paySign: string // 支付签名
-  success: (res: any) => void
+  success?: (res: any) => void
+  fail?: (res: any) => void
 }
 
 const wechatApiList = [
@@ -63,7 +64,7 @@ export class WechatService {
       wx.config({
         ...config,
         beta: true, // 必须这么写，否则wx.invoke调用形式的jsapi会有问题
-        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
         jsApiList: wechatApiList, // 必填，需要使用的JS接口列表，凡是要调用的接口都需要传进来
       })
     })
@@ -118,16 +119,7 @@ export class WechatService {
     // api检查
     await this.checkJsApi(api)
 
-    return new Promise((resolve) => {
-      wx.invoke(
-        api,
-        config,
-        (res: { err_msg: string }, res2: { errMsg: string }) => {
-          res2 && resolve(res2)
-          resolve(res)
-        },
-      )
-    })
+    return wx[api].bind(wx)(config)
   }
 
   public updateAppMessageShareData(config: shareConfig) {

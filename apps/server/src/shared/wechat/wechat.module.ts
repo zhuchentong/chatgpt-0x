@@ -19,11 +19,12 @@ import fs from 'node:fs'
     forwardRef(() => ClientModule),
     WeChatPayModule.registerAsync({
       useFactory: async (config: ConfigService) => {
-        const { privateKey, appId, mchId, keyPath, certPath, serialNo } =
+        const { appid } = config.get('wxmp')
+        const { privateKey, mchId, keyPath, certPath, serialNo } =
           config.get('wxpay')
 
         return {
-          appid: appId,
+          appid: appid,
           mchid: mchId,
           serial_no: serialNo,
           key: privateKey,
@@ -42,6 +43,7 @@ export class WechatModule implements OnModuleInit {
   constructor(private readonly config: ConfigService) {}
   onModuleInit() {
     const { appid, secret, token, aeskey } = this.config.get('wxmp')
+
     const wechatAPIConfig = new ApiConfig(
       appid,
       secret,

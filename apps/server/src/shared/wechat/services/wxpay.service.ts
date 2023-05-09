@@ -112,7 +112,6 @@ export class WXPayService {
         },
       })
       .then((response) => {
-        Logger.error(response, 33)
         if (response.status !== 200) {
           Logger.error(response)
           throw new Error('支付失败')
