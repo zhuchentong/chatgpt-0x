@@ -72,6 +72,27 @@
       </n-button>
       <NAvatar circle>
         <div
+          v-if="store.chat.currentAssistant.id === 'default-assistant'"
+          class="inline-block text-12px cursor-pointer"
+          :class="{
+            'text-[#4b9e5f]': store.chat.currentChat.drawable,
+            'text-[#aeaeae]': !store.chat.currentChat.drawable,
+          }"
+          :focusable="false"
+          ghost
+          size="tiny"
+          text
+          title="绘图模式"
+          @click="
+            () =>
+              (store.chat.currentChat.drawable =
+                !store.chat.currentChat.drawable)
+          ">
+          <icon-park-outline:picture></icon-park-outline:picture>
+        </div>
+      </NAvatar>
+      <NAvatar circle>
+        <div
           class="text-15px cursor-pointer flex-center"
           :class="{
             'text-[#4b9e5f]': store.chat.keepContext,
