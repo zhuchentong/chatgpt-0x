@@ -8,7 +8,9 @@
         ref="record-list"
         class="chat-record-list absolute inset-0 overflow-auto space-y-2"
         @click.self="() => store.chat.updateSelectChatRecordState(false)">
-        <div id="chat-content">
+        <div
+          id="chat-content"
+          ref="chat-content">
           <ChatRecord
             v-for="(record, index) in records"
             :key="index"
@@ -75,28 +77,22 @@ const records = computed(() => {
 })
 
 const recordListRef = $(templateRef<HTMLElement>('record-list'))
+const chatContentRef = $(templateRef<HTMLElement>('chat-content'))
 
 const chat = computed(() => store.chat.currentChat)
 
-watch(
-  () => [records, chat.value.inputing],
-  () => {
-    nextTick(() => {
-      if (recordListRef) {
-        recordListRef.scrollTop = recordListRef.scrollHeight
-
-        // TODO:
-      }
-    })
-  },
-  {
-    deep: true,
-  },
-)
+function addListenerResizeEvent() {
+  const resizeObserver = new ResizeObserver(() => {
+    recordListRef.scrollTop = recordListRef.scrollHeight
+  })
+  resizeObserver.observe(chatContentRef)
+}
 
 onMounted(() => {
   nextTick(() => {
     recordListRef.scrollTop = recordListRef.scrollHeight
   })
+
+  addListenerResizeEvent()
 })
 </script>

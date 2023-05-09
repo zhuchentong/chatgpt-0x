@@ -3,6 +3,7 @@ import type { ChatRole } from '@/config/enum.config'
 export interface AssistantChatRecord extends ChatRecord {
   model: string
   parentMessageId?: string
+  image?: boolean
 }
 
 export interface UserChatRecord extends ChatRecord {
@@ -54,4 +55,5 @@ export interface ChatMessage {
   }
   parentMessageId?: string
   conversationId?: string
+  image?: boolean
 }

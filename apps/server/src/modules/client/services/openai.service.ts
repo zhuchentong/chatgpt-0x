@@ -304,6 +304,7 @@ export class OpenAIService {
       parentMessageId: requestMessage.id,
       text: '',
       delta: '',
+      image: options.image,
     }
 
     const messages = await this.getMessages(

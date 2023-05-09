@@ -34,6 +34,7 @@ function appendChatMessage(chat: Chat, message: ChatMessage) {
       content: message.text,
       datetime: Date.now(),
       model: '', // TODO:添加当前Model
+      image: message.image,
     })
   }
 }
@@ -55,7 +56,8 @@ function sendChatMessage(message: string) {
   // 开启上下文
   if (store.chat.keepContext) {
     const messages = chat.records.filter(
-      (record) => record.role === ChatRole.Assistant && !record.deleted,
+      (record) =>
+        record.role === ChatRole.Assistant && !record.deleted && !record.image,
     ) as AssistantChatRecord[]
 
     if (messages.length) {
