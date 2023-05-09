@@ -60,9 +60,15 @@ export class RefreshTokenStrategy extends PassportStrategy(
     const cacheHeader =
       payload.origin === AppOrigin.Admin ? CACHE_ADMIN : CACHE_USER
 
-    if ((await this.cacheManager.get(`${cacheHeader}:${user.id}`)) !== token) {
-      // TODO: 查看过期原因
-      Logger.error('登录过期:', payload, user.id)
+    if (
+      (await this.cacheManager.get(`${cacheHeader}:${token}`)) !== user.id &&
+      (await this.cacheManager.get(`${cacheHeader}:${user.id}`)) !== token
+    ) {
+      // LOG:查看过期原因
+      Logger.error('登录过期:', payload, {
+        userid: user.id,
+        token,
+      })
       throw new UnauthorizedException('不存在的RefreshToken')
     }
 

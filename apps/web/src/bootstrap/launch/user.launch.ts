@@ -78,7 +78,6 @@ function updateCurrentToken() {
       .then(({ access_token, refresh_token }) => {
         store.user.updateToken({
           accessToken: access_token,
-          refreshToken: refresh_token,
         })
       })
       .catch(() => {

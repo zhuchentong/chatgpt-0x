@@ -237,7 +237,9 @@ export class AppController {
   @UseGuards(RefreshTokenGuard)
   token(@RequestUser() user: User) {
     if (user) {
-      return this.authService.userSign(user, AppOrigin.Web)
+      return this.authService.userSign(user, AppOrigin.Web, {
+        refreshTokenSign: false,
+      })
     }
   }
 
@@ -248,12 +250,11 @@ export class AppController {
   @UseGuards(RefreshTokenGuard)
   apiToken(@RequestUser() user: User) {
     if (user) {
-      return this.authService.userSign(
-        user,
-        AppOrigin.Web,
-        60 * 60 * 24 * 30 * 12,
-        60 * 60 * 24 * 30 * 12,
-      )
+      return this.authService.userSign(user, AppOrigin.Web, {
+        refreshTokenSign: false,
+        reAccessTokenExpiresIn: 60 * 60 * 24 * 30 * 12,
+        reRefreshTokenExpiresIn: 60 * 60 * 24 * 30 * 12,
+      })
     }
   }
 }

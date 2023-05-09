@@ -5,8 +5,8 @@ export class TokenResponse {
   @ApiProperty({ description: '授权Token' })
   access_token: string
 
-  @ApiProperty({ description: '刷新Token' })
-  refresh_token: string
+  @ApiProperty({ description: '刷新Token', required: false })
+  refresh_token?: string
 
   @ApiProperty({ description: '授权Token过期时间' })
   expires_in: number

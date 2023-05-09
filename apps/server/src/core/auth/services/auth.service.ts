@@ -13,6 +13,7 @@ import { lastValueFrom } from 'rxjs'
 import { nanoid } from 'nanoid/non-secure'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { CACHE_ADMIN, CACHE_USER } from 'src/config/constants'
+import { TokenResponse } from 'src/modules/client/responses/app.response'
 
 const WEAPP_API = {
   token: 'https://api.weixin.qq.com/cgi-bin/token',
@@ -216,8 +217,15 @@ export class AuthService {
   async userSign(
     user: User,
     origin: AppOrigin,
-    reAccessTokenExpiresIn?: number,
-    reRefreshTokenExpiresIn?: number,
+    {
+      refreshTokenSign = true,
+      reAccessTokenExpiresIn,
+      reRefreshTokenExpiresIn,
+    }: {
+      refreshTokenSign?: boolean
+      reAccessTokenExpiresIn?: number
+      reRefreshTokenExpiresIn?: number
+    } = {},
   ) {
     const jwtOrigin = origin
     const tokenExpiresIn = {
@@ -236,26 +244,31 @@ export class AuthService {
       expiresIn: tokenExpiresIn.accessTokenExpiresIn,
     })
 
-    // 获取AccessToken
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: this.config.get('jwt.refreshTokenSecret'),
-      expiresIn: tokenExpiresIn.refreshTokenExpiresIn,
-    })
-
-    // 缓存AccessToken
-    await this.cacheManager.set(
-      `${CACHE_USER}:${user.id}`,
-      refreshToken,
-      tokenExpiresIn.refreshTokenExpiresIn,
-    )
-
     // 返回认证信息
-    return {
+    const token: TokenResponse = {
       access_token: accessToken,
-      refresh_token: refreshToken,
       expires_in: tokenExpiresIn.accessTokenExpiresIn,
       token_origin: jwtOrigin,
     }
+
+    if (refreshTokenSign) {
+      // 获取AccessToken
+      const refreshToken = this.jwtService.sign(payload, {
+        secret: this.config.get('jwt.refreshTokenSecret'),
+        expiresIn: tokenExpiresIn.refreshTokenExpiresIn,
+      })
+
+      // 缓存AccessToken
+      await this.cacheManager.set(
+        `${CACHE_USER}:${refreshToken}`,
+        user.id,
+        tokenExpiresIn.refreshTokenExpiresIn,
+      )
+
+      token.refresh_token = refreshToken
+    }
+
+    return token
   }
 
   public async getClientUser(id: string) {
