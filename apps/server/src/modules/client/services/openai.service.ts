@@ -224,18 +224,18 @@ export class OpenAIService {
         body: JSON.stringify({
           prompt: message,
           n: 1,
-          size: '512x512',
-          response_format: 'url',
+          size: '256x256',
+          response_format: 'b64_json',
         }),
       },
     )
 
     const {
-      data: [{ url }],
+      data: [{ b64_json }],
     } = await response.json()
 
     const id = nanoid()
-    const content = `![alt ${message}](${url})`
+    const content = `![alt ${message}](data:image/png;base64,${b64_json})`
 
     onResponse(
       JSON.stringify({
