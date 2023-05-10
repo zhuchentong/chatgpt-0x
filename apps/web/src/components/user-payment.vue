@@ -189,14 +189,16 @@ const { pause: pauseQueryPayment, resume: startQueryPayment } = useIntervalFn(
 async function onUseAciveCode() {
   await form.validate()
 
-  activeCodeService.useActiveCode({ key: formModel.activeCode }).then(() => {
-    messageEventBus.emit({
-      type: 'success',
-      content: '兑换成功',
+  activeCodeService
+    .useActiveCode({ key: formModel.activeCode.trim() })
+    .then(() => {
+      messageEventBus.emit({
+        type: 'success',
+        content: '兑换成功',
+      })
+      // 更新余额次数
+      getUserBalance()
     })
-    // 更新余额次数
-    getUserBalance()
-  })
 }
 
 async function getUserBalance() {
