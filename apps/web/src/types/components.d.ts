@@ -10,6 +10,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AButton: typeof import('@arco-design/web-vue')['Button']
+    AImage: typeof import('@arco-design/web-vue')['Image']
     'IconParkOutline:arrowCircleLeft': typeof import('~icons/icon-park-outline/arrow-circle-left')['default']
     'IconParkOutline:calendar': typeof import('~icons/icon-park-outline/calendar')['default']
     'IconParkOutline:check': typeof import('~icons/icon-park-outline/check')['default']

@@ -62,12 +62,15 @@
 
 <script setup lang="ts">
 import { useThemeVars } from 'naive-ui'
+import { useModal } from '@gopowerteam/vue-modal'
 import ChatRecord from './chat-record.vue'
 import ChatInput from './chat-input.vue'
 import ChatHeader from './chat-header.vue'
+import ImagePreview from '@/shared/components/image-preview.vue'
 import { useStore } from '@/store'
 import { ChatRole } from '@/config/enum.config'
 
+const modal = useModal()
 const store = useStore()
 const theme = useThemeVars()
 const records = computed(() => {
@@ -81,9 +84,30 @@ const chatContentRef = $(templateRef<HTMLElement>('chat-content'))
 
 const chat = computed(() => store.chat.currentChat)
 
+function addListenerImagePreview(img: HTMLImageElement) {
+  if (img && !img.dataset.preview) {
+    img.dataset.preview = 'true'
+    img.addEventListener('click', () => {
+      modal.open({
+        component: ImagePreview,
+        props: {
+          src: img.src,
+        },
+      })
+    })
+  }
+}
+
 function addListenerResizeEvent() {
   const resizeObserver = new ResizeObserver(() => {
     recordListRef.scrollTop = recordListRef.scrollHeight
+    const img = chatContentRef.lastElementChild?.querySelector(
+      '.record-content img',
+    ) as HTMLImageElement | undefined
+
+    if (img) {
+      addListenerImagePreview(img)
+    }
   })
   resizeObserver.observe(chatContentRef)
 }
@@ -94,5 +118,9 @@ onMounted(() => {
   })
 
   addListenerResizeEvent()
+
+  chatContentRef.querySelectorAll('.record-content img').forEach((img) => {
+    addListenerImagePreview(img as HTMLImageElement)
+  })
 })
 </script>

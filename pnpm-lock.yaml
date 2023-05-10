@@ -549,6 +549,9 @@ importers:
       '@gopowerteam/request':
         specifier: 0.1.16
         version: 0.1.16
+      '@gopowerteam/vue-modal':
+        specifier: 0.1.12
+        version: 0.1.12(vue@3.2.47)
       '@traptitech/markdown-it-katex':
         specifier: ^3.6.0
         version: 3.6.0

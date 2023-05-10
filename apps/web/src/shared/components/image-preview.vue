@@ -1,9 +1,6 @@
 <template>
   <div class="image-preview">
-    <a-image
-      :preview="preview"
-      show-loader
-      :src="url"></a-image>
+    <img :src="src" />
   </div>
 </template>
 
@@ -12,7 +9,7 @@
   position: relative;
   display: inline-block;
   font-size: 0;
-  :deep(img.arco-image-img) {
+  img {
     max-width: v-bind(width);
     max-height: v-bind(height);
   }
