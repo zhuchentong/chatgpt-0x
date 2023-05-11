@@ -1,45 +1,51 @@
 import {
   AudioConfig,
+  SpeakerAudioDestination,
   SpeechConfig,
   SpeechSynthesizer,
 } from 'microsoft-cognitiveservices-speech-sdk'
 import { appConfig } from '@/config/app.config'
 
-let _speechSynthesizer: SpeechSynthesizer
+let _audioPlayer: SpeakerAudioDestination | null
 
 function getSpeechSynthesizer() {
-  if (!_speechSynthesizer) {
-    const speechConfig = SpeechConfig.fromSubscription(
-      appConfig.azure.key,
-      appConfig.azure.region,
-    )
-
-    speechConfig.speechSynthesisLanguage = 'zh-CN'
-    speechConfig.speechSynthesisVoiceName = 'zh-CN-YunfengNeural'
-    const audioConfig = AudioConfig.fromDefaultSpeakerOutput()
-
-    _speechSynthesizer = new SpeechSynthesizer(speechConfig, audioConfig)
+  if (_audioPlayer) {
+    _audioPlayer.pause()
+    _audioPlayer.close()
   }
 
-  return _speechSynthesizer
+  const speechConfig = SpeechConfig.fromSubscription(
+    appConfig.azure.key,
+    appConfig.azure.region,
+  )
+
+  speechConfig.speechSynthesisLanguage = 'zh-CN'
+  speechConfig.speechSynthesisVoiceName = 'zh-CN-YunfengNeural'
+
+  _audioPlayer = new SpeakerAudioDestination()
+  const audioConfig = AudioConfig.fromSpeakerOutput(_audioPlayer)
+
+  const speechSynthesizer = new SpeechSynthesizer(speechConfig, audioConfig)
+  return speechSynthesizer
 }
 
 export function synthesizeSpeech(content: string) {
   const speechSynthesizer = getSpeechSynthesizer()
-  speechSynthesizer.speakTextAsync(
-    content,
-    (result) => {
-      if (result) {
+
+  if (speechSynthesizer) {
+    speechSynthesizer.speakTextAsync(
+      content,
+      (result) => {
+        if (result) {
+          speechSynthesizer.close()
+          return result.audioData
+        }
+      },
+      () => {
         speechSynthesizer.close()
-        return result.audioData
-      }
-    },
-    (error) => {
-      // eslint-disable-next-line no-console
-      console.log(error)
-      speechSynthesizer.close()
-    },
-  )
+      },
+    )
+  }
 }
 
 export function useSpeech() {
