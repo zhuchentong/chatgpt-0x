@@ -1,3 +1,3 @@
 # Lerna Monorepo
 
-CHATGPT-0X
+CHATGPT-0X powerby zhuchentong
