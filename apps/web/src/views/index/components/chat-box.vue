@@ -92,6 +92,7 @@ function addListenerImagePreview(img: HTMLImageElement) {
         component: ImagePreview,
         props: {
           src: img.src,
+          width: 512,
         },
       })
     })

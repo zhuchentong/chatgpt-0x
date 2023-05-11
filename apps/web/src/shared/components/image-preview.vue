@@ -1,31 +1,37 @@
 <template>
   <div class="image-preview">
-    <img :src="src" />
+    <img
+      class="image"
+      :src="src" />
   </div>
 </template>
 
-<style lang="less" scoped>
+<style lang="css" scoped>
 .image-preview {
   position: relative;
   display: inline-block;
   font-size: 0;
-  img {
-    max-width: v-bind(width);
-    max-height: v-bind(height);
-  }
+  text-align: center;
+}
+
+.image-preview .image {
+  width: v-bind(`${toPxString(width)}`);
+  height: v-bind(`${toPxString(height)}`);
+  max-width: 90%;
 }
 </style>
 
 <script setup lang="ts">
 import { asyncComputed } from '@vueuse/core'
 import { DisplayScene } from '@/config/enum.config'
+import { toPxString } from '@/shared/common'
 
 const props = withDefaults(
   defineProps<{
     src?: string
     scene?: DisplayScene
     width?: string | number
-    height?: number | string
+    height?: string | number
     preview?: boolean
     rotate?: boolean
   }>(),
