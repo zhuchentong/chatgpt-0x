@@ -8,4 +8,8 @@ export const appConfig: AppConfig = {
     gateway: import.meta.env.VITE_HTTP_GATEWAY,
     timeout: 3000,
   },
+  azure: {
+    key: import.meta.env.VITE_AZURE_KEY,
+    region: import.meta.env.VITE_AZURE_REGION,
+  },
 }

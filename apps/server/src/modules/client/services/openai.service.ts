@@ -235,7 +235,7 @@ export class OpenAIService {
     } = await response.json()
 
     const id = nanoid()
-    const content = `![alt ${message}](data:image/png;base64,${b64_json})`
+    const content = `![alt image:${message}](data:image/png;base64,${b64_json})`
 
     onResponse(
       JSON.stringify({

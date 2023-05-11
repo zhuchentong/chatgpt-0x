@@ -15,6 +15,10 @@ export interface AppConfig {
    * 网络相关配置
    */
   http: HttpConfig
+  azure: {
+    key: string
+    region: string
+  }
 }
 
 interface HttpConfig {

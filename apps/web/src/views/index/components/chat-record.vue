@@ -123,10 +123,12 @@ import { useStore } from '@/store'
 import type { ChatRecord } from '@/interfaces'
 import { ChatRole } from '@/config/enum.config'
 import { useChat } from '@/composables/use-chat'
+import RawIconParkVoiceMessage from '~icons/icon-park-outline/voice-message?raw&width=1em&height=1em'
 import RawIconParkDelete from '~icons/icon-park-outline/delete?raw&width=1em&height=1em'
 import RawIconParkCopy from '~icons/icon-park-outline/copy?raw&width=1em&height=1em'
 import RawIconParkRedo from '~icons/icon-park-outline/redo?raw&width=1em&height=1em'
 import RawIconParkListCheckBox from '~icons/icon-park-outline/list-checkbox?raw&width=1em&height=1em'
+import { useSpeech } from '@/composables/use-speech'
 
 const props = defineProps<{
   index?: number
@@ -143,8 +145,21 @@ const clipboard = useClipboard({ legacy: true })
 const message = useMessage()
 const dialog = useDialog()
 const { sendChatMessage } = useChat()
+const { synthesizeSpeech } = useSpeech()
 
 const options: DropdownOption[] = [
+  {
+    label: '播放',
+    key: 'play',
+    show:
+      props.record.role === ChatRole.Assistant &&
+      !props.record.content.startsWith('![alt image:'),
+    icon: () => (
+      <span
+        class="contents"
+        v-html={RawIconParkVoiceMessage}></span>
+    ),
+  },
   {
     label: '删除',
     key: 'delete',
@@ -187,6 +202,9 @@ const options: DropdownOption[] = [
 
 function onSelectAction(action: string) {
   switch (action) {
+    case 'play':
+      onPlay()
+      break
     case 'delete':
       onDelete()
       break
@@ -239,6 +257,10 @@ function onCopy() {
 
 function onMultiple() {
   store.chat.updateSelectChatRecordState(true)
+}
+
+function onPlay() {
+  synthesizeSpeech(props.record.content)
 }
 
 function onDelete() {
