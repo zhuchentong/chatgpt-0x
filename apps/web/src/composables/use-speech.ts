@@ -5,18 +5,27 @@ import {
 } from 'microsoft-cognitiveservices-speech-sdk'
 import { appConfig } from '@/config/app.config'
 
+let _speechSynthesizer: SpeechSynthesizer
+
+function getSpeechSynthesizer() {
+  if (!_speechSynthesizer) {
+    const speechConfig = SpeechConfig.fromSubscription(
+      appConfig.azure.key,
+      appConfig.azure.region,
+    )
+
+    speechConfig.speechSynthesisLanguage = 'zh-CN'
+    speechConfig.speechSynthesisVoiceName = 'zh-CN-YunfengNeural'
+    const audioConfig = AudioConfig.fromDefaultSpeakerOutput()
+
+    _speechSynthesizer = new SpeechSynthesizer(speechConfig, audioConfig)
+  }
+
+  return _speechSynthesizer
+}
+
 export function synthesizeSpeech(content: string) {
-  // TODO:FOR TEST
-  const speechConfig = SpeechConfig.fromSubscription(
-    appConfig.azure.key,
-    appConfig.azure.region,
-  )
-
-  speechConfig.speechSynthesisLanguage = 'zh-CN'
-  speechConfig.speechSynthesisVoiceName = 'zh-CN-YunfengNeural'
-  const audioConfig = AudioConfig.fromDefaultSpeakerOutput()
-
-  const speechSynthesizer = new SpeechSynthesizer(speechConfig, audioConfig)
+  const speechSynthesizer = getSpeechSynthesizer()
   speechSynthesizer.speakTextAsync(
     content,
     (result) => {
