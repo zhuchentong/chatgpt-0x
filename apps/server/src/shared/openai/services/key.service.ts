@@ -12,6 +12,7 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import type { Cache } from 'cache-manager'
 import { CACHE_OPENAI_KEYS } from 'src/config/constants'
+import { isArray } from 'class-validator'
 
 @Injectable()
 export class KeyService {
@@ -142,7 +143,7 @@ export class KeyService {
     }
     // 如果数据库中没有，使用默认的
     switch (true) {
-      case keys.length === 1:
+      case Array.isArray(keys) && keys.length === 1:
         return keys[0]
       case keys.length > 1: {
         KeyService.keyIndex = (KeyService.keyIndex + 1) % keys.length
@@ -159,7 +160,7 @@ export class KeyService {
   /**
    * 同步密钥余额
    */
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async syncBalances() {
     const keys = (await this.findAll()).filter(
       (key) => key.enable && key.state === OpenAIKeyState.Valid,
@@ -171,15 +172,16 @@ export class KeyService {
           const { expireAt, usage, limitUsd } = await this.getKeyBalance(
             openAIKey.key,
           )
+
           openAIKey.expireAt = new Date(expireAt)
           openAIKey.usage = usage
           openAIKey.limit = limitUsd
+
+          await openAIKey.save()
         } catch (ex) {
           Logger.error('同步余额失败:', openAIKey.key, ex.response?.data?.error)
-          openAIKey.state = OpenAIKeyState.Invalid
+          // openAIKey.state = OpenAIKeyState.Invalid
         }
-
-        await openAIKey.save()
 
         return openAIKey
       }),
