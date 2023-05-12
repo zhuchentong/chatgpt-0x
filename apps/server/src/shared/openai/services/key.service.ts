@@ -145,8 +145,10 @@ export class KeyService {
       case keys.length === 1:
         return keys[0]
       case keys.length > 1: {
-        const key = keys[KeyService.keyIndex % keys.length]
-        KeyService.keyIndex = KeyService.keyIndex++ % keys.length
+        KeyService.keyIndex = (KeyService.keyIndex + 1) % keys.length
+
+        const key = keys[KeyService.keyIndex]
+        KeyService.keyIndex = KeyService.keyIndex
         return key
       }
       default:
