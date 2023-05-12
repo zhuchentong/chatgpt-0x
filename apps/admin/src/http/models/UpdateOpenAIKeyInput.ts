@@ -11,4 +11,8 @@ export type UpdateOpenAIKeyInput = {
    * 停启用
    */
   enable?: boolean;
+  /**
+   * 异常次数
+   */
+  exceptionTimes?: number;
 }

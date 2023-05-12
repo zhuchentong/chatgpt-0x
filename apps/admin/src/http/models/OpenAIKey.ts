@@ -36,6 +36,14 @@ export type OpenAIKey = {
    */
   expireAt: string;
   /**
+   * 异常总数
+   */
+  exceptionTotal: number;
+  /**
+   * 异常次数
+   */
+  exceptionTimes: number;
+  /**
    * 状态
    */
   state: string;

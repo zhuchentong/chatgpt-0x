@@ -194,10 +194,12 @@ export class LoggerService implements NestLoggerService {
 
   static getStackTrace(deep = 4): string {
     const stackList: StackTrace.StackFrame[] = StackTrace.getSync()
+
     const stackInfo: StackTrace.StackFrame = stackList[deep]
-    // const lineNumber: number = stackInfo.lineNumber
-    // const columnNumber: number = stackInfo.columnNumber
-    const functionName: string = stackInfo.functionName
-    return `${functionName}`
+    const lineNumber: number = stackInfo.lineNumber
+    const columnNumber: number = stackInfo.columnNumber
+    // const functionName = stackInfo.functionName
+
+    return `row:${lineNumber},col:${columnNumber}`
   }
 }

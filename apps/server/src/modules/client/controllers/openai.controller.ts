@@ -7,12 +7,13 @@ import { BalanceService } from '../services/balance.service'
 import { RequestUser } from 'src/decorators/request-user.decorator'
 import { User } from 'src/entities/user.entity'
 import { KeyService } from 'src/shared/openai/services/key.service'
-import { OpenAIKeyState } from 'src/config/enum.config'
 
 @Controller('openai')
 @ApiTags('openai')
 @ApiSecurity('access-token')
 export class OpenaiController {
+  private logger = new Logger(OpenaiController.name)
+
   constructor(
     private readonly openai: OpenAIService,
     private readonly balanceService: BalanceService,
@@ -28,12 +29,10 @@ export class OpenaiController {
    * @returns
    */
   private async trySendMessage(
-    { message, parentMessageId, prompt }: ChatMessageInput,
+    { message, parentMessageId, prompt, drawable }: ChatMessageInput,
     subscriber: Subscriber<MessageEvent<any>>,
     key: string,
     user: User,
-    image: boolean,
-    content: string,
   ) {
     return this.openai
       .sendMessage(
@@ -44,8 +43,7 @@ export class OpenaiController {
           onProgress: (chat) => {
             subscriber.next({ data: chat } as MessageEvent)
           },
-          image,
-          imageContent: content,
+          drawable,
         },
         key,
       )
@@ -66,7 +64,7 @@ export class OpenaiController {
     const balance = await this.balanceService.getUserBalance(user.id)
 
     // 输入余额日志
-    Logger.debug(balance)
+    this.logger.debug(balance)
 
     if (!balance) {
       return from([
@@ -79,47 +77,45 @@ export class OpenaiController {
     // 获取key
     let key = await this.keyService.getOpenAIKey()
 
-    let image = false
-    let imageContent = ''
-    if (input.drawable) {
-      const data = await this.openai.parseImageMessage(input.message, key)
-      image = data.image
-      imageContent = data.content
-    }
+    this.logger.debug('key:', key)
 
     // 重置次数
     let retryCount = 0
     return new Observable((subscriber) => {
-      this.trySendMessage(
-        input,
-        subscriber,
-        key,
-        user,
-        image,
-        imageContent,
-      ).catch(async (ex) => {
-        // 增加重试次数
-        retryCount += 1
-        // 监测最大重试次数
-        if (retryCount > 2) {
-          subscriber.next({
-            data: '[ERROR]对话失败,请稍候重新尝试',
-          } as MessageEvent)
-          subscriber.complete()
-          return
-        }
+      const sendChatMessage = () => {
+        this.trySendMessage(input, subscriber, key, user).catch(async (ex) => {
+          // 设置key为无效
+          if (ex?.timeout == true) {
+            this.logger.error('消息发送超时:', { key })
+            await this.keyService.throwError(key)
+          } else {
+            this.logger.error('消息发送错误:', ex?.statusCode, ex?.message, ex)
+          }
 
-        Logger.error('消息发送错误:', ex)
+          // 监测最大重试次数
+          if (retryCount > 2) {
+            this.logger.error('对话失败', { userid: user.id })
 
-        // 设置key为无效
-        if (ex?.statusCode !== 429) {
-          await this.keyService.update(key, { state: OpenAIKeyState.Invalid })
-        }
-        //  获取新的Key
-        key = await this.keyService.getOpenAIKey()
-        // 重试通化
-        this.trySendMessage(input, subscriber, key, user, image, imageContent)
-      })
+            subscriber.next({
+              data: '[ERROR]对话失败,请稍候重新尝试',
+            } as MessageEvent)
+            subscriber.complete()
+            return
+          }
+
+          // 增加重试次数
+          retryCount += 1
+          //  获取新的Key
+          key = await this.keyService.getOpenAIKey()
+
+          this.logger.debug(`开始第${retryCount}次重试:`, { key })
+
+          // 重试通化
+          sendChatMessage()
+        })
+      }
+
+      sendChatMessage()
     })
   }
 }

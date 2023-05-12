@@ -11,6 +11,7 @@ type Message = {
   role: 'system' | 'user' | 'assistant'
   content: string
   parentMessageId?: string
+  image?: boolean
 }
 
 const MessageExpiresIn = 60 * 60 * 24 * 7
@@ -21,6 +22,8 @@ export class OpenAIService {
   private readonly apikey: string
   @Inject(CACHE_MANAGER)
   private readonly cacheManager: Cache
+
+  private logger = new Logger(OpenAIService.name)
 
   constructor(private readonly config: ConfigService) {
     const { apikey, apiurl } = this.config.get('openai')
@@ -100,6 +103,7 @@ export class OpenAIService {
     messages: { role: 'system' | 'user' | 'assistant'; content: string }[],
     key: string,
     stream: boolean,
+    signal?: AbortSignal,
   ) {
     return globalThis.fetch(`${this.apiurl}/chat/completions`, {
       method: 'POST',
@@ -107,7 +111,6 @@ export class OpenAIService {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${key}`,
       },
-
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
         temperature: 0.8,
@@ -117,6 +120,7 @@ export class OpenAIService {
         messages,
         stream,
       }),
+      signal,
     })
   }
 
@@ -124,10 +128,12 @@ export class OpenAIService {
     key,
     messages,
     onResponse,
+    signal,
   }: {
     key: string
     messages: { role: 'system' | 'user' | 'assistant'; content: string }[]
     onResponse: (response: string) => void
+    signal?: AbortSignal
   }) {
     const parser = createParser((event) => {
       if (event.type === 'event') {
@@ -135,7 +141,12 @@ export class OpenAIService {
       }
     })
 
-    const response = await this.createCompletionFetch(messages, key, true)
+    const response = await this.createCompletionFetch(
+      messages,
+      key,
+      true,
+      signal,
+    )
 
     async function* streamAsyncIterable(stream: ReadableStream) {
       const reader = stream.getReader()
@@ -162,6 +173,7 @@ export class OpenAIService {
   async parseImageMessage(
     message: string,
     key: string,
+    abortSignal?: AbortSignal,
   ): Promise<{ image: boolean; content: string }> {
     const response = await this.createCompletionFetch(
       [
@@ -186,6 +198,7 @@ export class OpenAIService {
       ],
       key,
       false,
+      abortSignal,
     )
 
     try {
@@ -208,10 +221,12 @@ export class OpenAIService {
     message,
     onResponse,
     key,
+    signal,
   }: {
     message: string
-    onResponse?: (partialResponse: any) => void
+    onResponse?: (partialResponse: any, image?: boolean) => void
     key: string
+    signal?: AbortSignal
   }) {
     const response = await globalThis.fetch(
       `${this.apiurl}/images/generations`,
@@ -227,6 +242,7 @@ export class OpenAIService {
           size: '256x256',
           response_format: 'b64_json',
         }),
+        signal,
       },
     )
 
@@ -244,23 +260,26 @@ export class OpenAIService {
       }),
     )
 
-    onResponse('[DONE]')
+    onResponse('[DONE]', true)
   }
 
   async sendTextMessage({
     messages,
     onResponse,
     key,
+    signal,
   }: {
     messages: Message[]
     onResponse: (response: string) => void
     key: string
+    signal?: AbortSignal
   }) {
     // 发送消息
     return this.createCompletion({
       key,
       messages,
       onResponse,
+      signal,
     })
   }
 
@@ -284,8 +303,7 @@ export class OpenAIService {
       onProgress?: (partialResponse: any) => void
       abortSignal?: AbortSignal
       completionParams?: any
-      image?: boolean
-      imageContent?: string
+      drawable?: boolean
     },
     key: string = this.apikey,
   ) {
@@ -304,13 +322,16 @@ export class OpenAIService {
       parentMessageId: requestMessage.id,
       text: '',
       delta: '',
-      image: options.image,
+      image: false,
     }
 
     const messages = await this.getMessages(
       requestMessage,
       options?.systemMessage,
     )
+
+    const abortController = new AbortController()
+    const signal = abortController.signal
 
     // 缓存请求消息
     await this.cacheManager.set(
@@ -321,14 +342,23 @@ export class OpenAIService {
 
     return new Promise(async (resolve, reject) => {
       // TODO: 超时状态处理
-      // const timeout = setTimeout(() => {
-      //   reject()
-      // }, 1000 * 10)
+      let timeout = setTimeout(
+        () => {
+          abortController.abort()
+          reject({ timeout: true })
+        },
+        options.drawable ? 1000 * 15 : 1000 * 10,
+      )
       // 响应消息
-      const onResponse = async (message: string) => {
-        // if (timeout && timeout.hasRef()) {
-        //   clearTimeout(timeout)
-        // }
+      const onResponse = async (message: string, image?: boolean) => {
+        if (timeout) {
+          clearTimeout(timeout)
+          timeout = null
+        }
+
+        if (image) {
+          responseMessage.image = true
+        }
 
         if (message === '[DONE]') {
           await this.cacheManager.set<Message>(
@@ -338,6 +368,7 @@ export class OpenAIService {
               id: responseMessage.id,
               content: responseMessage.text,
               parentMessageId: responseMessage.parentMessageId,
+              image: responseMessage.image,
             },
             { ttl: MessageExpiresIn },
           )
@@ -359,26 +390,43 @@ export class OpenAIService {
         }
       }
 
-      const sendChatMessage =
-        options?.image && options?.imageContent
-          ? this.sendImageMessage({
-              message: options.imageContent,
-              onResponse,
-              key,
-            })
-          : this.sendTextMessage({
-              key: key,
-              messages,
-              onResponse,
-            })
+      const getImageMessage = async () => {
+        if (options.drawable) {
+          return this.parseImageMessage(message, key, signal)
+        } else {
+          return { image: false, content: '' }
+        }
+      }
 
-      sendChatMessage.catch((ex) => {
+      try {
+        // 获取是否是图片消息
+        const { image, content: imageContent } = await getImageMessage()
+
+        if (image) {
+          await this.sendImageMessage({
+            message: imageContent,
+            onResponse,
+            key,
+            signal,
+          })
+        } else {
+          await this.sendTextMessage({
+            key: key,
+            messages,
+            onResponse,
+            signal,
+          })
+        }
+      } catch (ex) {
         // TODO: 对话失败后是否需要删除RequestMessage？
         // 消息发送失败
-        reject(ex)
-        // 记录异常
-        Logger.error(JSON.stringify(ex))
-      })
+
+        if (ex?.name !== 'AbortError') {
+          reject(ex)
+          // 记录异常
+          this.logger.error(JSON.stringify(ex))
+        }
+      }
     })
   }
 }

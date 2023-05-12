@@ -35,6 +35,14 @@ export class OpenAIKey extends pipe(
   @Column({ name: 'expire_at' })
   expireAt: Date
 
+  @ApiProperty({ description: '异常总数' })
+  @Column({ name: 'exception_total', default: 0, nullable: true })
+  exceptionTotal: number
+
+  @ApiProperty({ description: '异常次数' })
+  @Column({ name: 'exception_times', default: 0, nullable: true })
+  exceptionTimes: number
+
   @ApiProperty({ description: '状态' })
   @Column({ enum: OpenAIKeyState, default: OpenAIKeyState.Valid })
   state: OpenAIKeyState

@@ -11,4 +11,8 @@ export class UpdateOpenAIKeyInput {
   @ApiProperty({ description: '停启用', required: false })
   @IsOptional()
   enable?: boolean
+
+  @ApiProperty({ description: '异常次数', required: false })
+  @IsOptional()
+  exceptionTimes?: number
 }

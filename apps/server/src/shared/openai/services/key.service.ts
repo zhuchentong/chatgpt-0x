@@ -64,6 +64,24 @@ export class KeyService {
     return this.openAIKeyRepository.update(key, openAIKey)
   }
 
+  async throwError(key: string) {
+    const openAiKey = await this.openAIKeyRepository.findOneBy({ key })
+
+    if (!openAiKey) {
+      return
+    }
+
+    openAiKey.exceptionTimes = 1 + (openAiKey.exceptionTimes || 0)
+    openAiKey.exceptionTotal = 1 + (openAiKey.exceptionTotal || 0)
+
+    //  5次异常后，标记为无效
+    if (openAiKey.exceptionTimes >= 5) {
+      openAiKey.state = OpenAIKeyState.Invalid
+    }
+
+    return openAiKey.save({ reload: true })
+  }
+
   /**
    * 获取OpenAIKey余额信息
    * @param key

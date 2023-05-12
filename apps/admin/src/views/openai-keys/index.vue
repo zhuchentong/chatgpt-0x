@@ -123,6 +123,10 @@ const columns: TableColumnsOptions<OpenAIKey> = [
       }),
   },
   {
+    key: 'exceptionTotal',
+    title: '异常次数',
+  },
+  {
     key: 'state',
     title: '使用状态',
     render: (r) => r.dict({ dict: OpenAIKeyStateDict }),
@@ -155,7 +159,10 @@ const columns: TableColumnsOptions<OpenAIKey> = [
             confirmText: '是否确认执行该操作?',
             callback: (record) => {
               keyService
-                .updateKey(record.key, { state: OpenAIKeyState.Valid })
+                .updateKey(record.key, {
+                  state: OpenAIKeyState.Valid,
+                  exceptionTimes: 0,
+                })
                 .then(() => {
                   table.reload()
                 })
