@@ -173,11 +173,7 @@ export class KeyService {
           openAIKey.usage = usage
           openAIKey.limit = limitUsd
         } catch (ex) {
-          Logger.error(
-            '同步余额失败:',
-            openAIKey.key,
-            ex.response?.data?.error,
-          )
+          Logger.error('同步余额失败:', openAIKey.key, ex.response?.data?.error)
           openAIKey.state = OpenAIKeyState.Invalid
         }
 

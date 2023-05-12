@@ -69,4 +69,13 @@ export class KeyController {
   async syncKeysBalance() {
     return this.keyService.syncBalances()
   }
+
+  @ApiOperation({
+    operationId: 'getCurrentKey',
+    description: '获取当前key',
+  })
+  @Get('get-current-key')
+  async getCurrentKey() {
+    return this.keyService.getOpenAIKey()
+  }
 }

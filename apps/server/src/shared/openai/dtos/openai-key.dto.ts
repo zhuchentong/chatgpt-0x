@@ -7,4 +7,8 @@ export class UpdateOpenAIKeyInput {
   @IsEnum(OpenAIKeyState)
   @IsOptional()
   state?: OpenAIKeyState
+
+  @ApiProperty({ description: '停启用', required: false })
+  @IsOptional()
+  enable?: boolean
 }

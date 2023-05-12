@@ -189,6 +189,33 @@ export class KeyService {
   
   }
   
+  public getCurrentKey(
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
+  ): string
+  public getCurrentKey(
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<void>
+  public getCurrentKey(
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<void> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/openai/key/get-current-key',
+      method: 'get',
+    }
+  
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions
+    )
+  
+  
+  }
+  
 }
 
 

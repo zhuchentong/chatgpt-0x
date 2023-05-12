@@ -12,6 +12,11 @@
           @click="onSyncBalances">
           同步余额
         </AButton>
+        <AButton
+          type="primary"
+          @click="onGetCurrentKey">
+          查看当前Key
+        </AButton>
       </ASpace>
     </template>
     <DataTable
@@ -35,15 +40,22 @@ import {
   useTable,
 } from '@gopowerteam/vue-dynamic-table'
 import { useRequest } from 'virtual:request'
+import { Message } from '@arco-design/web-vue'
 import { PageService } from '@/http/extends/page.service'
 import type { OpenAIKey } from '@/http/models/OpenAIKey'
-import { OpenAIKeyStateDict } from '@/config/dict.config'
+import { EnableStateDict, OpenAIKeyStateDict } from '@/config/dict.config'
 import { OpenAIKeyState } from '@/config/enum.config'
 
 const pageService = new PageService()
 const table = $(useTable('table'))
 
 const keyService = useRequest((service) => service.KeyService)
+
+function onGetCurrentKey() {
+  keyService.getCurrentKey().then((keys) => {
+    Message.info(JSON.stringify(keys))
+  })
+}
 
 function onSyncBalances() {
   keyService.syncBalances().then(() => {
@@ -139,6 +151,18 @@ const columns: TableColumnsOptions<OpenAIKey> = [
             callback: (record) => {
               keyService
                 .updateKey(record.key, { state: OpenAIKeyState.Valid })
+                .then(() => {
+                  table.reload()
+                })
+            },
+          },
+          {
+            text: (record) => EnableStateDict.get(!record.enable) as string,
+            confirm: true,
+            confirmText: '是否确定执行此操作？',
+            callback: (record) => {
+              keyService
+                .updateKey(record.key, { enable: !record.enable })
                 .then(() => {
                   table.reload()
                 })
