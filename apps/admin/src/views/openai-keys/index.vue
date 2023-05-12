@@ -124,7 +124,11 @@ const columns: TableColumnsOptions<OpenAIKey> = [
   },
   {
     key: 'exceptionTotal',
-    title: '异常次数',
+    title: '异常总数',
+  },
+  {
+    key: 'exceptionTimes',
+    title: '最近异常',
   },
   {
     key: 'state',

@@ -423,8 +423,6 @@ export class OpenAIService {
 
         if (ex?.name !== 'AbortError') {
           reject(ex)
-          // 记录异常
-          this.logger.error(JSON.stringify(ex))
         }
       }
     })

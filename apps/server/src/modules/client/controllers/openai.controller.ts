@@ -87,10 +87,11 @@ export class OpenaiController {
           // 设置key为无效
           if (ex?.timeout == true) {
             this.logger.error('消息发送超时:', { key })
-            await this.keyService.throwError(key)
           } else {
-            this.logger.error('消息发送错误:', ex?.statusCode, ex?.message, ex)
+            this.logger.error('消息发送错误:', { ex, json: JSON.stringify(ex) })
           }
+
+          await this.keyService.throwError(key)
 
           // 监测最大重试次数
           if (retryCount > 2) {
