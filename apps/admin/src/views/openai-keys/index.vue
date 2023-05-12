@@ -124,8 +124,13 @@ const columns: TableColumnsOptions<OpenAIKey> = [
   },
   {
     key: 'state',
-    title: '状态',
+    title: '使用状态',
     render: (r) => r.dict({ dict: OpenAIKeyStateDict }),
+  },
+  {
+    key: 'enable',
+    title: '启用状态',
+    render: (r) => r.dict({ dict: EnableStateDict }),
   },
   {
     key: 'action',

@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { lastValueFrom, zip } from 'rxjs'
 import { OpenAIKey } from 'src/entities/openai-key.entity'
-import { Repository } from 'typeorm'
+import { FindOptionsWhere, Repository } from 'typeorm'
 import dayjs from 'dayjs'
 import { ToastException } from 'src/exceptions/toast.exception'
 import { OpenAIKeyState } from 'src/config/enum.config'
@@ -12,7 +12,6 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import type { Cache } from 'cache-manager'
 import { CACHE_OPENAI_KEYS } from 'src/config/constants'
-import { isArray } from 'class-validator'
 
 @Injectable()
 export class KeyService {
@@ -45,9 +44,9 @@ export class KeyService {
     }
   }
 
-  findAll(where = {}) {
+  findAll(where: FindOptionsWhere<OpenAIKey> = {}) {
     return this.openAIKeyRepository.find({
-      where: { enable: true, ...where },
+      where,
       order: {
         createdAt: 'DESC',
       },
@@ -116,9 +115,10 @@ export class KeyService {
    * @returns
    */
   private async updateKeysCacheFormDB() {
-    const keys = await this.findAll({ state: OpenAIKeyState.Valid }).then(
-      (openAIKeys) => openAIKeys.map((x) => x.key),
-    )
+    const keys = await this.findAll({
+      state: OpenAIKeyState.Valid,
+      enable: true,
+    }).then((openAIKeys) => openAIKeys.map((x) => x.key))
 
     // 更新缓存
     if (keys.length > 0) {
@@ -145,7 +145,7 @@ export class KeyService {
     switch (true) {
       case Array.isArray(keys) && keys.length === 1:
         return keys[0]
-      case keys.length > 1: {
+      case Array.isArray(keys) && keys.length > 1: {
         KeyService.keyIndex = (KeyService.keyIndex + 1) % keys.length
 
         const key = keys[KeyService.keyIndex]
@@ -162,9 +162,10 @@ export class KeyService {
    */
   @Cron(CronExpression.EVERY_30_MINUTES)
   async syncBalances() {
-    const keys = (await this.findAll()).filter(
-      (key) => key.enable && key.state === OpenAIKeyState.Valid,
-    )
+    const keys = await this.findAll({
+      enable: true,
+      state: OpenAIKeyState.Valid,
+    })
 
     const openaiKeys = await Promise.all(
       keys.map(async (openAIKey) => {
