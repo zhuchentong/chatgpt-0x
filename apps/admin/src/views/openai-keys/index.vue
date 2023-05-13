@@ -23,10 +23,11 @@
       ref="table"
       action-align="right"
       :columns="columns"
-      :edit-forms="editsForms"
+      :edit-forms="editForms"
       :load-data="loadData"
       :pagination="pageService"
-      row-key="key"></DataTable>
+      row-key="key"
+      :search-forms="searchForms"></DataTable>
   </PageContainer>
 </template>
 
@@ -85,7 +86,20 @@ function loadData({ update }: LoadDataParams) {
   })
 }
 
-const editsForms: FormItemsOptions = [
+const searchForms: FormItemsOptions = [
+  {
+    key: 'state',
+    title: 'state',
+    render: (r) => r.select({ options: OpenAIKeyStateDict }),
+  },
+  {
+    key: 'enable',
+    title: 'enable',
+    render: (r) => r.select({ options: EnableStateDict }),
+  },
+]
+
+const editForms: FormItemsOptions = [
   {
     key: 'key',
     title: 'OpenAI KEY',
