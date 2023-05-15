@@ -5,7 +5,7 @@ import { OrderState } from 'src/config/enum.config'
 import { Order } from 'src/entities/order.entity'
 import { Product } from 'src/entities/product.entity'
 import { User } from 'src/entities/user.entity'
-import { Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 import type { Cache } from 'cache-manager'
 import { CACHE_WXPAY } from 'src/config/constants'
 
@@ -58,5 +58,22 @@ export class OrderService {
 
       return order.state
     }
+  }
+
+  async getUserOrders(user: User) {
+    return this.orderRepository.find({
+      where: {
+        user: {
+          id: user.id,
+        },
+        state: In([OrderState.Paid, OrderState.Refunded]),
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+      relations: {
+        product: true,
+      },
+    })
   }
 }

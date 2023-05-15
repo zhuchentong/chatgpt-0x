@@ -105,7 +105,7 @@ export class BalanceService {
       // 清除缓存
       await this.cacheManager.del(`${CACHE_BALANCE}:${order.user.id}`)
 
-      return this.balanceRepository.save(balance)
+      return this.balanceRepository.save(balance, { reload: true })
     } catch (ex) {
       Logger.error(ex)
     }

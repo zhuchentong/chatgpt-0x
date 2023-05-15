@@ -46,8 +46,14 @@ export enum ProductType {
 }
 
 export enum BalanceOrigin {
+  // 充值
   Code = 'CODE',
+  // 退款
   Order = 'ORDER',
+  // 注册
+  Register = 'REGISTER',
+  // 邀请
+  Invite = 'INVITE',
 }
 
 export enum CycleType {

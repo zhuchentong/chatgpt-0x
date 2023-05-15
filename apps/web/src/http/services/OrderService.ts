@@ -5,6 +5,7 @@ import type { SubmitOrderInput } from '../models/SubmitOrderInput';
 import type { SubmitOrderResponse } from '../models/SubmitOrderResponse';
 import type { SubmitWechatOrderResponse } from '../models/SubmitWechatOrderResponse';
 import type { QueryPaymentStateResponse } from '../models/QueryPaymentStateResponse';
+import type { Order } from '../models/Order';
 import { RequestService, RequestGenerateType, type RequestSendOptions, type RequestPlugin, type RequestGenerateOptions } from '@gopowerteam/request';
 export class OrderService {
   // 请求实例
@@ -119,6 +120,33 @@ export class OrderService {
       paramsPath: {
         orderId,
       },
+    }
+  
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions
+    )
+  
+  
+  }
+  
+  public getUserOrders(
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
+  ): string
+  public getUserOrders(
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<Order[]>
+  public getUserOrders(
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<Order[]> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/client/order/get-user-orders',
+      method: 'get',
     }
   
     return this.generateRequest(

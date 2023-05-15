@@ -10,14 +10,22 @@
           class="flex w-full space-x-5 items-center mr-5">
           <div class="flex flex-auto text-center space-x-2 items-center">
             <icon-park-outline:dashboard></icon-park-outline:dashboard>
-            <span>剩余次数:</span>
+            <span>本日剩余次数:</span>
             <span>{{ balance.count }}</span>
           </div>
-          <div class="flex-auto text-center space-x-2 flex items-center">
+          <div>
+            <n-button
+              text
+              type="primary"
+              @click="() => (showUserCenter = true)">
+              详情
+            </n-button>
+          </div>
+          <!-- <div class="flex-auto text-center space-x-2 flex items-center">
             <icon-park-outline:calendar></icon-park-outline:calendar>
             <span>剩余天数:</span>
             <span>{{ balance.time }}</span>
-          </div>
+          </div> -->
         </div>
       </template>
       <div
@@ -25,14 +33,14 @@
         class="flex w-full space-x-5 items-center justify-around mb-5">
         <div class="flex text-center space-x-2 items-center">
           <icon-park-outline:dashboard></icon-park-outline:dashboard>
-          <span>剩余次数:</span>
+          <span>本日剩余次数:</span>
           <span>{{ balance.count }}</span>
         </div>
-        <div class="text-center space-x-2 flex items-center">
+        <!-- <div class="text-center space-x-2 flex items-center">
           <icon-park-outline:calendar></icon-park-outline:calendar>
           <span>剩余天数:</span>
           <span>{{ balance.time }}</span>
-        </div>
+        </div> -->
       </div>
       <div class="active-code-container">
         <n-form
@@ -114,6 +122,12 @@
           style="height: 30px" />
       </div>
     </n-modal>
+
+    <n-modal v-model:show="showUserCenter">
+      <UserCenter
+        tab="balances"
+        @close="() => (showUserCenter = false)"></UserCenter>
+    </n-modal>
   </div>
 </template>
 
@@ -136,6 +150,7 @@ import type { FormInst } from 'naive-ui'
 import { useRequest } from 'virtual:request'
 import dayjs from 'dayjs'
 import minMax from 'dayjs/plugin/minMax'
+import UserCenter from './user-center.vue'
 import { useStore } from '@/store'
 import { OrderState, ProductType } from '@/config/enum.config'
 import type { Product } from '@/http/models/Product'
@@ -161,6 +176,7 @@ const messageEventBus = useEventBus<{
 
 let order = $ref<SubmitOrderResponse>()
 let showPayment = $ref(false)
+const showUserCenter = $ref(false)
 const formModel = reactive({
   activeCode: '',
 })

@@ -38,6 +38,7 @@ export class Balance extends pipe(
   @OneToOne(() => Order, {
     nullable: true,
   })
+  @JoinColumn({ name: 'order_id' })
   order: Order
 
   @ApiProperty({ description: '初始次数' })

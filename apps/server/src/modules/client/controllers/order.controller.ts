@@ -20,6 +20,7 @@ import { User } from 'src/entities/user.entity'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import type { Cache } from 'cache-manager'
 import * as qrcode from 'qrcode'
+import { Order } from 'src/entities/order.entity'
 @Controller('order')
 @ApiTags('order')
 @ApiSecurity('access-token')
@@ -108,5 +109,15 @@ export class OrderController {
     return {
       state,
     }
+  }
+
+  @Get('get-user-orders')
+  @ApiOperation({
+    description: '获取用户订单',
+    operationId: 'getUserOrders',
+  })
+  @ApiOkResponse({ type: Order, isArray: true })
+  async getUserOrders(@RequestUser() user: User) {
+    return this.orderService.getUserOrders(user)
   }
 }

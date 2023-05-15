@@ -71,30 +71,16 @@
         </template>
         邀请好友
       </NButton>
+      <NButton
+        block
+        :focusable="false"
+        @click="() => (showUserCenter = true)">
+        <template #icon>
+          <icon-park-outline:people></icon-park-outline:people>
+        </template>
+        个人中心
+      </NButton>
     </div>
-    <n-divider class="m-5!" />
-    <n-popover trigger="hover">
-      <template #trigger>
-        <div
-          class="contact flex flex-row space-x-3 justify-center cursor-pointer m-auto">
-          <div>
-            <NAvatar
-              round
-              size="large"
-              src="/avatar.jpg"></NAvatar>
-          </div>
-          <div class="space-y-1">
-            <div class="text-bold text-sm">Jwdstef</div>
-            <div class="text-gray text-xs">添加微信加入交流群</div>
-          </div>
-        </div>
-      </template>
-      <div>
-        <img
-          class="w-300px"
-          :src="ContactImage" />
-      </div>
-    </n-popover>
   </div>
   <n-drawer
     v-model:show="showSystemSetting"
@@ -109,6 +95,9 @@
   </n-modal>
   <n-modal v-model:show="showUserInvite">
     <UserInvite @close="() => (showUserInvite = false)"></UserInvite>
+  </n-modal>
+  <n-modal v-model:show="showUserCenter">
+    <UserCenter @close="() => (showUserCenter = false)"></UserCenter>
   </n-modal>
 </template>
 
@@ -143,12 +132,13 @@ import { useStore } from '@/store'
 import SystemSetting from '@/components/system-setting.vue'
 import UserPayment from '@/components/user-payment.vue'
 import UserInvite from '@/components/user-invite.vue'
-import ContactImage from '@/assets/image/contact.jpg'
+import UserCenter from '@/components/user-center.vue'
 
 const store = useStore()
 const showSystemSetting = ref(false)
 const showUserPayment = ref(false)
 const showUserInvite = ref(false)
+const showUserCenter = ref(false)
 const colorMode = useColorMode()
 
 function onChangeAssistant(id: string) {

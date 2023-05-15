@@ -286,6 +286,14 @@ export class BalanceService {
           user: { id: userId },
         },
       ],
+      order: {
+        createdAt: 'DESC',
+      },
+      relations: {
+        order: {
+          product: true,
+        },
+      },
     })
   }
 

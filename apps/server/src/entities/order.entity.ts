@@ -1,4 +1,4 @@
-import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm'
+import { Entity, Column, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 import { pipe } from 'ramda'
 import {
   EntityWithTime,
@@ -11,6 +11,7 @@ import { EntityWithCreator } from 'src/common/typeorm/entity/entity-with-creator
 import { OrderState } from 'src/config/enum.config'
 import { Product } from './product.entity'
 import { User } from './user.entity'
+import { Balance } from './balance.entity'
 
 @Entity('order')
 export class Order extends pipe(

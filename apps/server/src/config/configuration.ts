@@ -49,6 +49,7 @@ export default () => ({
     aeskey: process.env.WXMP_AESKEY,
   },
   wxpay: {
+    appid: process.env.WECHAT_PAY_APPID,
     mchId: process.env.WECHAT_PAY_MCHID,
     serialNo: process.env.WECHAT_PAY_SERIAL,
     keyPath: process.env.WECHAT_PAY_KEYPATH,
