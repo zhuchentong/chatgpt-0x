@@ -7,7 +7,7 @@
       :max-height="500">
       <template #empty>
         <n-empty
-          description="还没有邀请记录哦"
+          description="还没有可用余额哦"
           size="large"></n-empty>
       </template>
     </n-data-table>
