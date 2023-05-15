@@ -4,7 +4,8 @@
       :bordered="false"
       :columns="columns"
       :data="orders"
-      :max-height="500">
+      :max-height="500"
+      :min-height="300">
       <template #empty>
         <n-empty
           description="还没有订单哦"
@@ -44,18 +45,21 @@ const columns: TableColumn<Order>[] = [
   {
     title: '套餐名称',
     align: 'center',
+    width: 120,
     key: 'product.name',
   },
   {
     title: '金额',
     key: 'product.price',
     align: 'center',
+    width: 100,
     render: (record) => `${record.product.price.toFixed(2)} 元`,
   },
   {
     title: '订单时间',
     align: 'center',
     key: 'createdAt',
+    width: 200,
     render: (record) => dayjs(record.createdAt).format('YYYY-MM-DD HH:mm:ss'),
   },
 ]

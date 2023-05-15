@@ -4,7 +4,8 @@
       :bordered="false"
       :columns="columns"
       :data="balances"
-      :max-height="500">
+      :max-height="500"
+      :min-height="300">
       <template #empty>
         <n-empty
           description="还没有可用余额哦"
@@ -45,23 +46,27 @@ const columns: TableColumn<Balance>[] = [
   {
     title: '余额来源',
     align: 'center',
+    width: 100,
     key: 'origin',
     render: (record) => BalanceOriginDict.get(record.origin),
   },
   {
     title: '初始次数',
     align: 'center',
+    width: 80,
     key: 'startCount',
   },
   {
     title: '剩余次数',
     align: 'center',
+    width: 80,
     key: 'currentCount',
   },
   {
     title: '有效期',
     align: 'center',
     key: 'endTime',
+    width: 120,
     render: (record) =>
       record.startTime
         ? dayjs(record.startTime).format('YYYY-MM-DD')

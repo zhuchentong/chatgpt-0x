@@ -5,9 +5,15 @@
       :on-close="() => $emit('close')"
       title="个人中心">
       <template #header-extra>
-        <div v-if="store.user?.current?.id">
-          <span>ID:</span>
-          <span>{{ store.user?.current?.id }}</span>
+        <div
+          v-if="store.user?.current?.id && store.app.desktop"
+          class="desktop:w-auto mobile:w-200px">
+          ID: {{ store.user?.current?.id }}
+        </div>
+      </template>
+      <template #action>
+        <div v-if="store.user?.current?.id && store.app.mobile">
+          ID: {{ store.user?.current?.id }}
         </div>
       </template>
       <n-tabs
