@@ -50,7 +50,7 @@
           :precision="2"
           show-group-separator
           title="总订单金额"
-          :value="orderStatics.totalOrdersCount / 100">
+          :value="orderStatics.totalOrdersAmount / 100">
           <template #suffix>元</template>
         </AStatistic>
       </div>
