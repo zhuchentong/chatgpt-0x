@@ -109,7 +109,11 @@ export class OpenaiController {
           //  获取新的Key
           key = await this.keyService.getOpenAIKey()
 
-          this.logger.debug(`开始第${retryCount}次重试:`, { key })
+          this.logger.debug(`开始第${retryCount}次重试:`, {
+            key,
+            user: user.id,
+            ex: JSON.stringify(ex),
+          })
 
           // 重试通化
           sendChatMessage()

@@ -345,7 +345,7 @@ export class OpenAIService {
       let timeout = setTimeout(
         () => {
           abortController.abort()
-          reject({ timeout: true })
+          reject({ timeout: true, messages })
         },
         options.drawable ? 1000 * 15 : 1000 * 10,
       )
