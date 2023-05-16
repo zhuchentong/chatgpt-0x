@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { PageOrder } from '../models/PageOrder';
+import type { OrderStaticial } from '../models/OrderStaticial';
 import { RequestService, RequestGenerateType, type RequestSendOptions, type RequestPlugin, type RequestGenerateOptions } from '@gopowerteam/request';
 export class OrderService {
   // 请求实例
@@ -55,6 +56,36 @@ export class OrderService {
       path: '/api/admin/order',
       method: 'get',
       paramsQuery: requestQuery,
+    }
+  
+    return this.generateRequest(
+      requestSendOptions,
+      requestPlugins,
+      requestGenerateOptions
+    )
+  
+  
+  }
+  
+  /**
+   * 获取订单统计信息
+   */
+  public getOrderStaticial(
+    requestPlugins: RequestPlugin[],
+    requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
+  ): string
+  public getOrderStaticial(
+    requestPlugins?: RequestPlugin[],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<OrderStaticial>
+  public getOrderStaticial(
+    requestPlugins: RequestPlugin[] = [],
+    requestGenerateOptions?: RequestGenerateOptions
+  ): Promise<OrderStaticial> | string {
+    const requestSendOptions = {
+      service: this.service,
+      path: '/api/admin/order/order-staticial',
+      method: 'get',
     }
   
     return this.generateRequest(

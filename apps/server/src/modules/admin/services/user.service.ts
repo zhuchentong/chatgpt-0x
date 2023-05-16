@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import dayjs from 'dayjs'
 import { QueryInputParam } from 'src/common/typeorm/interfaces'
 import { buildPaginator } from 'src/common/typeorm/query/paginator'
 import { OrderMode, PaginatorMode } from 'src/config/enum.config'
 import { User } from 'src/entities/user.entity'
-import { Repository } from 'typeorm'
+import { Between, Repository } from 'typeorm'
 
 @Injectable()
 export class UserService {
@@ -35,5 +36,34 @@ export class UserService {
     })
 
     return paginator.paginate(builder)
+  }
+
+  async getUserStaticial() {
+    // 历史订单总数
+    const getTotalUsers = await this.userRepository.countBy({
+      enable: true,
+    })
+
+    // 历史订单总数
+    const getWeekUsers = this.userRepository.countBy({
+      enable: true,
+      createdAt: Between(dayjs().startOf('week').toDate(), new Date()),
+    })
+
+    // 历史订单总数
+    const getDayUsers = this.userRepository.countBy({
+      enable: true,
+      createdAt: Between(dayjs().startOf('day').toDate(), new Date()),
+    })
+
+    return Promise.all([getDayUsers, getWeekUsers, getTotalUsers]).then(
+      ([dayUsersCount, weekUsersCount, totalUsersCount]) => {
+        return {
+          dayUsersCount,
+          weekUsersCount,
+          totalUsersCount,
+        }
+      },
+    )
   }
 }

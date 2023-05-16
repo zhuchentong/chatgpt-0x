@@ -4,11 +4,12 @@ import { QueryInputParam } from 'src/common/typeorm/interfaces'
 import { buildPaginator } from 'src/common/typeorm/query/paginator'
 import { OrderMode, OrderState, PaginatorMode } from 'src/config/enum.config'
 import { Order } from 'src/entities/order.entity'
-import { Repository } from 'typeorm'
+import { Between, Repository } from 'typeorm'
 import { BalanceService } from './balance.service'
 import { CACHE_WXPAY } from 'src/config/constants'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import type { Cache } from 'cache-manager'
+import dayjs from 'dayjs'
 @Injectable()
 export class OrderService {
   constructor(
@@ -92,5 +93,47 @@ export class OrderService {
       // 更新用户余额
       await this.balanceService.createByOrder(order)
     }
+  }
+
+  async getOrderStaticial() {
+    // 历史订单总数
+    const getTotalOrders = this.orderRepository.findAndCountBy({
+      state: OrderState.Paid,
+    })
+
+    // 历史订单总数
+    const getWeekOrders = this.orderRepository.findAndCountBy({
+      state: OrderState.Paid,
+      createdAt: Between(dayjs().startOf('week').toDate(), new Date()),
+    })
+
+    // 历史订单总数
+    const getDayOrders = this.orderRepository.findAndCountBy({
+      state: OrderState.Paid,
+      createdAt: Between(dayjs().startOf('day').toDate(), new Date()),
+    })
+
+    return Promise.all([getDayOrders, getWeekOrders, getTotalOrders]).then(
+      ([
+        [dayOrders, dayOrdersCount],
+        [weekOrders, weekOrdersCount],
+        [totalOrders, totalOrdersCount],
+      ]) => {
+        return {
+          dayOrdersAmount: dayOrders.reduce((acc, cur) => acc + cur.amount, 0),
+          dayOrdersCount,
+          weekOrdersAmount: weekOrders.reduce(
+            (acc, cur) => acc + cur.amount,
+            0,
+          ),
+          weekOrdersCount,
+          totalOrdersAmount: totalOrders.reduce(
+            (acc, cur) => acc + cur.amount,
+            0,
+          ),
+          totalOrdersCount,
+        }
+      },
+    )
   }
 }

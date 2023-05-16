@@ -10,6 +10,8 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AButton: typeof import('@arco-design/web-vue')['Button']
+    ACard: typeof import('@arco-design/web-vue')['Card']
+    ADivider: typeof import('@arco-design/web-vue')['Divider']
     ADoption: typeof import('@arco-design/web-vue')['Doption']
     ADropdown: typeof import('@arco-design/web-vue')['Dropdown']
     AForm: typeof import('@arco-design/web-vue')['Form']
@@ -23,6 +25,7 @@ declare module '@vue/runtime-core' {
     AMenu: typeof import('@arco-design/web-vue')['Menu']
     AMenuItem: typeof import('@arco-design/web-vue')['MenuItem']
     ASpace: typeof import('@arco-design/web-vue')['Space']
+    AStatistic: typeof import('@arco-design/web-vue')['Statistic']
     ASubMenu: typeof import('@arco-design/web-vue')['SubMenu']
     ATabPane: typeof import('@arco-design/web-vue')['TabPane']
     ATabs: typeof import('@arco-design/web-vue')['Tabs']

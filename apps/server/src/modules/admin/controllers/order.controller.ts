@@ -19,6 +19,7 @@ import { Order } from 'src/entities/order.entity'
 import { FindOrderInput } from '../dtos/order.dto'
 import { Public } from 'src/decorators/public.decorator'
 import { WXPayService } from 'src/shared/wechat/services/wxpay.service'
+import { OrderStaticial } from '../responses/order.response'
 
 @Controller('order')
 @ApiTags('order')
@@ -34,6 +35,16 @@ export class OrderController {
   @ApiOkResponse({ type: toPageResponse(Order) })
   findAll(@Query() input: FindOrderInput) {
     return this.orderService.findAll(input.params)
+  }
+
+  @Get('order-staticial')
+  @ApiOperation({
+    operationId: 'getOrderStaticial',
+    summary: '获取订单统计信息',
+  })
+  @ApiOkResponse({ type: OrderStaticial })
+  getOrderStaticial() {
+    return this.orderService.getOrderStaticial()
   }
 
   @Public()
