@@ -65,7 +65,6 @@ import dayjs from 'dayjs'
 import minMax from 'dayjs/plugin/minMax'
 import { useMessage } from 'naive-ui'
 import type { TableColumn } from 'naive-ui/es/data-table/src/interface'
-import ClipboardJS from 'clipboard'
 import { useStore } from '@/store'
 import type { Invite } from '@/http/models/Invite'
 
@@ -80,9 +79,9 @@ const inviteService = useRequest((service) => service.InviteService)
 let invites = $ref<Invite[]>([])
 
 const message = useMessage()
-const clipboard = useClipboard({ legacy: true })
 
 const inviteLink = `${location.origin}?inviter=${store.user.current?.id}`
+const clipboard = useClipboard({ legacy: true, source: inviteLink })
 
 const columns: TableColumn<Invite>[] = [
   {
@@ -113,32 +112,8 @@ async function getInvites() {
 }
 
 function onCopyLink() {
-  // copy(inviteLink, {
-  //   debug: true,
-  //   message: '123',
-  //   onCopy() {
-  //     message.success('邀请链接已复制到粘贴板,邀请好友注册有奖励哦~')
-  //   },
-  // })
-
-  const clipboard = new ClipboardJS('.copy-btn', {
-    text(trigger) {
-      console.log('asdasdasd')
-      return '12312312'
-    },
-  })
-
-  clipboard.on('success', function (e) {
-    console.info('Action:', e.action)
-    console.info('Text:', e.text)
-    console.info('Trigger:', e.trigger)
-
-    e.clearSelection()
-  })
-
-  clipboard.on('error', function (e) {
-    console.error('Action:', e.action)
-    console.error('Trigger:', e.trigger)
+  clipboard.copy().then(() => {
+    message.success('邀请链接已复制到粘贴板,邀请好友注册有奖励哦~')
   })
 }
 
