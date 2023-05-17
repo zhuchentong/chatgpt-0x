@@ -95,14 +95,17 @@ export class WechatService {
   }
   
   public redirectAuthorize(
+    requestQuery: RequestQueryParams.RedirectAuthorize,
     requestPlugins: RequestPlugin[],
     requestGenerateOptions: RequestGenerateOptions & { type: RequestGenerateType.URL }
   ): string
   public redirectAuthorize(
+    requestQuery: RequestQueryParams.RedirectAuthorize,
     requestPlugins?: RequestPlugin[],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void>
   public redirectAuthorize(
+    requestQuery: RequestQueryParams.RedirectAuthorize,
     requestPlugins: RequestPlugin[] = [],
     requestGenerateOptions?: RequestGenerateOptions
   ): Promise<void> | string {
@@ -110,6 +113,7 @@ export class WechatService {
       service: this.service,
       path: '/api/wechat/redirect-authorize',
       method: 'get',
+      paramsQuery: requestQuery,
     }
   
     return this.generateRequest(
@@ -168,6 +172,12 @@ namespace RequestQueryParams {
     nonce: string;
     openid: string;
     appId: string;
+  }
+  export type RedirectAuthorize = {
+    /**
+     * 邀请人
+     */
+    inviter: string;
   }
   export type GetJSSignature = {
     url: string;

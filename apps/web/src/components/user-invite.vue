@@ -80,7 +80,7 @@ let invites = $ref<Invite[]>([])
 
 const message = useMessage()
 
-const inviteLink = `${location.origin}?inviter=${store.user.current?.id}`
+const inviteLink = `${location.origin}/invite/${store.user.current?.id}`
 const clipboard = useClipboard({ legacy: true, source: inviteLink })
 
 const columns: TableColumn<Invite>[] = [

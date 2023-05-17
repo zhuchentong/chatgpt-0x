@@ -103,15 +103,17 @@ const {
 
 function requestLoginWechat() {
   const openid = route.query.openid as string
-  const inviter =  route.query.inviter as string|| sessionStorage.getItem('inviter') as string
+  const inviter =
+    (route.query.inviter as string) ||
+    (sessionStorage.getItem('inviter') as string)
 
-  if(route.query.inviter){
+  if (route.query.inviter) {
     sessionStorage.setItem('inviter', route.query.inviter as string)
   }
 
   if (!openid) {
     // redirect
-    window.location.href = wechatService.redirectAuthorize([], {
+    window.location.href = wechatService.redirectAuthorize({ inviter }, [], {
       type: RequestGenerateType.URL,
     })
 

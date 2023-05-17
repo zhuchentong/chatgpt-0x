@@ -27,6 +27,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
 import { nanoid } from 'nanoid'
 import { JSSignatureResponse } from '../responses/wxmp.response'
+import { AuthorizeInput } from '../dtos/wxmp.dto'
 
 @ApiTags('wechat')
 @Controller()
@@ -87,7 +88,7 @@ export class WXMPController {
     description: '重定向授权',
   })
   @Redirect()
-  async authorize(@Req() req: FastifyRequest) {
+  async authorize(@Req() req: FastifyRequest, @Query() input: AuthorizeInput) {
     const host = req.headers.host
     const referer = req.headers.referer
     console.log(`https://${host}/wechat/authorize`)
@@ -97,6 +98,7 @@ export class WXMPController {
       encodeURIComponent(
         JSON.stringify({
           referer,
+          inviter: input.inviter,
         }),
       ),
     )
@@ -111,7 +113,7 @@ export class WXMPController {
     @Query('code') code: string,
     @Query('state') state: string,
   ) {
-    const { referer } = JSON.parse(decodeURIComponent(state))
+    const { referer, inviter } = JSON.parse(decodeURIComponent(state))
 
     const openid = await SnsAccessTokenApi.getSnsAccessToken(code).then(
       async (data) => {
@@ -126,7 +128,13 @@ export class WXMPController {
       },
     )
 
-    return { url: `${referer.replace(/\/$/, '')}/login?openid=${openid}` }
+    let url = `${referer.replace(/\/$/, '')}/login?openid=${openid}`
+
+    if (inviter) {
+      url += `&inviter=${inviter}`
+    }
+
+    return { url }
   }
 
   @Public()
