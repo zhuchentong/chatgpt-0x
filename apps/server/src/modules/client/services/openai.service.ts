@@ -59,7 +59,9 @@ export class OpenAIService {
           break
         }
 
-        messages.unshift({ role: message.role, content: message.content })
+        if (!message.image) {
+          messages.unshift({ role: message.role, content: message.content })
+        }
 
         if (messages.length >= maxDepth) {
           break
