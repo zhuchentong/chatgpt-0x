@@ -177,7 +177,7 @@ namespace RequestQueryParams {
     /**
      * 邀请人
      */
-    inviter: string;
+    inviter?: string;
   }
   export type GetJSSignature = {
     url: string;
