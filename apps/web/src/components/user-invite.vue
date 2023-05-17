@@ -15,6 +15,7 @@
             path="activeCode">
             <n-input-group>
               <n-input
+                ref="copyInput"
                 readonly
                 :value="inviteLink"></n-input>
               <n-button
@@ -75,7 +76,7 @@ const form = $(templateRef<FormInst>('form'))
 const width = computed(() => (store.app.desktop ? '50%' : '90%'))
 
 const inviteService = useRequest((service) => service.InviteService)
-
+const copyInput = $(templateRef<HTMLInputElement>('copyInput'))
 let invites = $ref<Invite[]>([])
 
 const message = useMessage()
@@ -112,7 +113,14 @@ async function getInvites() {
 }
 
 function onCopyLink() {
-  clipboard.copy().then(() => {
+  clipboard.copy(inviteLink).then(() => {
+    try {
+      copyInput.select() //选择要复制的内容
+      document.execCommand('Copy')
+    } catch (e) {
+      console.error(e)
+    }
+
     message.success('邀请链接已复制到粘贴板,邀请好友注册有奖励哦~')
   })
 }
