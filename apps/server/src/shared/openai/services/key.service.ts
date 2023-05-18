@@ -74,10 +74,11 @@ export class KeyService {
     openAiKey.exceptionTimes = 1 + (openAiKey.exceptionTimes || 0)
     openAiKey.exceptionTotal = 1 + (openAiKey.exceptionTotal || 0)
 
-    //  5次异常后，标记为无效
-    if (openAiKey.exceptionTimes >= 5) {
-      openAiKey.state = OpenAIKeyState.Invalid
-    }
+    // 5次异常后，标记为无效
+    // 停止修改状态标志
+    // if (openAiKey.exceptionTimes >= 5) {
+    //   openAiKey.state = OpenAIKeyState.Invalid
+    // }
 
     return openAiKey.save({ reload: true })
   }

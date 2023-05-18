@@ -118,7 +118,7 @@ export class OpenAIService {
         temperature: 0.8,
         top_p: 1.0,
         presence_penalty: 1.0,
-        max_tokens: 2000,
+        // max_tokens: 2000,
         messages,
         stream,
       }),
