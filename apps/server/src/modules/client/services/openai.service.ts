@@ -64,7 +64,7 @@ export class OpenAIService {
         if (!message.image) {
           tokens += message.content.length
 
-          // 监测Token上限
+          // 监测Token上限 4000
           if (tokens >= maxTokens) {
             break
           }
