@@ -46,9 +46,11 @@ export class OpenAIService {
     const messages: Message[] = []
     // 最大深度
     const maxDepth = 14
+    const maxTokens = 4000
 
     if (requestMessage.parentMessageId) {
       let id = requestMessage.parentMessageId
+      let tokens = requestMessage.content.length
 
       do {
         const message = await this.cacheManager.get<Message>(
@@ -60,6 +62,13 @@ export class OpenAIService {
         }
 
         if (!message.image) {
+          tokens += message.content.length
+
+          // 监测Token上限
+          if (tokens >= maxTokens) {
+            break
+          }
+
           messages.unshift({ role: message.role, content: message.content })
         }
 
