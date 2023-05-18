@@ -241,7 +241,7 @@ export class OpenAIService {
         body: JSON.stringify({
           prompt: message,
           n: 1,
-          size: '256x256',
+          size: '512x512',
           response_format: 'b64_json',
         }),
         signal,
