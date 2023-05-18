@@ -90,7 +90,9 @@ export class KeyService {
    */
   async getKeyBalance(key: string) {
     // 查使用量
-    const { apiurl } = this.config.get('openai')
+    let { apiurl } = this.config.get('openai')
+    apiurl = apiurl.replace('proxy-sse', 'proxy')
+
     // 认证信息
     const headers = {
       Authorization: `Bearer ${key}`,
