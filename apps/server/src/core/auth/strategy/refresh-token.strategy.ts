@@ -70,6 +70,11 @@ export class RefreshTokenStrategy extends PassportStrategy(
         token,
       })
       throw new UnauthorizedException('不存在的RefreshToken')
+    } else {
+      // 更新缓存过期时间
+      await this.cacheManager.set(`${cacheHeader}:${token}`, user.id, {
+        ttl: 60 * 60 * 24 * 30,
+      })
     }
 
     if (user) {

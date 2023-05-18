@@ -14,7 +14,8 @@ export class RedisService implements CacheOptionsFactory {
     return {
       store: redisStore,
       ...this.configService.get('redis'),
-      ttl: 60 * 60 * 24,
+      // TODO: 临时设置为30天
+      ttl: 60 * 60 * 24 * 30,
     }
   }
 }
