@@ -18,8 +18,8 @@ export class OpenAIKey extends pipe(
   @PrimaryColumn()
   key: string
 
-  @ApiProperty({ description: '总额度' })
-  @Column()
+  @ApiProperty({ description: '总额度', type: 'number' })
+  @Column({ type: 'float8', nullable: true })
   limit: number
 
   @ApiProperty({ description: '使用量', type: 'number' })
@@ -40,10 +40,17 @@ export class OpenAIKey extends pipe(
   exceptionTotal: number
 
   @ApiProperty({ description: '异常次数' })
-  @Column({ name: 'exception_times', default: 0, nullable: true })
+  @Column({
+    name: 'exception_times',
+    default: 0,
+    nullable: true,
+  })
   exceptionTimes: number
 
   @ApiProperty({ description: '状态' })
   @Column({ enum: OpenAIKeyState, default: OpenAIKeyState.Valid })
   state: OpenAIKeyState
+
+  @ApiProperty({ description: '默认key', default: false })
+  default: boolean
 }

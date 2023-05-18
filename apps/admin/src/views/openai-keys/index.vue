@@ -73,7 +73,7 @@ function onCreate() {
     },
     appendRowKey: true,
     submit: (data) => {
-      keyService.createKey(data as any).then(() => {
+      return keyService.createKey(data as any).then(() => {
         table.reload()
       })
     },

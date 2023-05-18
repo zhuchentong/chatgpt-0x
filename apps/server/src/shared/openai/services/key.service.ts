@@ -29,16 +29,22 @@ export class KeyService {
   async create(key: string) {
     try {
       const { expireAt, usage, limitUsd } = await this.getKeyBalance(key)
+      const openAIKey = await this.openAIKeyRepository.save(
+        {
+          key,
+          expireAt,
+          usage,
+          limit: limitUsd,
+          state:
+            limitUsd > usage ? OpenAIKeyState.Valid : OpenAIKeyState.Invalid,
+        },
+        { reload: true },
+      )
 
       // 清除缓存
       await this.cacheManager.del(CACHE_OPENAI_KEYS)
 
-      return this.openAIKeyRepository.save({
-        key,
-        expireAt,
-        usage,
-        limit: limitUsd,
-      })
+      return openAIKey
     } catch (ex) {
       throw new ToastException('当前OpenAIKey无效')
     }
@@ -185,7 +191,6 @@ export class KeyService {
   async syncBalances() {
     const keys = await this.findAll({
       enable: true,
-      state: OpenAIKeyState.Valid,
     })
 
     const openaiKeys = await Promise.all(
@@ -198,6 +203,8 @@ export class KeyService {
           openAIKey.expireAt = new Date(expireAt)
           openAIKey.usage = usage
           openAIKey.limit = limitUsd
+          openAIKey.state =
+            limitUsd > usage ? OpenAIKeyState.Valid : OpenAIKeyState.Invalid
 
           await openAIKey.save()
         } catch (ex) {
