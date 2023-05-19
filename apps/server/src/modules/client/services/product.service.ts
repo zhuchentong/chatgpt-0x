@@ -10,7 +10,7 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
   ) {}
   getAll() {
-    return this.productRepository.find()
+    return this.productRepository.findBy({ enable: true })
   }
 
   findOne(id: string) {
