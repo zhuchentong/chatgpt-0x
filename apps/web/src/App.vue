@@ -20,7 +20,7 @@ import { type BasicColorSchema, useColorMode } from '@vueuse/core'
 import { appConfig } from './config/app.config'
 import { useStore } from '@/store'
 
-const colorMode = useColorMode()
+const colorMode = useColorMode({ initialValue: 'dark' })
 
 const store = useStore()
 const title = computed(() => {

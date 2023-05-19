@@ -27,7 +27,7 @@
     </n-form-item> -->
       <n-form-item label="主题">
         <n-select
-          v-model:value="colorMode"
+          v-model:value="colorStore"
           :on-update:value="changeColorMode"
           :options="[
             { value: 'dark', label: '深色' },
@@ -58,10 +58,10 @@ const dialog = useDialog()
 const store = useStore()
 
 const form = $(templateRef<FormInst>('form'))
-const colorMode = useColorMode()
+const { store: colorStore } = useColorMode()
 
 function changeColorMode(value: 'dark' | 'light' | 'auto') {
-  colorMode.value = value
+  colorStore.value = value
 }
 
 /**

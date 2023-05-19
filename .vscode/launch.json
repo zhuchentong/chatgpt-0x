@@ -10,6 +10,22 @@
       "name": "Debug Server",
       "port": 9229,
       "restart": true
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "chatgpt-web",
+      "url": "http://ac-web.1zhizu.com",
+      // "webRoot": "${workspaceFolder}"
+      "webRoot": "${workspaceFolder}/apps/web"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "chatgpt-admin",
+      "url": "http://ac-admin.1zhizu.com",
+      // "webRoot": "${workspaceFolder}"
+      "webRoot": "${workspaceFolder}/apps/admin"
     }
   ]
 }
