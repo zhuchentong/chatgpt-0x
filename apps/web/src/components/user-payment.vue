@@ -83,9 +83,9 @@
             :key="product.id">
             <n-card>
               <div class="text-center space-y-2 p-5 rounded">
-                <div class="font-bold">{{ product.name }}</div>
+                <div class="font-bold text-[18px]">{{ product.name }}</div>
                 <div
-                  class="space-x-2 pb-5"
+                  class="space-x-2 pb-5 leading-loose text-[14px] min-h-[60px] flex-center"
                   v-html="product.description"></div>
                 <div class="space-x-2 pb-5">
                   <span class="price">
@@ -138,6 +138,7 @@
 
 .price {
   font-size: 16px;
+  font-weight: bold;
   &::before {
     content: '¥';
     padding-right: 5px;
