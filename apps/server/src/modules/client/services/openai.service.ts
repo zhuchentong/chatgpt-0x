@@ -47,42 +47,39 @@ export class OpenAIService {
     // 消息队列
     const messages: Message[] = []
     // 最大深度
-    const maxDepth = 14
+    const maxDepth = 20
     const maxTokens = 4000
 
     if (requestMessage.parentMessageId) {
       let id = requestMessage.parentMessageId
       let tokens = requestMessage.content.length
 
-      do {
+      message: do {
         const message = await this.cacheManager.get<Message>(
           `${CACHE_MESSAGE}:${id}`,
         )
 
-        if (!message) {
-          break
-        }
-
-        if (!message.image) {
+        if (message && !message.image) {
           tokens += message.content.length
 
-          // 监测Token上限 4000
-          if (tokens >= maxTokens) {
+          if (tokens < maxTokens) {
+            messages.unshift({ role: message.role, content: message.content })
+          } else {
+            // 消息队列超过最大长度
             break
           }
-
-          messages.unshift({ role: message.role, content: message.content })
         }
 
+        // 消息队列超过最大深度
         if (messages.length >= maxDepth) {
           break
         }
 
-        if (!message.parentMessageId) {
+        if (message?.parentMessageId) {
+          id = message.parentMessageId
+        } else {
           break
         }
-
-        id = message.parentMessageId
       } while (true)
     }
 
@@ -366,6 +363,8 @@ export class OpenAIService {
         },
         options.drawable ? 1000 * 15 : 1000 * 10,
       )
+
+      let startResponse = false
       // 响应消息
       const onResponse = async (message: string, image?: boolean) => {
         if (timeout) {
@@ -406,6 +405,24 @@ export class OpenAIService {
             ...responseMessage,
             detail: response,
           })
+        }
+
+        if (!startResponse) {
+          startResponse = true
+          // 初始缓存响应消息
+          await this.cacheManager.set(
+            `${CACHE_MESSAGE}:${responseMessage.id}`,
+            {
+              role: 'assistant',
+              id: responseMessage.id,
+              content: '',
+              parentMessageId: responseMessage.parentMessageId,
+              image: responseMessage.image,
+            },
+            {
+              ttl: MessageExpiresIn,
+            },
+          )
         }
       }
 
