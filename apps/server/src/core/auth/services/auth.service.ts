@@ -187,8 +187,8 @@ export class AuthService {
 
     // 缓存AccessToken
     await this.cacheManager.set(
-      `${CACHE_ADMIN}:${administrator.id}`,
-      refreshToken,
+      `${CACHE_ADMIN}:${refreshToken}`,
+      administrator.id,
       { ttl: this.jwtConfig.refreshTokenExpiresIn },
     )
 
