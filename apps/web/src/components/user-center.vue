@@ -37,7 +37,7 @@
             <img
               class="w-300px"
               :src="ContactImage" />
-            <div class="mt-[-20px]">
+            <div class="mt-[5px]">
               扫码加入
               <span class="font-bold">奥创20X</span>
               微信交流群

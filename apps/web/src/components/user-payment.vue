@@ -61,7 +61,7 @@
                   () =>
                     (formModel.activeCode = formModel.activeCode.toUpperCase())
                 "
-                placeholder="关注公众号或微信群不定时发放兑换码"></n-input>
+                placeholder="关注公众号或微信群不定时发放兑换码(个人中心->联系我们)"></n-input>
               <n-button
                 type="primary"
                 @click="onUseAciveCode">
