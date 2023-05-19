@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { AuthService } from 'src/core/auth/services/auth.service'
 import { PaginatorMode } from 'src/config/enum.config'
@@ -12,7 +11,6 @@ import { Repository } from 'typeorm'
 export class AdministratorService {
   constructor(
     private readonly authService: AuthService,
-    private readonly config: ConfigService,
     @InjectRepository(Administrator)
     private administratorRepository: Repository<Administrator>,
   ) {}

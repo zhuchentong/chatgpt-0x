@@ -17,7 +17,7 @@ import { RefreshTokenGuard } from 'src/core/auth/guards/refresh-token.guard'
 import { AuthService } from 'src/core/auth/services/auth.service'
 import { Public } from 'src/decorators/public.decorator'
 import { RequestUser } from 'src/decorators/request-user.decorator'
-import { ConfigService } from '@nestjs/config'
+import { ConfigType } from '@nestjs/config'
 import {
   AppBaseResponse,
   QrcodeLoginResponse,
@@ -43,15 +43,17 @@ import { AppOrigin } from 'src/config/enum.config'
 import { WXMPService } from 'src/shared/wechat/services/wxmp.service'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { CACHE_MAIL_CODE, CACHE_QRCODE_LOGIN } from 'src/config/constants'
+import { QiniuConfig } from 'src/config/configurations'
 @Controller('app')
 @ApiTags('app')
 @ApiSecurity('access-token')
 export class AppController {
   constructor(
-    private readonly config: ConfigService,
     private readonly authService: AuthService,
     private readonly emailService: EmailService,
     private readonly userService: UserService,
+    @Inject(QiniuConfig.KEY)
+    private readonly qiniuConfig: ConfigType<typeof QiniuConfig>,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly wxmpService: WXMPService,
   ) {}
@@ -65,7 +67,7 @@ export class AppController {
     return {
       base_time: basetime,
       qiniu: {
-        domain: this.config.get('qiniu.storage.main.domain'),
+        domain: this.qiniuConfig.storage.main.domain,
       },
     }
   }
@@ -213,7 +215,9 @@ export class AppController {
     await this.cacheManager.set(
       `${CACHE_MAIL_CODE}:${code}`,
       registerInput.email,
-      60 * 10,
+      {
+        ttl: 60 * 10,
+      },
     )
 
     await this.emailService.sendEmail(

@@ -87,7 +87,7 @@ export class OrderService {
 
       // 更新订单状态缓存
       this.cacheManager.set(`${CACHE_WXPAY}:${orderId}`, order.state, {
-        ttl: 10,
+        ttl: 60,
       })
 
       // 更新用户余额

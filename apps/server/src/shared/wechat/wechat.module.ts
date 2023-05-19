@@ -1,8 +1,8 @@
-import { Module, OnModuleInit, forwardRef } from '@nestjs/common'
+import { Inject, Module, OnModuleInit, forwardRef } from '@nestjs/common'
 import { RequestContext } from 'src/middlewaves/request-context.middlewave'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ApiConfig, ApiConfigKit } from 'tnwx'
-import { ConfigService } from '@nestjs/config'
+import { ConfigService, ConfigType } from '@nestjs/config'
 import { WXMPController } from './controllers/wxmp.controller'
 import { WXMPService } from './services/wxmp.service'
 import { WXMPMessageService } from './services/wxmp-message.service'
@@ -11,6 +11,7 @@ import { ClientModule } from 'src/modules/client/client.module'
 import { WXPayService } from './services/wxpay.service'
 import { WeChatPayModule } from 'nest-wechatpay-node-v3'
 import fs from 'node:fs'
+import { WxmpConfig } from 'src/config/configurations'
 
 @Module({
   imports: [
@@ -39,9 +40,13 @@ import fs from 'node:fs'
   exports: [WXMPService, WXPayService],
 })
 export class WechatModule implements OnModuleInit {
-  constructor(private readonly config: ConfigService) {}
+  constructor(
+    @Inject(WxmpConfig.KEY)
+    private readonly wxmpConfig: ConfigType<typeof WxmpConfig>,
+  ) {}
+
   onModuleInit() {
-    const { appid, secret, token, aeskey } = this.config.get('wxmp')
+    const { appid, secret, token, aeskey } = this.wxmpConfig
 
     const wechatAPIConfig = new ApiConfig(
       appid,

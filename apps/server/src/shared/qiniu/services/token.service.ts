@@ -1,16 +1,21 @@
-import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { Inject, Injectable } from '@nestjs/common'
+import { ConfigType } from '@nestjs/config'
 import * as qiniu from 'qiniu'
+import { QiniuConfig } from 'src/config/configurations'
 
 @Injectable()
 export class TokenService {
-  constructor(private readonly config: ConfigService) {}
+  constructor(
+    @Inject(QiniuConfig.KEY)
+    private readonly qiniuConfig: ConfigType<typeof QiniuConfig>,
+  ) {}
 
   /**
    * 获取Token
    */
   public getUploadToken() {
-    const storage = this.config.get('qiniu.storage')
+    const storage = this.qiniuConfig.storage
+
     const sign = this.getSign()
 
     const options = {
@@ -29,8 +34,7 @@ export class TokenService {
    * @returns
    */
   public getSign() {
-    const accessKey = this.config.get('qiniu.accessKey')
-    const secretKey = this.config.get('qiniu.secretKey')
+    const { accessKey, secretKey } = this.qiniuConfig
 
     const mac = new qiniu.auth.digest.Mac(accessKey, secretKey)
     return mac

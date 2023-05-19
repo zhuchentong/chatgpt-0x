@@ -29,8 +29,6 @@ export class OrderController {
     private wxpayService: WXPayService,
     private orderService: OrderService,
     private productService: ProductService,
-    @Inject(CACHE_MANAGER)
-    private readonly cacheManager: Cache,
   ) {}
 
   @Post('submit-order')

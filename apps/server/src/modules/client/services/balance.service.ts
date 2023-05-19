@@ -10,13 +10,16 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
 import { plainToInstance } from 'class-transformer'
 import { CACHE_BALANCE } from 'src/config/constants'
-import { ConfigService } from '@nestjs/config'
+import { ConfigType } from '@nestjs/config'
 import { UserService } from './user.service'
 import { InviteService } from './invite.service'
+import { SettingConfig } from 'src/config/configurations'
 
 @Injectable()
 export class BalanceService {
   constructor(
+    @Inject(SettingConfig.KEY)
+    private readonly settingConfig: ConfigType<typeof SettingConfig>,
     @InjectRepository(Balance)
     private balanceRepository: Repository<Balance>,
     @Inject(CACHE_MANAGER)
@@ -24,7 +27,6 @@ export class BalanceService {
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly inviteService: InviteService,
-    private readonly config: ConfigService,
   ) {}
 
   /**
@@ -90,7 +92,7 @@ export class BalanceService {
    * 通过注册创建
    */
   async createByRegister(user: User) {
-    const { type, value } = this.config.get('setting.balance.events.register')
+    const { type, value } = this.settingConfig.balance.events.register
 
     if (!type || !value) {
       Logger.warn('注册奖励未配置')
@@ -114,8 +116,8 @@ export class BalanceService {
    * 通过邀请创建
    */
   async createByInvite(invitee: User, inviterId: string) {
-    const inviterReward = this.config.get('setting.balance.events.inviter')
-    const inviteeReward = this.config.get('setting.balance.events.invitee')
+    const { inviter: inviterReward, invitee: inviteeReward } =
+      this.settingConfig.balance.events
 
     const inviter = await this.userService.findOne(inviterId)
 

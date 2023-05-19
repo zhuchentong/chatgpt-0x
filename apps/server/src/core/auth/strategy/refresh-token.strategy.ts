@@ -6,7 +6,7 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { ConfigType } from '@nestjs/config'
 import { AppOrigin } from 'src/config/enum.config'
 import { AuthService } from '../services/auth.service'
 import type { Cache } from 'cache-manager'
@@ -14,6 +14,7 @@ import { Administrator } from 'src/entities/administrator.entity'
 import { User } from 'src/entities/user.entity'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { CACHE_ADMIN, CACHE_USER } from 'src/config/constants'
+import { JwtConfig } from 'src/config/configurations'
 
 type JwtPayload = {
   id: string
@@ -28,16 +29,17 @@ export class RefreshTokenStrategy extends PassportStrategy(
   'refresh-token',
 ) {
   constructor(
-    private readonly config: ConfigService,
     private readonly authService: AuthService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+    @Inject(JwtConfig.KEY)
+    private readonly jwtConfig: ConfigType<typeof JwtConfig>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       passReqToCallback: true,
-      secretOrKey: config.get('jwt.refreshTokenSecret'),
+      secretOrKey: jwtConfig.refreshTokenSecret,
     })
   }
 
@@ -73,7 +75,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
     } else {
       // 更新缓存过期时间
       await this.cacheManager.set(`${cacheHeader}:${token}`, user.id, {
-        ttl: 60 * 60 * 24 * 30,
+        ttl: this.jwtConfig.refreshTokenExpiresIn,
       })
     }
 

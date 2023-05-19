@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios'
 import { Inject, Injectable, Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { ConfigType } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { lastValueFrom, zip } from 'rxjs'
 import { OpenAIKey } from 'src/entities/openai-key.entity'
@@ -12,14 +12,16 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import type { Cache } from 'cache-manager'
 import { CACHE_OPENAI_KEYS } from 'src/config/constants'
+import { OpenaiConfig } from 'src/config/configurations'
 
 @Injectable()
 export class KeyService {
   private static keyIndex = 0
 
   constructor(
-    private readonly config: ConfigService,
     private httpService: HttpService,
+    @Inject(OpenaiConfig.KEY)
+    private readonly openaiConfig: ConfigType<typeof OpenaiConfig>,
     @InjectRepository(OpenAIKey)
     private openAIKeyRepository: Repository<OpenAIKey>,
     @Inject(CACHE_MANAGER)
@@ -96,9 +98,7 @@ export class KeyService {
    */
   async getKeyBalance(key: string) {
     // 查使用量
-    let { apiurl } = this.config.get('openai')
-    apiurl = apiurl.replace('proxy-sse', 'proxy')
-
+    const apiurl = this.openaiConfig.apiurl.replace('proxy-sse', 'proxy')
     // 认证信息
     const headers = {
       Authorization: `Bearer ${key}`,
@@ -149,7 +149,7 @@ export class KeyService {
 
     // 更新缓存
     if (keys.length > 0) {
-      return this.cacheManager.set(CACHE_OPENAI_KEYS, keys)
+      this.cacheManager.set(CACHE_OPENAI_KEYS, keys)
     }
 
     return keys
@@ -180,7 +180,7 @@ export class KeyService {
         return key
       }
       default:
-        return this.config.get('openai.apikey')
+        return this.openaiConfig.apikey
     }
   }
 

@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { Inject, Injectable } from '@nestjs/common'
+import { ConfigType } from '@nestjs/config'
 import * as nodemailer from 'nodemailer'
+import { EmailConfig } from 'src/config/configurations'
 
 @Injectable()
 export class EmailService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @Inject(EmailConfig.KEY)
+    private readonly emailConfig: ConfigType<typeof EmailConfig>,
+  ) {}
 
   /**
    * 发送邮件
@@ -14,9 +18,7 @@ export class EmailService {
    * @returns
    */
   async sendEmail(to: string, title: string, content: string) {
-    const { service, username, password } = await this.configService.get(
-      'email',
-    )
+    const { service, username, password } = this.emailConfig
 
     const transport = nodemailer.createTransport({
       service,

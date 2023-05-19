@@ -1,21 +1,26 @@
 import {
   CacheModuleOptions,
   CacheOptionsFactory,
+  Inject,
   Injectable,
 } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { ConfigType } from '@nestjs/config'
 import * as redisStore from 'cache-manager-redis-store'
+import { RedisConfig } from 'src/config/configurations'
 
 @Injectable()
 export class RedisService implements CacheOptionsFactory {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @Inject(RedisConfig.KEY)
+    private readonly redisConfig: ConfigType<typeof RedisConfig>,
+  ) {}
 
   createCacheOptions(): CacheModuleOptions {
+    const config = this.redisConfig
+
     return {
       store: redisStore,
-      ...this.configService.get('redis'),
-      // TODO: 临时设置为30天
-      ttl: 60 * 60 * 24 * 30,
+      ...config,
     }
   }
 }

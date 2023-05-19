@@ -1,10 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { ConfigType } from '@nestjs/config'
 import { createParser } from 'eventsource-parser'
 import { nanoid } from 'nanoid'
 import { Cache } from 'cache-manager'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { CACHE_MESSAGE } from 'src/config/constants'
+import { OpenaiConfig } from 'src/config/configurations'
 
 type Message = {
   id?: string
@@ -25,11 +26,12 @@ export class OpenAIService {
 
   private logger = new Logger(OpenAIService.name)
 
-  constructor(private readonly config: ConfigService) {
-    const { apikey, apiurl } = this.config.get('openai')
-
-    this.apikey = apikey
-    this.apiurl = apiurl
+  constructor(
+    @Inject(OpenaiConfig.KEY)
+    private readonly openaiConfig: ConfigType<typeof OpenaiConfig>,
+  ) {
+    this.apikey = openaiConfig.apikey
+    this.apiurl = openaiConfig.apiurl
   }
 
   /**
@@ -376,7 +378,7 @@ export class OpenAIService {
         }
 
         if (message === '[DONE]') {
-          await this.cacheManager.set<Message>(
+          await this.cacheManager.set(
             `${CACHE_MESSAGE}:${responseMessage.id}`,
             {
               role: 'assistant',
@@ -385,7 +387,9 @@ export class OpenAIService {
               parentMessageId: responseMessage.parentMessageId,
               image: responseMessage.image,
             },
-            { ttl: MessageExpiresIn },
+            {
+              ttl: MessageExpiresIn,
+            },
           )
 
           return resolve(responseMessage)

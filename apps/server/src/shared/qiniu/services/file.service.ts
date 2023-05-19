@@ -1,14 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { Inject, Injectable, Logger } from '@nestjs/common'
+import { ConfigType } from '@nestjs/config'
 import * as qiniu from 'qiniu'
 import { TokenService } from './token.service'
 import { nanoid } from 'nanoid'
 import { RequestContext } from 'src/middlewaves/request-context.middlewave'
+import { QiniuConfig } from 'src/config/configurations'
 
 @Injectable()
 export class FileService {
   constructor(
-    private readonly config: ConfigService,
+    @Inject(QiniuConfig.KEY)
+    private readonly qiniuConfig: ConfigType<typeof QiniuConfig>,
     private readonly tokenService: TokenService,
     private readonly requestContext: RequestContext,
   ) {}
@@ -65,8 +67,8 @@ export class FileService {
    * @param key
    */
   public async save(key: string) {
-    const tempBucket = this.config.get('qiniu.storage.temp.bucket')
-    const mainBucket = this.config.get('qiniu.storage.main.bucket')
+    const tempBucket = this.qiniuConfig.storage.temp.bucket
+    const mainBucket = this.qiniuConfig.storage.main.bucket
 
     const [tempFile] = await this.listFile(tempBucket, key)
     const [mainFile] = await this.listFile(mainBucket, key)
@@ -91,7 +93,7 @@ export class FileService {
    * @returns
    */
   public download(url: string, key: string = nanoid()) {
-    const mainBucket = this.config.get('qiniu.storage.main.bucket')
+    const mainBucket = this.qiniuConfig.storage.main.bucket
 
     const bucketManager = this.getBucketManager()
 

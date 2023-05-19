@@ -180,7 +180,9 @@ export class WXMPMessageService implements MsgAdapter {
 
     switch (true) {
       case event.startsWith(CACHE_QRCODE_LOGIN):
-        this.cacheManager.set(event, openid, 60 * 5)
+        this.cacheManager.set(event, openid, {
+          ttl: 60 * 5,
+        })
         break
     }
 

@@ -5,7 +5,7 @@ import { Administrator } from 'src/entities/administrator.entity'
 import { User } from 'src/entities/user.entity'
 import { Repository } from 'typeorm'
 import * as bcrypt from 'bcrypt'
-import { ConfigService } from '@nestjs/config'
+import { ConfigType } from '@nestjs/config'
 import { AppOrigin } from 'src/config/enum.config'
 import { Cache } from 'cache-manager'
 import { HttpService } from '@nestjs/axios'
@@ -14,6 +14,7 @@ import { nanoid } from 'nanoid/non-secure'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { CACHE_ADMIN, CACHE_USER } from 'src/config/constants'
 import { TokenResponse } from 'src/modules/client/responses/app.response'
+import { AppConfig, JwtConfig, WeappConfig } from 'src/config/configurations'
 
 const WEAPP_API = {
   token: 'https://api.weixin.qq.com/cgi-bin/token',
@@ -22,15 +23,17 @@ const WEAPP_API = {
     'https://api.weixin.qq.com/wxa/business/getuserphonenumber',
 }
 
-const accessTokenExpiresIn = 60 * 60 * 12
-const refreshTokenExpiresIn = 60 * 60 * 24 * 30
-
 @Injectable()
 export class AuthService {
   constructor(
-    private config: ConfigService,
     private jwtService: JwtService,
     private httpService: HttpService,
+    @Inject(JwtConfig.KEY)
+    private readonly jwtConfig: ConfigType<typeof JwtConfig>,
+    @Inject(AppConfig.KEY)
+    private readonly appConfig: ConfigType<typeof AppConfig>,
+    @Inject(WeappConfig.KEY)
+    private readonly weappConfig: ConfigType<typeof WeappConfig>,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     @InjectRepository(Administrator)
     private administratorRepository: Repository<Administrator>,
@@ -43,7 +46,7 @@ export class AuthService {
    * @returns
    */
   public async hashPassword(password: string) {
-    const saltRounds = this.config.get<string>('app.saltRounds')
+    const saltRounds = this.appConfig.saltRounds
     const hash = await bcrypt.hash(password, parseInt(saltRounds))
 
     return hash
@@ -114,8 +117,8 @@ export class AuthService {
         params: {
           js_code: code,
           grant_type: 'authorization_code',
-          appid: this.config.get('weapp.appid'),
-          secret: this.config.get('weapp.secret'),
+          appid: this.weappConfig.appid,
+          secret: this.weappConfig.secret,
         },
       }),
     )
@@ -172,28 +175,28 @@ export class AuthService {
 
     // 获取AccessToken
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.config.get('jwt.accessTokenSecret'),
-      expiresIn: accessTokenExpiresIn,
+      secret: this.jwtConfig.accessTokenSecret,
+      expiresIn: this.jwtConfig.accessTokenExpiresIn,
     })
 
     // 获取AccessToken
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.config.get('jwt.refreshTokenSecret'),
-      expiresIn: refreshTokenExpiresIn,
+      secret: this.jwtConfig.refreshTokenSecret,
+      expiresIn: this.jwtConfig.refreshTokenExpiresIn,
     })
 
     // 缓存AccessToken
     await this.cacheManager.set(
       `${CACHE_ADMIN}:${administrator.id}`,
       refreshToken,
-      refreshTokenExpiresIn,
+      { ttl: this.jwtConfig.refreshTokenExpiresIn },
     )
 
     // 返回认证信息
     return {
       access_token: accessToken,
       refresh_token: refreshToken,
-      expires_in: accessTokenExpiresIn,
+      expires_in: this.jwtConfig.refreshTokenExpiresIn,
       token_origin: jwtOrigin,
     }
   }
@@ -229,8 +232,10 @@ export class AuthService {
   ) {
     const jwtOrigin = origin
     const tokenExpiresIn = {
-      accessTokenExpiresIn: reAccessTokenExpiresIn || accessTokenExpiresIn,
-      refreshTokenExpiresIn: reRefreshTokenExpiresIn || refreshTokenExpiresIn,
+      accessTokenExpiresIn:
+        reAccessTokenExpiresIn || this.jwtConfig.accessTokenExpiresIn,
+      refreshTokenExpiresIn:
+        reRefreshTokenExpiresIn || this.jwtConfig.refreshTokenExpiresIn,
     }
 
     const payload = {
@@ -240,7 +245,7 @@ export class AuthService {
 
     // 获取AccessToken
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.config.get('jwt.accessTokenSecret'),
+      secret: this.jwtConfig.accessTokenSecret,
       expiresIn: tokenExpiresIn.accessTokenExpiresIn,
     })
 
@@ -254,16 +259,14 @@ export class AuthService {
     if (refreshTokenSign) {
       // 获取AccessToken
       const refreshToken = this.jwtService.sign(payload, {
-        secret: this.config.get('jwt.refreshTokenSecret'),
+        secret: this.jwtConfig.refreshTokenSecret,
         expiresIn: tokenExpiresIn.refreshTokenExpiresIn,
       })
 
       // 缓存AccessToken
-      await this.cacheManager.set(
-        `${CACHE_USER}:${refreshToken}`,
-        user.id,
-        tokenExpiresIn.refreshTokenExpiresIn,
-      )
+      await this.cacheManager.set(`${CACHE_USER}:${refreshToken}`, user.id, {
+        ttl: this.jwtConfig.refreshTokenExpiresIn,
+      })
 
       token.refresh_token = refreshToken
     }

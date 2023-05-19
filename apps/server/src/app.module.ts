@@ -7,7 +7,7 @@ import { AuthModule } from './core/auth/auth.module'
 import { LoggerModule } from './core/logger/logger.module'
 import { ClientModule } from './modules/client/client.module'
 import { AdminModule } from './modules/admin/admin.module'
-import configuration from './config/configuration'
+import configurations from './config/configurations'
 import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core'
 import { QiniuModule } from './shared/qiniu/qiniu.module'
 import { WechatModule } from './shared/wechat/wechat.module'
@@ -25,7 +25,7 @@ const environment = process.env.NODE_ENV || 'development'
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.env.${environment}.local`],
-      load: [configuration],
+      load: configurations,
     }),
     ScheduleModule.forRoot(),
     DatabaseModule,

@@ -53,7 +53,7 @@ export class OrderService {
       })
 
       this.cacheManager.set(`${CACHE_WXPAY}:${orderId}`, order.state, {
-        ttl: 10,
+        ttl: 60,
       })
 
       return order.state

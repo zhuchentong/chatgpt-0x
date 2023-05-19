@@ -4,6 +4,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Inject,
   Post,
   UseGuards,
 } from '@nestjs/common'
@@ -24,17 +25,19 @@ import { LoginInput } from '../dtos/app.dto'
 import { AppInitInput } from '../dtos/app.dto'
 import { AdministratorService } from '../services/administrator.service'
 import { AppBaseResponse, TokenResponse } from '../responses/app.response'
-import { ConfigService } from '@nestjs/config'
+import { ConfigType } from '@nestjs/config'
 import { ToastException } from 'src/exceptions/toast.exception'
+import { QiniuConfig } from 'src/config/configurations'
 
 @Controller('app')
 @ApiTags('app')
 @ApiSecurity('access-token')
 export class AppController {
   constructor(
-    private readonly config: ConfigService,
     private readonly authService: AuthService,
     private readonly administratorService: AdministratorService,
+    @Inject(QiniuConfig.KEY)
+    private readonly qiniuConfig: ConfigType<typeof QiniuConfig>,
   ) {}
 
   @Public()
@@ -80,7 +83,7 @@ export class AppController {
     return {
       base_time: basetime,
       qiniu: {
-        domain: this.config.get('qiniu.storage.main.domain'),
+        domain: this.qiniuConfig.storage.main.domain,
       },
       ready: count > 0,
     }
