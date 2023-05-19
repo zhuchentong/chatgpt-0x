@@ -53,7 +53,7 @@ const columns: TableColumn<Order>[] = [
     key: 'product.price',
     align: 'center',
     width: 100,
-    render: (record) => `${record.product.price.toFixed(2)} 元`,
+    render: (record) => `${(record.product.price / 100).toFixed(2)} 元`,
   },
   {
     title: '订单时间',
