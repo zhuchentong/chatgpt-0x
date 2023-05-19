@@ -48,7 +48,7 @@ export class OpenAIService {
     const messages: Message[] = []
     // 最大深度
     const maxDepth = 20
-    const maxTokens = 4000
+    const maxTokens = 3800
 
     if (requestMessage.parentMessageId) {
       let id = requestMessage.parentMessageId
