@@ -48,39 +48,43 @@ export class OpenAIService {
     const messages: Message[] = []
     // 最大深度
     const maxDepth = 20
-    const maxTokens = 3800
+    const maxTokens = 3200
 
     if (requestMessage.parentMessageId) {
-      let id = requestMessage.parentMessageId
       let tokens = requestMessage.content.length
 
-      message: do {
+      const getLastMessage = async (id: string) => {
+        if (messages.find((message) => message.id === id)) {
+          return
+        }
+
+        // 获取消息
         const message = await this.cacheManager.get<Message>(
           `${CACHE_MESSAGE}:${id}`,
         )
 
-        if (message && !message.image) {
-          tokens += message.content.length
+        if (!message) return
 
-          if (tokens < maxTokens) {
+        if (!message.image && !!message.content) {
+          if (
+            // 消息内容长度小于最大长度
+            tokens + message.content.length < maxTokens &&
+            // 消息队列深度小于最大深度
+            messages.length < maxDepth
+          ) {
             messages.unshift({ role: message.role, content: message.content })
+            tokens += message.content.length
           } else {
-            // 消息队列超过最大长度
-            break
+            return
           }
         }
 
-        // 消息队列超过最大深度
-        if (messages.length >= maxDepth) {
-          break
-        }
-
         if (message?.parentMessageId) {
-          id = message.parentMessageId
-        } else {
-          break
+          return await getLastMessage(message?.parentMessageId)
         }
-      } while (true)
+      }
+
+      await getLastMessage(requestMessage.parentMessageId)
     }
 
     if (systemMessage) {
