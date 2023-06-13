@@ -102,6 +102,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import MarkdownIt from 'markdown-it'
+import MarkdownItMermaid from '@liradb2000/markdown-it-mermaid'
 import mdKatex from '@traptitech/markdown-it-katex'
 import mila from 'markdown-it-link-attributes'
 import hljs from 'highlight.js'
@@ -111,10 +112,10 @@ import { ChatRole } from '@/config/enum.config'
 const props = defineProps<{
   content: string
   role: ChatRole
+  inputing: boolean
 }>()
 
 const clipboard = useClipboard({ legacy: true })
-
 const el = useCurrentElement()
 const message = useMessage()
 const theme = useColorMode()
@@ -124,6 +125,9 @@ function highlightBlock(str: string, lang?: string) {
 
 const mdi = new MarkdownIt({
   linkify: true,
+  typographer: true,
+  breaks: true,
+  xhtmlOut: false,
   highlight(code, language) {
     const validLang = !!(language && hljs.getLanguage(language))
     if (validLang) {
@@ -135,6 +139,10 @@ const mdi = new MarkdownIt({
     }
     return highlightBlock(hljs.highlightAuto(code).value, '')
   },
+})
+
+mdi.use(MarkdownItMermaid, {
+  startOnLoad: false,
 })
 
 mdi.use(mila, { attrs: { target: '_blank', rel: 'noopener' } })
@@ -179,7 +187,12 @@ function copyCodeBlock() {
 }
 
 const text = computed(() => {
-  const value = props.content ?? ''
+  let value = props.content ?? ''
+
+  if (props.inputing) {
+    value = value.replace(/```mermaid/g, '```__mermaid__')
+  }
+
   return mdi.render(value)
 })
 

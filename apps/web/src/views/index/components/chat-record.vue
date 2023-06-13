@@ -33,6 +33,7 @@
       <ChatMessage
         v-else
         :content="record.content"
+        :inputing="inputing"
         :role="record.role"></ChatMessage>
     </div>
 
@@ -134,6 +135,7 @@ const props = defineProps<{
   index?: number
   record: ChatRecord
   loading?: boolean
+  inputing: boolean
 }>()
 
 dayjs.extend(isToday)

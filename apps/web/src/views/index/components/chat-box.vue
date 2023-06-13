@@ -15,9 +15,11 @@
             v-for="(record, index) in records"
             :key="index"
             :index="index"
+            :inputing="index === records.length - 1 && chat.inputing"
             :record="record"></ChatRecord>
           <ChatRecord
             v-if="chat.waiting"
+            :inputing="false"
             loading
             :record="{
               role: ChatRole.Assistant,
