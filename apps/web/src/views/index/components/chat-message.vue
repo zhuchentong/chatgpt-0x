@@ -102,11 +102,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import MarkdownIt from 'markdown-it'
-// import MarkdownItMermaid from '@liradb2000/markdown-it-mermaid'
 import mdKatex from '@traptitech/markdown-it-katex'
 import mila from 'markdown-it-link-attributes'
 import hljs from 'highlight.js'
 import { useMessage } from 'naive-ui'
+import MarkdownItMermaid from '@/shared/plugins/mermaid'
 import { ChatRole } from '@/config/enum.config'
 
 const props = defineProps<{
@@ -146,9 +146,8 @@ mdi.use(mdKatex, {
   blockClass: 'katexmath-block rounded-md p-[10px]',
   errorColor: '#cc0000',
 })
-// mdi.use(MarkdownItMermaid, {
-//   startOnLoad: false,
-// })
+
+mdi.use(MarkdownItMermaid)
 
 const debouncedFn = useDebounceFn(() => {
   copyCodeBlock()
