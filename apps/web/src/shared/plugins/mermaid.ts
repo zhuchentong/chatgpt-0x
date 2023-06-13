@@ -62,25 +62,17 @@ const MermaidPlugin: PluginWithOptions<Config> = (
                 }
               })
             })
-          } else {
-            nextTick(() => {
-              const element = document.getElementById(key)
-
-              if (element) {
-                element.innerHTML = defaultFenceRenderer(
-                  tokens,
-                  idx,
-                  opts,
-                  env,
-                  self,
-                )
-              }
-            })
           }
         })
 
         const width = store.app.desktop ? '600px' : '200px'
-        return `<div id="${key}" class="mermaid" style="min-width: ${width};text-align:center;"></div>`
+        return `<div id="${key}" class="mermaid" style="min-width: ${width};text-align:center;">${defaultFenceRenderer(
+          tokens,
+          idx,
+          opts,
+          env,
+          self,
+        )}</div>`
       } catch (e) {
         // console.group(
         //   `Mermaid rendering error: ${
@@ -90,7 +82,7 @@ const MermaidPlugin: PluginWithOptions<Config> = (
         // console.warn('failed to render mermaid configuration:')
         // console.info(token.content)
         // console.groupEnd()
-        return `<div>${token.content}</div>`
+        return `<div>-----${token.content}</div>`
 
         // return `<div class="mermaid-error" style="display: flex; flex-direction: row; width: 100%; border-radius: 0.75rem; rgba(60, 60, 60, .1); padding: 0.5rem;">
         //           <div style="display: flex; flex-direction: column; margin-right: 2rem">
