@@ -58,7 +58,7 @@ const MermaidPlugin: PluginWithOptions<Config> = (
             }
           })
         })
-        const width = store.app.desktop ? '500px' : '200px'
+        const width = store.app.desktop ? '600px' : '200px'
         return `<div id="${key}" class="mermaid" style="min-width: ${width};text-align:center;"></div>`
       } catch (e) {
         // console.group(
