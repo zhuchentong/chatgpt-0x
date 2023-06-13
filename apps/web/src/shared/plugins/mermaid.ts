@@ -44,20 +44,24 @@ const MermaidPlugin: PluginWithOptions<Config> = (
   // modify `fence` rule
   md.renderer.rules.fence = function (tokens, idx, opts, env, self) {
     const token = tokens[idx]
+    const defulatOutput = defaultFenceRenderer(tokens, idx, opts, env, self)
+
     if (token.tag === 'code' && token.info.startsWith('mermaid')) {
       // const re = new RegExp(/mermaid\s*?({.*)/);
       // const result = token.info.match(re);
       // const _mermaidOpts = result ? result[1].trim() : "{}";
       const key = `mermaid_${Math.random().toString(36).slice(2)}`
-
       try {
         mermaid.parse(token.content).then((valid) => {
           if (valid) {
             mermaid.render(id, token.content).then(({ svg }) => {
               nextTick(() => {
                 const element = document.getElementById(key)
+                const width = store.app.desktop ? '600px' : '200px'
 
                 if (element) {
+                  element.style.minWidth = width
+                  element.style.textAlign = 'center'
                   element.innerHTML = svg
                 }
               })
@@ -65,24 +69,9 @@ const MermaidPlugin: PluginWithOptions<Config> = (
           }
         })
 
-        const width = store.app.desktop ? '600px' : '200px'
-        return `<div id="${key}" class="mermaid" style="min-width: ${width};text-align:center;">${defaultFenceRenderer(
-          tokens,
-          idx,
-          opts,
-          env,
-          self,
-        )}</div>`
+        return `<div id="${key}" class="mermaid">${defulatOutput}</div>`
       } catch (e) {
-        // console.group(
-        //   `Mermaid rendering error: ${
-        //     e instanceof Error ? e.message : String(e)
-        //   }`,
-        // )
-        // console.warn('failed to render mermaid configuration:')
-        // console.info(token.content)
-        // console.groupEnd()
-        return `<div>-----${token.content}</div>`
+        return defulatOutput
 
         // return `<div class="mermaid-error" style="display: flex; flex-direction: row; width: 100%; border-radius: 0.75rem; rgba(60, 60, 60, .1); padding: 0.5rem;">
         //           <div style="display: flex; flex-direction: column; margin-right: 2rem">
@@ -114,7 +103,7 @@ const MermaidPlugin: PluginWithOptions<Config> = (
       }
     }
 
-    return defaultFenceRenderer(tokens, idx, opts, env, self)
+    return defulatOutput
   }
 }
 
