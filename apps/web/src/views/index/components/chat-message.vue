@@ -147,7 +147,9 @@ mdi.use(mdKatex, {
   errorColor: '#cc0000',
 })
 
-mdi.use(MarkdownItMermaid)
+mdi.use(MarkdownItMermaid, {
+  theme: theme.state.value === 'dark' ? 'dark' : 'default',
+})
 
 const debouncedFn = useDebounceFn(() => {
   copyCodeBlock()

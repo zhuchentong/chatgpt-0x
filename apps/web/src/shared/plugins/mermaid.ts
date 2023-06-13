@@ -2,6 +2,7 @@ import type { PluginWithOptions } from 'markdown-it'
 import type mdi from 'markdown-it'
 import mermaid from 'mermaid'
 import type { MermaidConfig } from 'mermaid'
+import { useStore } from '@/store'
 
 export type MdiWithMermaid = ReturnType<typeof mdi>
 
@@ -21,6 +22,7 @@ const MermaidPlugin: PluginWithOptions<Config> = (
   const element = document.createElement('div')
   element.id = id
   container?.appendChild(element)
+  const store = useStore()
 
   if (!defaultFenceRenderer) {
     throw new Error('no default fence renderer configured for Mermaid!')
@@ -56,7 +58,8 @@ const MermaidPlugin: PluginWithOptions<Config> = (
             }
           })
         })
-        return `<div id="${key}" class="mermaid">123123</div>`
+        const width = store.app.desktop ? '500px' : '200px'
+        return `<div id="${key}" class="mermaid" style="min-width: ${width};text-align:center;"></div>`
       } catch (e) {
         // console.group(
         //   `Mermaid rendering error: ${
