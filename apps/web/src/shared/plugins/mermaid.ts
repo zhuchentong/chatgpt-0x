@@ -16,12 +16,14 @@ const MermaidPlugin: PluginWithOptions<Config> = (
 ) => {
   const defaultFenceRenderer = md.renderer.rules.fence
   const id =
-    options?.id || `mermaid_container_${Math.random().toString(36).slice(2)}`
+    options?.id || `mermaid_item_${Math.random().toString(36).slice(2)}`
 
   const container = document.getElementById('mermaid-container')
   const element = document.createElement('div')
   element.id = id
+  element.classList.add('mermaid_item')
   container?.appendChild(element)
+
   const store = useStore()
 
   if (!defaultFenceRenderer) {
@@ -49,17 +51,22 @@ const MermaidPlugin: PluginWithOptions<Config> = (
       const key = `mermaid_${Math.random().toString(36).slice(2)}`
 
       try {
-        mermaid.render(id, token.content).then(({ svg }) => {
-          nextTick(() => {
-            const element = document.getElementById(key)
+        mermaid.parse(token.content).then((valid) => {
+          if (valid) {
+            mermaid.render(id, token.content).then(({ svg }) => {
+              nextTick(() => {
+                const element = document.getElementById(key)
 
-            if (element) {
-              element.innerHTML = svg
-            }
-          })
+                if (element) {
+                  element.innerHTML = svg
+                }
+              })
+            })
+          }
         })
+
         const width = store.app.desktop ? '600px' : '200px'
-        return `<div id="${key}" class="mermaid" style="min-width: ${width};text-align:center;"></div>`
+        return `<div id="${key}" class="mermaid" style="min-width: ${width};text-align:center;">${token.content}</div>`
       } catch (e) {
         // console.group(
         //   `Mermaid rendering error: ${
