@@ -27,8 +27,13 @@ const MermaidPlugin: PluginWithOptions<Config> = (
   }
 
   mermaid.initialize({
-    theme: 'default',
     startOnLoad: true,
+    securityLevel: 'true',
+    theme: 'default',
+    flowchart: {
+      htmlLabels: false,
+      useMaxWidth: true,
+    },
     ...options,
   })
 
@@ -61,7 +66,7 @@ const MermaidPlugin: PluginWithOptions<Config> = (
         // console.warn('failed to render mermaid configuration:')
         // console.info(token.content)
         // console.groupEnd()
-        return '<div>000</div>'
+        return `<div>${token.content}</div>`
 
         // return `<div class="mermaid-error" style="display: flex; flex-direction: row; width: 100%; border-radius: 0.75rem; rgba(60, 60, 60, .1); padding: 0.5rem;">
         //           <div style="display: flex; flex-direction: column; margin-right: 2rem">
