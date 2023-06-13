@@ -62,11 +62,25 @@ const MermaidPlugin: PluginWithOptions<Config> = (
                 }
               })
             })
+          } else {
+            nextTick(() => {
+              const element = document.getElementById(key)
+
+              if (element) {
+                element.innerHTML = defaultFenceRenderer(
+                  tokens,
+                  idx,
+                  opts,
+                  env,
+                  self,
+                )
+              }
+            })
           }
         })
 
         const width = store.app.desktop ? '600px' : '200px'
-        return `<div id="${key}" class="mermaid" style="min-width: ${width};text-align:center;">${token.content}</div>`
+        return `<div id="${key}" class="mermaid" style="min-width: ${width};text-align:center;"></div>`
       } catch (e) {
         // console.group(
         //   `Mermaid rendering error: ${
