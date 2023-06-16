@@ -48,7 +48,7 @@ export class OpenAIService {
     const messages: Message[] = []
     // 最大深度
     const maxDepth = 20
-    const maxTokens = 3200
+    const maxTokens = 5000
 
     if (requestMessage.parentMessageId) {
       let tokens = requestMessage.content.length
@@ -126,7 +126,7 @@ export class OpenAIService {
         Authorization: `Bearer ${key}`,
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo-16k',
         temperature: 0.8,
         top_p: 1.0,
         presence_penalty: 1.0,
