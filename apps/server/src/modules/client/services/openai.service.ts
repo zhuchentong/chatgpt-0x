@@ -47,8 +47,8 @@ export class OpenAIService {
     // 消息队列
     const messages: Message[] = []
     // 最大深度
-    const maxDepth = 20
-    const maxTokens = 5000
+    const maxDepth = 30
+    const maxTokens = 8000
 
     if (requestMessage.parentMessageId) {
       let tokens = requestMessage.content.length
