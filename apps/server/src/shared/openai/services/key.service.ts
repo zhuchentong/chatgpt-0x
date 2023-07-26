@@ -30,15 +30,14 @@ export class KeyService {
 
   async create(key: string) {
     try {
-      const { expireAt, usage, limitUsd } = await this.getKeyBalance(key)
+      // const { expireAt, usage, limitUsd } = await this.getKeyBalance(key)
       const openAIKey = await this.openAIKeyRepository.save(
         {
           key,
-          expireAt,
-          usage,
-          limit: limitUsd,
-          state:
-            limitUsd > usage ? OpenAIKeyState.Valid : OpenAIKeyState.Invalid,
+          expireAt: dayjs().add(1, 'year').toDate(),
+          usage: 0,
+          limit: 120,
+          state: OpenAIKeyState.Valid,
         },
         { reload: true },
       )
@@ -187,7 +186,7 @@ export class KeyService {
   /**
    * 同步密钥余额
    */
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  // @Cron(CronExpression.EVERY_30_MINUTES)
   async syncBalances() {
     const keys = await this.findAll({
       enable: true,
