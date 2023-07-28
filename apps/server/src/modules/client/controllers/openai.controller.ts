@@ -45,7 +45,7 @@ export class OpenaiController {
           },
           drawable,
         },
-        key,
+        // key,
       )
       .then(() => {
         subscriber.next({ data: '[DONE]' } as MessageEvent)

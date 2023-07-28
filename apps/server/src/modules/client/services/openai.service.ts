@@ -30,8 +30,8 @@ export class OpenAIService {
     @Inject(OpenaiConfig.KEY)
     private readonly openaiConfig: ConfigType<typeof OpenaiConfig>,
   ) {
-    this.apikey = openaiConfig.apikey
-    this.apiurl = openaiConfig.apiurl
+    this.apikey = this.openaiConfig.apikey
+    this.apiurl = this.openaiConfig.apiurl
   }
 
   /**
