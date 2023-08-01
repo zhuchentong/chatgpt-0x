@@ -78,6 +78,11 @@ export const OpenaiConfig = registerAs('openai', () => ({
   apikey: process.env.OPENAI_APIKEY,
 }))
 
+export const SDConfig = registerAs('sd', () => ({
+  apiurl: process.env.SD_APIURL,
+  apikey: process.env.SD_APIKEY,
+}))
+
 export const SettingConfig = registerAs('setting', () => ({
   balance: {
     enable: true,
@@ -109,5 +114,6 @@ export default [
   WxpayConfig,
   EmailConfig,
   OpenaiConfig,
+  SDConfig,
   SettingConfig,
 ]
