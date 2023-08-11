@@ -21,7 +21,7 @@ const initialState: State = {
   desktop: useMediaQuery('(min-width: 768px)'),
   mobile: useMediaQuery('(max-width: 768px)'),
   careMode: {
-    enable: true,
+    enable: false,
     dates: [],
   },
   firstTime: true,

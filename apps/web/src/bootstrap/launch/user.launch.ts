@@ -147,7 +147,7 @@ export default function userLaunch(router: Router) {
 
     // 已登录用户处理
     if (store.user.current) {
-      next()
+      return next()
     }
 
     // 更新用户Token

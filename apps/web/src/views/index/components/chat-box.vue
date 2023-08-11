@@ -11,6 +11,16 @@
         <div
           id="chat-content"
           ref="chat-content">
+          <NButton
+            v-if="displayIndex > 0"
+            block
+            class="py-5"
+            tag="a"
+            text
+            type="primary"
+            @click="onLoadMore">
+            加载更多
+          </NButton>
           <ChatRecord
             v-for="(record, index) in records"
             :key="index"
@@ -75,12 +85,18 @@ import { ChatRole } from '@/config/enum.config'
 const modal = useModal()
 const store = useStore()
 const theme = useThemeVars()
-const records = computed(() => {
-  return store.chat.currentChat.records.filter(
-    (record) => record.role !== 'system' && !record.deleted,
-  )
-})
 
+const displayCount = 20
+let isLoadMore = false
+let displayIndex = $ref(
+  Math.max(store.chat.currentChat.records.length - displayCount, 0),
+)
+
+const records = computed(() => {
+  return store.chat.currentChat.records
+    .filter((record) => record.role !== 'system' && !record.deleted)
+    .slice(displayIndex)
+})
 const recordListRef = $(templateRef<HTMLElement>('record-list'))
 const chatContentRef = $(templateRef<HTMLElement>('chat-content'))
 
@@ -103,7 +119,8 @@ function addListenerImagePreview(img: HTMLImageElement) {
 
 function addListenerResizeEvent() {
   const resizeObserver = new ResizeObserver(() => {
-    recordListRef.scrollTop = recordListRef.scrollHeight
+    updateScrollTop()
+
     const img = chatContentRef.lastElementChild?.querySelector(
       '.record-content img',
     ) as HTMLImageElement | undefined
@@ -113,6 +130,15 @@ function addListenerResizeEvent() {
     }
   })
   resizeObserver.observe(chatContentRef)
+}
+
+function updateScrollTop() {
+  if (isLoadMore) {
+    isLoadMore = false
+    recordListRef.scrollTop = 0
+  } else {
+    recordListRef.scrollTop = recordListRef.scrollHeight
+  }
 }
 
 onMounted(() => {
@@ -126,4 +152,9 @@ onMounted(() => {
     addListenerImagePreview(img as HTMLImageElement)
   })
 })
+
+function onLoadMore() {
+  isLoadMore = true
+  displayIndex = Math.max(displayIndex - displayCount, 0)
+}
 </script>
