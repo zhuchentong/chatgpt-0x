@@ -304,7 +304,7 @@ export class BalanceService {
    * @param userId
    */
   async consumeUserBalance(userId: string) {
-    const balance = await this.getUserBalanceFromCache(userId)
+    const balance = await this.getUserBalance(userId)
 
     switch (true) {
       case [ProductType.Cycle, ProductType.Count].includes(balance.type): {
