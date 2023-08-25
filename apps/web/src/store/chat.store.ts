@@ -119,7 +119,7 @@ export const useChatStore = defineStore('chat', {
       )
     },
     clearChat() {
-      this.currentChat?.records.forEach((record) => (record.deleted = true))
+      this.currentChat.records = []
     },
     changeChat(id: string) {
       this.activeChat = id

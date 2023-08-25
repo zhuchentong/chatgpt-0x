@@ -89,7 +89,11 @@ const theme = useThemeVars()
 const displayCount = 20
 let isLoadMore = false
 let displayIndex = $ref(
-  Math.max(store.chat.currentChat.records.length - displayCount, 0),
+  Math.max(
+    store.chat.currentChat.records.filter((x) => !x.deleted).length -
+      displayCount,
+    0,
+  ),
 )
 
 const records = computed(() => {
