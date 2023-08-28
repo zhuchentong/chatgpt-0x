@@ -53,6 +53,7 @@ function sendChatMessage(message: string) {
   const assistant = store.chat.currentAssistant
   // 获取上一条消息
   let lastMessage = null
+  const messageId = nanoid()
   // 开启上下文
   if (store.chat.keepContext) {
     const messages = chat.records.filter(
@@ -137,7 +138,7 @@ function sendChatMessage(message: string) {
         case data === '[DONE]':
           return closeEvent()
         default:
-          appendChatMessage(chat, JSON.parse(data))
+          appendChatMessage(chat, { id: messageId, ...JSON.parse(data) })
       }
     })
   } catch (e) {
