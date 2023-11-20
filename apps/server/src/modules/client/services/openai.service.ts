@@ -121,6 +121,8 @@ export class OpenAIService {
     stream: boolean,
     signal?: AbortSignal,
   ) {
+    console.log(`api-url: ${this.apiurl}`)
+    console.log(`api-key: ${key}`)
     return globalThis.fetch(`${this.apiurl}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -464,7 +466,6 @@ export class OpenAIService {
     )
 
     return new Promise(async (resolve, reject) => {
-      // TODO: 超时状态处理
       let timeout = setTimeout(
         () => {
           abortController.abort()
@@ -474,7 +475,7 @@ export class OpenAIService {
             tokens: JSON.stringify(messages).length,
           })
         },
-        options.drawable ? 1000 * 15 : 1000 * 10,
+        options.drawable ? 1000 * 30 : 1000 * 15,
       )
 
       let startResponse = false

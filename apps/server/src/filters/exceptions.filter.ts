@@ -26,7 +26,7 @@ export class ExceptionsFilter implements ExceptionFilter {
       if (exception instanceof HttpException) {
         return exception.getStatus()
       } else {
-        HttpStatus.INTERNAL_SERVER_ERROR
+        return HttpStatus.INTERNAL_SERVER_ERROR
       }
     }
 
