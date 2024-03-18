@@ -10,17 +10,16 @@ import { FindUserInput } from '../dtos/user.dto'
 import { UserService } from '../services/user.service'
 import { toPageResponse } from 'src/common/typeorm/responses/page.response'
 import { UserStaticial } from '../responses/user.response'
-import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { ExportService } from '../services/export.service'
+import { Public } from 'src/decorators/public.decorator'
 
 @Controller('user')
 @ApiTags('user')
 @ApiSecurity('access-token')
 export class UserController {
   constructor(
+    private readonly exportService: ExportService,
     private readonly userService: UserService,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
   ) {}
 
   @Post()
@@ -41,15 +40,10 @@ export class UserController {
   }
 
   @Get('export')
-  @ApiOperation({ operationId: 'exportUserBalance', summary: '导出用户余额' })
+  @Public()
+  @ApiOperation({ operationId: 'exportUserAccount', summary: '导出用户余额' })
   @ApiOkResponse({ type: User })
-  public exportUserBalance() {
-    const users = this.userRepository.find({
-      relations: {
-        balances: true,
-      },
-    })
-
-    return users
+  public async exportUserAccount() {
+    return this.exportService.exportUserAccount()
   }
 }

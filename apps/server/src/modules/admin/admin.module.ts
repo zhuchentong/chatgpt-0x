@@ -31,7 +31,7 @@ import { Refund } from 'src/entities/refund.entity'
 import { Invite } from 'src/entities/invite.entity'
 import { InviteService } from './services/invite.service'
 import { InviteController } from './controllers/invite.controller'
-
+import { ExportService } from './services/export.service'
 @Module({
   imports: [
     AuthModule,
@@ -59,6 +59,7 @@ import { InviteController } from './controllers/invite.controller'
     ActiveCodeService,
     RefundService,
     InviteService,
+    ExportService,
   ],
   controllers: [
     AdministratorController,
