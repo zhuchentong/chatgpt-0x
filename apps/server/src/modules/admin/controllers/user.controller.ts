@@ -10,12 +10,18 @@ import { FindUserInput } from '../dtos/user.dto'
 import { UserService } from '../services/user.service'
 import { toPageResponse } from 'src/common/typeorm/responses/page.response'
 import { UserStaticial } from '../responses/user.response'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
 
 @Controller('user')
 @ApiTags('user')
 @ApiSecurity('access-token')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
   @Post()
   @ApiOperation({ operationId: 'findUsers', summary: '查找用户列表' })
@@ -32,5 +38,18 @@ export class UserController {
   @ApiOkResponse({ type: UserStaticial })
   getUserStaticial() {
     return this.userService.getUserStaticial()
+  }
+
+  @Get('export')
+  @ApiOperation({ operationId: 'exportUserBalance', summary: '导出用户余额' })
+  @ApiOkResponse({ type: User })
+  public exportUserBalance() {
+    const users = this.userRepository.find({
+      relations: {
+        balances: true,
+      },
+    })
+
+    return users
   }
 }
